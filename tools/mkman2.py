@@ -119,6 +119,8 @@ scene("26_sidebar", "[...document.querySelectorAll('.modal.show button')].find(b
 scene("27_addressbook", "app.openAddressBook();" + W(800), "'#abModal .modal-content'")
 # ── 5. 공유
 scene("28_share", "app.closeAddressBook();" + W(300) + "app.showShareModal(8101);" + W(900), "'#shareGoBtn'")
+# 내보내기 알림: 예시·사진이 들어 있으면 [예시·사진 빼고 다시 저장] (징계 업무에는 등기 수령증 예시가 있음)
+scene("28b_tipexclude", "app._shareClose();" + W(300) + "app._saveFileWithPicker=async()=>true;await app.exportMultipleWorkflowPackages([window.__wid]);" + W(900), "[...document.querySelectorAll('.toast')].pop()", keepToast=True)
 # ── 6. 회신 받고 마무리 → 완료 · 레퍼런스 · 보관
 scene("29_done", "app._shareClose();" + W(300) + "app.focusWorkflow(window.__wid);" + W(900) + "const w=wf();Object.values(w.collab.steps).forEach(st=>{st.status='replied';st.repliedAt=new Date().toISOString();});"
  "w.checklist.forEach((it,i)=>{if(!app.normalizeCompleted(it)&&it.skipped!==true&&app._isSubEntry(it))app.toggleChecklistItem(window.__wid,i);});" + W(1600) +
@@ -133,5 +135,15 @@ scene("35_law", "app.closeModal('workflowManagerModal');" + W(300) + "await app.
 scene("36_repo", "app.closeModal('lawLibraryModal');" + W(300) + "await app.openDocumentRepo();" + W(900), "'#documentRepoModal .modal-content'")
 scene("37_trash", "app.closeModal('documentRepoModal');" + W(300) + "app.allData.workflows.unshift({id:9990,type:'manual',title:'연습용 업무 (지운 것)',checklist:[{text:'연습',completed:false}],date:'2026. 10. 11.',createdAt:new Date().toISOString(),folderPath:''});app.saveData();app._wfmDeleteItems([9990],[]);" + W(600) + "app.openTrashModal();" + W(800) + "const it=document.querySelector('#trash-item-9990');it&&it.click();" + W(300), "'#trashModal .modal-content'")
 scene("38_backup", "app.closeModal('trashModal');" + W(300) + "app.openPreferences('backup');" + W(900), "'#prefsModal .modal-content'")
+# ── 10. 연습 업무로 따라 해 보기 (맨 끝에 넣어 앞 장면의 화면에는 나오지 않게)
+scene("39_practice", "app.closeModal('prefsModal');" + W(300) + "if(app.focusMode)app.exitFocusMode();" + W(300) + "const t=document.querySelector('.filter-tab[data-mode=\"inProgress\"]');t&&t.click();" + W(300) +
+ "await app.insertPracticeWorkflows();" + W(2500) + "window.__pw=app.allData.workflows.find(w=>w.isPractice&&!w.isDeleted&&w.title.includes('소모품')).id;app.displayWorkflows();" + W(600), "'#workflowList'")
+scene("40_practice_skip", "const w=app.allData.workflows.find(x=>x.id===window.__pw);const ix=t=>w.checklist.findIndex(i=>i.text===t);app.focusWorkflow(w.id);" + W(1200) +
+ "for(const t of ['구매 요청 받기 — 품목·수량·규격 확인','추정가격 정하기','거래실례가격 조사 (2곳 이상)']){app.toggleChecklistItem(w.id,ix(t));" + W(1300) + "}"
+ "app.markNotApplicable(w.id,[ix('예정가격 작성')],'1인 견적 소액 수의계약');" + W(1500) +
+ "const bi=ix('금액 기준 확인 — 갈림길');app.handleBranchOption(w.id,bi,w.checklist[bi].branchOptions.findIndex(o=>o.label==='1인 견적'));" + W(600), "'#branchPreviewConfirmBtn'")
+scene("41_practice_print", "document.getElementById('branchPreviewConfirmBtn').click();" + W(1500) + "app._collabSetMe({dept:'사하소방서 행정과',rank:'소방위',name:'홍길동',phone:'4521'});"
+ "localStorage.setItem('progressReportOpts',JSON.stringify({...JSON.parse(localStorage.getItem('progressReportOpts')||'{}'),clResult:true,clSkipped:true}));app._prTab='checklist';app.openProgressReport(window.__pw);" + W(1300) +
+ "const tr=[...document.querySelectorAll('#prPage tr')].find(r=>r.textContent.includes('나라장터'));const sc=document.querySelector('#progressReportModal .pr-body, #progressReportModal .pr-scroll')||tr&&tr.closest('[style*=overflow]');if(tr)tr.scrollIntoView({block:'center'});" + W(500), "[...document.querySelectorAll('#prPage tr')].find(r=>r.textContent.includes('나라장터'))")
 json.dump(S, open('steps.json', 'w', encoding='utf-8'), ensure_ascii=False)
 print(len(S))
