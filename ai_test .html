@@ -21042,6 +21042,11 @@ ${item.result.text}
                         );
                         detailKeys.forEach(k => { allChecklistDetails[k] = this.checklistDetails[k]; });
                     }
+                    // 업무팁 「예시·사진」(키 {id}-t-{itemId}) — 화면 캡처처럼 남에게 넘기면 안 되는 것이 있을 수 있어,
+                    // 저장 뒤 알림에서 [예시·사진 빼고 다시 저장]을 고를 수 있게 개수를 센다
+                    const tipKeys = Object.keys(allChecklistDetails).filter(k => /-t-/.test(k) && (allChecklistDetails[k]?.attachments || []).length);
+                    const tipFileCount = tipKeys.reduce((n, k) => n + allChecklistDetails[k].attachments.length, 0);
+                    if (opts.excludeTipFiles) tipKeys.forEach(k => { allChecklistDetails[k] = { ...allChecklistDetails[k], attachments: [] }; });
 
                     if (workflows.length === 0) {
                         this.showToast('error', '❌', '선택한 업무를 찾을 수 없습니다');
@@ -21088,14 +21093,20 @@ ${item.result.text}
                         : `업무묶음_${workflows.length}개_${dateStr}.json`);
                     const saved = await this._saveFileWithPicker(blob, fileName);
                     if (!saved) return false;
-                    if (opts.successText) { this.showToast('success', '✅', opts.successText, 7000); return true; }
+                    // 예시·사진이 들어 있으면 알림에 [예시·사진 빼고 다시 저장] (묻지 않고 저장한 뒤 고를 수 있게)
+                    const tipNote = tipFileCount && !opts.excludeTipFiles ? ` · 업무팁 예시·사진 ${tipFileCount}개 포함` : (opts.excludeTipFiles && tipFileCount ? ` · 예시·사진 ${tipFileCount}개는 뺌` : '');
+                    const tipAction = tipFileCount && !opts.excludeTipFiles
+                        ? { actionLabel: '예시·사진 빼고 다시 저장', onAction: () => this.exportMultipleWorkflowPackages(workflowIds, { ...opts, excludeTipFiles: true }) }
+                        : undefined;
+                    if (opts.successText) { this.showToast('success', '✅', opts.successText + tipNote, tipAction ? 12000 : 7000, tipAction); return true; }
 
                     const formCount = Object.values(allFormsData).flat().length;
                     const attachCount = Object.values(allAttachmentsData).flat().length;
                     const libCount = allLawLibraryData.files.length;
                     const repoDocCount = allRepoDocumentsData.files.length;
                     const repoDocPart = repoDocCount > 0 ? ` · 서식·문서함 ${repoDocCount}개` : '';
-                    this.showToast('success', '✅', `업무 파일 생성 완료 — 진행 상태·처리결과 포함 (업무 ${workflows.length}개 · 서식 ${formCount}개 · 첨부자료 ${attachCount}개 · 법령·매뉴얼 ${libCount}개${repoDocPart} 포함)`);
+                    this.showToast('success', '✅', `업무 파일 생성 완료 — 진행 상태·처리결과 포함 (업무 ${workflows.length}개 · 서식 ${formCount}개 · 첨부자료 ${attachCount}개 · 법령·매뉴얼 ${libCount}개${repoDocPart} 포함)${tipNote}`, tipAction ? 12000 : undefined, tipAction);
+                    return true;
                 } catch (err) {
                     console.error('공유 패키지 생성 오류:', err);
                     this.showToast('error', '❌', '업무 파일 생성 실패: ' + err.message);
