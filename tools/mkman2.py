@@ -2,7 +2,7 @@ import json
 S = []
 def W(ms=600): return f"await new Promise(r=>setTimeout(r,{ms}));"
 NL = "String.fromCharCode(10)"
-HL = ("const R=(sel)=>{const el=typeof sel==='string'?document.querySelector(sel):sel;if(!el)return null;const r=el.getBoundingClientRect();return {x:Math.round(r.left),y:Math.round(r.top),w:Math.round(r.width),h:Math.round(r.height)}};"
+HL = ("const R=(sel)=>{const el=typeof sel==='string'?document.querySelector(sel):sel;if(!el)return null;let r=el.getBoundingClientRect();let L=r.left,T=r.top,Rr=r.right,Bb=r.bottom;for(let p=el.parentElement;p&&p!==document.body;p=p.parentElement){const cs=getComputedStyle(p);if(/(auto|scroll|hidden|clip)/.test(cs.overflowY+cs.overflowX)){const q=p.getBoundingClientRect();L=Math.max(L,q.left);T=Math.max(T,q.top);Rr=Math.min(Rr,q.right);Bb=Math.min(Bb,q.bottom);}}L=Math.max(L,0);T=Math.max(T,0);Rr=Math.min(Rr,innerWidth);Bb=Math.min(Bb,innerHeight);return {x:Math.round(L),y:Math.round(T),w:Math.round(Math.max(0,Rr-L)),h:Math.round(Math.max(0,Bb-T))}};"
       "const toastOff=()=>document.querySelectorAll('.toast, .toast-container > *').forEach(t=>{if(t.id==='toast')t.classList.remove('show');else t.remove();});"
       "const wf=()=>app.allData.workflows.find(w=>w.id===window.__wid);"
       "const row=(txt)=>[...document.querySelectorAll('.checklist-card')].find(c=>c.querySelector('.item-title-text, .fci-title-text')?.textContent.trim().startsWith(txt));"
