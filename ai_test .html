@@ -7532,9 +7532,13 @@
         // 새 버전을 배포할 때는 아래 세 가지(번호·배포일·바뀐 점)만 고친다.
         // 번호 규칙: 기능 추가는 가운데 숫자(1.1.0), 오류 수정만은 끝 숫자(1.0.1)를 올린다.
         // 업무 자료는 프로그램 파일이 아니라 브라우저 저장 공간에 있어, 파일만 바꿔도 그대로 남는다.
-        const APP_VERSION = '1.5.3';
+        const APP_VERSION = '1.5.4';
         const APP_RELEASE_DATE = '2026-10-11';
         const APP_RELEASE_NOTES = [
+            { version: '1.5.4', date: '2026-10-11', notes: [
+                '진행상황 출력: 「체크리스트」 탭을 맨 앞으로 — 처음 열면 체크리스트가 먼저(그다음부터는 마지막에 본 탭)',
+                '체크리스트·점검표 제목을 눌러서 고침(Enter로 끝) — 업무마다 기억, 진행표와 점검표 제목은 따로, 모두 지우면 처음 제목, 인쇄(PDF 파일 이름)·한글 붙여넣기에도 고친 제목',
+            ] },
             { version: '1.5.3', date: '2026-10-11', notes: [
                 '체크리스트 출력 표의 칸을 맞춤 — 단계 줄도 머리줄과 같은 칸(번호 · 단계 이름 · 진행 수 2/3 · 완료일 · 처리결과)에 진한 바탕, 할 일은 번호 칸까지 합친 한 칸에 「○ 할 일」(1-1 같은 번호 없앰), ☐/☑는 늘 상태 칸에 세로로 맞춤(종이에 펜으로 체크하기 쉽게) · 빈 점검표도 같은 틀',
                 '업무 절차 패널에서 건너뛴 단계·할 일이 사라지지 않고 제자리에 흐리게(취소선) — 알약으로 까닭 구분(회색 「해당 없음」 · 보라 「⤼ 버튼 이름」, 마우스를 올리면 사유), 연달아 건너뛴 단계는 「⤼ n개 건너뜀 ▸」 한 줄로 접기, 진행 줄에 「건너뜀 n」',
@@ -10696,7 +10700,7 @@
                             ${!isPackage ? this._collabPanelHtml(workflow) : ''}
                             <div class="fap-sep"></div>
                             <button class="fap-btn ai-only" data-ico="ai" onclick="app.generateOfficialDocument(${workflow.id})">AI 기안</button>
-                            <button class="fap-btn" data-ico="print" onclick="app.openProgressReport(${workflow.id})" title="진행상황을 보고서(개조식)로 — 인쇄·PDF·한글에 붙여넣기">진행상황 출력</button>
+                            <button class="fap-btn" data-ico="print" onclick="app.openProgressReport(${workflow.id})" title="체크리스트 · 진행상황 보고(개조식) — 인쇄·PDF·한글에 붙여넣기">진행상황 출력</button>
                             <div class="fap-spacer"></div>
                             ${isPackage ? `<button class="fap-btn fap-btn-primary" onclick="app.duplicateWorkflow(${workflow.id})">복사하여 시작</button>` : ''}
                             ${isPackage ? `<button class="fap-btn" style="font-size:0.82rem;" onclick="app.setReference(${workflow.id}, false)" title="레퍼런스에서 빼서 ${workflow.completedProcessed ? '처리완료' : '진행중'} 탭으로 옮깁니다">↩ 레퍼런스 해제 (${workflow.completedProcessed ? '처리완료로' : '진행중으로'})</button>` : ''}
@@ -44152,10 +44156,17 @@ ${pdfContent.length > 100000 ? pdfContent.substring(0, 100000) + '\n\n[중략: �
             const thead = `<thead><tr><th style="${th}">번호</th><th style="${th}">${blank ? '점검 항목' : '할 일'}</th><th style="${th}">${blank ? '확인' : '상태'}</th><th style="${th}">${blank ? '확인일' : '완료일'}</th>${showRes ? `<th style="${th}">처리결과</th>` : ''}${blank ? `<th style="${th}">비고</th>` : ''}</tr></thead>`;
             const prog = [blank ? '' : `진행 ${doneStages}/${live.length}단계(${pct}%)`, dl ? `업무 마감 ${this._prFmt(dl)}` : '', anyDue ? '<span style="color:#888;">~ 표시는 마감일</span>' : ''].filter(Boolean).join(' · ');
             const head = `<div style="${B}"><div style="font-size:9.5pt;color:#222;text-align:right;padding-bottom:5pt;">${esc(this._prMetaLine())}</div>
-                <div style="font-size:15pt;font-weight:bold;padding-bottom:6pt;border-bottom:2px solid #1c3252;">${esc(wf.title || '체크리스트')} ${blank ? '점검표' : '체크리스트'}</div>
+                <div style="font-size:15pt;font-weight:bold;padding-bottom:6pt;border-bottom:2px solid #1c3252;">${opts._edit ? `<span class="pr-ed" contenteditable="true" spellcheck="false" data-k="${blank ? 'clTitleB' : 'clTitle'}" data-ph="${esc(this._clDefaultTitle(wf, blank))}" title="눌러서 제목 고치기 · Enter 끝 · 비우면 처음 제목으로">${this._clTitleHtml(wf, blank)}</span>` : this._clTitleHtml(wf, blank)}</div>
                 <div style="font-size:9pt;color:#444;padding:5pt 0 9pt;text-align:right;">${prog || '&nbsp;'}</div></div>`;
             return { head, cols, thead, rows, B, land, empty: `<tr><td colspan="${nCols}" style="${td}text-align:center;color:#888;">항목이 없습니다</td></tr>` };
         };
+        // 체크리스트·점검표 제목 — 기본은 「업무 이름 체크리스트/점검표」, 고친 제목은 업무마다 progressReport.clTitle / clTitleB
+        WorkflowManager.prototype._clDefaultTitle = function(wf, blank) { return `${wf.title || '업무'} ${blank ? '점검표' : '체크리스트'}`; };
+        WorkflowManager.prototype._clTitleHtml = function(wf, blank) {
+            const v = this._prSaved(wf)[blank ? 'clTitleB' : 'clTitle'];
+            return v && String(v).replace(/<[^>]+>/g, '').trim() ? v : this.escapeHtml(this._clDefaultTitle(wf, blank));
+        };
+        WorkflowManager.prototype._clTitleText = function(wf, blank) { return String(this._clTitleHtml(wf, blank)).replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim(); };
         WorkflowManager.prototype._checklistPages = function(wf, opts) {
             const P = this._checklistParts(wf, opts);
             const M = { top: 15, side: 13, bottom: 20, foot: 9 };
@@ -44181,7 +44192,7 @@ ${pdfContent.length > 100000 ? pdfContent.substring(0, 100000) + '\n\n[중략: �
             const wf = this.allData.workflows.find(w => w.id === workflowId);
             if (!wf) return;
             if (!this._authorInfo()) return this._askAuthor(() => this.openProgressReport(workflowId, tab));
-            this._prTab = tab || this._prTab || 'report';
+            this._prTab = tab || this._prTab || 'checklist';   // 처음 열면 체크리스트(가장 자주 쓰는 것), 그다음부터는 마지막에 본 탭
             this._prWfId = workflowId;
             document.getElementById('progressReportModal')?.remove();
             const modal = document.createElement('div');
@@ -44191,7 +44202,7 @@ ${pdfContent.length > 100000 ? pdfContent.substring(0, 100000) + '\n\n[중략: �
             modal.innerHTML = `<div class="modal-content pr-win">
                 <div class="pr-head" ondblclick="if(!event.target.closest('button,input,label'))app.toggleModalFull('report')">
                     <div class="pr-head-t">${this._clIco('formats', 15, '#2563eb')}진행상황 출력 <span>— ${this.escapeHtml(wf.title || '')}</span></div>
-                    <div class="pr-tabs" role="tablist"><button type="button" role="tab" data-tab="report">진행상황 보고</button><button type="button" role="tab" data-tab="checklist">체크리스트</button></div>
+                    <div class="pr-tabs" role="tablist"><button type="button" role="tab" data-tab="checklist">체크리스트</button><button type="button" role="tab" data-tab="report">진행상황 보고</button></div>
                     ${this._mxBtnHtml('report', this._mxIsOn('report'))}
                     <button class="close-btn" onclick="app.closeProgressReport()" title="닫기 (Esc)">&times;</button>
                 </div>
@@ -44223,20 +44234,32 @@ ${pdfContent.length > 100000 ? pdfContent.substring(0, 100000) + '\n\n[중략: �
                 <button type="button" class="btn btn-secondary pr-copy" onclick="app._prCopy(${wf.id})" title="한글·워드에 붙여 넣으면 굵게·들여쓰기·표가 그대로">한글에 붙여넣기용 복사</button>
                 <button type="button" class="btn btn-primary" onclick="app._prPrint(${wf.id})" title="인쇄 창에서 「PDF로 저장」을 고르면 PDF 파일">인쇄 · PDF</button>`;
             const body = m.querySelector('.pr-body'), scrollTop = body.scrollTop;
-            m.querySelector('#prPage').innerHTML = tab === 'report' ? this._prReportPages(wf, o, true) : this._checklistPages(wf, o);
+            m.querySelector('#prPage').innerHTML = tab === 'report' ? this._prReportPages(wf, o, true) : this._checklistPages(wf, Object.assign({}, o, { _edit: true }));
             body.scrollTop = scrollTop;
             m.querySelector('#prFoot').textContent = tab === 'report'
                 ? '어느 줄이든 눌러서 고칩니다 · Enter 새 줄 · Shift+Enter 줄 안에서 줄바꿈 · Tab / Shift+Tab 들이기·내기(○ → - → ·) · 빈 줄에서 Backspace 지우기 · Esc 끝내기 — 업무마다 기억'
-                : '단계 줄은 진한 바탕, 할 일은 ○ 줄 · 진행표는 날짜·처리결과가 채워지고 빈 점검표는 손으로 체크하는 용도 · 표 머리줄은 장마다 반복';
+                : '제목은 눌러서 고침 · 단계 줄은 진한 바탕, 할 일은 ○ 줄 · 진행표는 날짜·처리결과가 채워지고 빈 점검표는 손으로 체크하는 용도 · 표 머리줄은 장마다 반복';
             const persist = x => { const v = this._prOpts(); Object.assign(v, x); try { localStorage.setItem('progressReportOpts', JSON.stringify(v)); } catch (e) {} this._prRender(wf); };
             m.querySelectorAll('[data-opt]').forEach(c => c.onchange = () => persist({ [c.dataset.opt]: c.checked }));
             m.querySelectorAll('[data-land]').forEach(b => b.onclick = () => persist({ clLand: b.dataset.land === '1' }));
             if (tab === 'report') this._prBindEdit(wf, m);
+            else this._clBindTitle(wf, m);
             // 고친 뒤 다시 그렸으면 그 줄로 초점 (글 끝에 커서)
             if (ro.focus) {
                 const el = [...m.querySelectorAll('.pr-ed[contenteditable="true"]')].find(x => x.dataset.k === ro.focus);
                 if (el) { el.focus({ preventScroll: true }); const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); const er = el.getBoundingClientRect(), br = body.getBoundingClientRect(); if (er.top < br.top || er.bottom > br.bottom) body.scrollTop += er.top - br.top - body.clientHeight / 2; }
             }
+        };
+        // 체크리스트 제목 고치기 — 한 줄(Enter·Esc로 끝), 비우면 처음 제목, 업무마다 기억
+        WorkflowManager.prototype._clBindTitle = function(wf, m) {
+            const el = m.querySelector('.pr-ed[data-k="clTitle"], .pr-ed[data-k="clTitleB"]');
+            if (!el) return;
+            const k = el.dataset.k, def = el.dataset.ph;
+            const save = () => { const t = el.textContent.replace(/\s+/g, ' ').trim(); this._prSave(wf, { [k]: t && t !== def ? this.escapeHtml(t) : '' }); };
+            el.oninput = save;
+            el.onkeydown = e => { if (e.isComposing) return; if (e.key === 'Enter' || e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); el.blur(); } };
+            el.onpaste = e => { e.preventDefault(); const t = (e.clipboardData || window.clipboardData).getData('text/plain').replace(/\s+/g, ' '); document.execCommand('insertText', false, t); };
+            el.onblur = () => { save(); setTimeout(() => this._prRender(wf), 0); };
         };
         // 보고서 고치기 — 한글·워드 글머리표와 같은 키
         WorkflowManager.prototype._prBindEdit = function(wf, m) {
@@ -44363,7 +44386,7 @@ ${pdfContent.length > 100000 ? pdfContent.substring(0, 100000) + '\n\n[중략: �
             const f = document.createElement('iframe');
             f.id = 'prPrintFrame';
             f.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;';
-            const title = this.escapeHtml(this._prTab === 'checklist' ? `${wf.title || '업무'} 체크리스트` : String(this._prSaved(wf).edits?.title || `${wf.title || '업무'} 진행상황 보고`).replace(/<[^>]+>/g, ''));
+            const title = this.escapeHtml(this._prTab === 'checklist' ? this._clTitleText(wf, !!o.clBlank) : String(this._prSaved(wf).edits?.title || `${wf.title || '업무'} 진행상황 보고`).replace(/<[^>]+>/g, ''));
             const land = this._prTab === 'checklist' && o.clLand;
             f.srcdoc = `<!doctype html><html><head><meta charset="utf-8"><title>${title}</title><style>@page{size:A4 ${land ? 'landscape' : 'portrait'};margin:0}html,body{margin:0;padding:0}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.pr-pg:last-child{break-after:auto!important;page-break-after:auto!important}</style></head><body>${pages}</body></html>`;
             f.onload = () => { try { f.contentWindow.focus(); f.contentWindow.print(); } catch (e) { this.showToast('error', '❌', '인쇄 창을 열지 못했습니다'); } };
