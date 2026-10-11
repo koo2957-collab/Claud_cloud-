@@ -7,7 +7,7 @@ const file = process.argv[2];
 const chrome = (process.env.CHROME_PATH || (process.platform === 'win32' ? 'C:/Program Files/Google/Chrome/Application/chrome.exe' : 'google-chrome'));
 const prof = path.join(dir, 'chrome-prof4');
 fs.rmSync(prof, { recursive: true, force: true });
-const proc = spawn(chrome, ['--headless=new', '--remote-debugging-port=9338', `--user-data-dir=${prof}`, '--window-size=1460,900', '--allow-file-access-from-files', 'about:blank'], { stdio: 'ignore' });
+const proc = spawn(chrome, ['--headless=new', '--remote-debugging-port=9338', `--user-data-dir=${prof}`, '--window-size=1460,900', '--allow-file-access-from-files', /* 헤드리스도 마우스 있는 화면으로 */ '--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4', ...(process.getuid?.() === 0 ? ['--no-sandbox'] : []), 'about:blank'], { stdio: 'ignore' });
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 let ws, id = 0; const pend = new Map(); const logs = [];
 async function connect() {
@@ -36,6 +36,7 @@ try {
     if (s.wait) await sleep(s.wait);
     if (s.pt) { globalThis.__pt = JSON.parse(await ev(s.js)); continue; }
     if (s.clickpt) s.click = [...globalThis.__pt, s.clickpt];
+    if (s.hoverpt) { const [x, y] = globalThis.__pt; await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y }); await sleep(300); }
     if (s.rclickpt) { const [x, y] = globalThis.__pt; await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y }); await send('Input.dispatchMouseEvent', { type: 'mousePressed', x, y, button: 'right', clickCount: 1 }); await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x, y, button: 'right', clickCount: 1 }); await sleep(400); }
     if (s.text) { await send('Input.insertText', { text: s.text }); await sleep(200); }
     if (s.js) console.log('>', s.label || '', '=>', JSON.stringify(await ev(s.js)));

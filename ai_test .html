@@ -2542,8 +2542,37 @@
         /* 오른쪽 고정 칸 — 값이 없어도 자리는 그대로라 모든 줄에서 세로로 맞는다 */
         .checklist-card-header .cl-right { position: relative; display: flex; align-items: center; gap: 6px; flex-shrink: 0; margin-left: auto; }
         .checklist-card-header .cl-col { display: inline-flex; align-items: center; justify-content: flex-end; flex-shrink: 0; }
-        .checklist-card-header .cl-col-sub { width: 112px; }
-        .checklist-card-header .cl-col-dl { width: 66px; }
+        .checklist-card-header .cl-col-sub { width: 38px; }
+        .checklist-card-header .cl-col-dl { position: relative; width: 66px; }
+        /* 단계 진행 숫자 「1/2」 (다 끝나면 초록) */
+        .stage-badge.stage-num { gap: 0; min-width: 32px; justify-content: center; padding: 2px 6px; font-variant-numeric: tabular-nums; }
+        .stage-badge.stage-num.done { background: rgba(16,185,129,0.12); }
+        button.stage-badge.stage-num.folded { box-shadow: inset 0 0 0 1px var(--border-light); }
+        /* 제목 뒤 작은 점: 업무팁·서식이 있음 */
+        .cl-has-dot { display: inline-block; margin-left: 5px; font-size: 0.9em; line-height: 1; color: #f59e0b; font-weight: 900; text-decoration: none; cursor: default; }
+        .checklist-card.completed .cl-has-dot { color: var(--text-muted); }
+        /* 마우스를 올린 줄의 버튼 줄 — 날짜 자리에서 왼쪽으로 펼쳐져 제목 끝을 가림 (Gmail 방식) */
+        .cl-hbar { display: none; }
+        @media (hover: hover) {
+            .cl-hbar { position: absolute; right: -4px; top: 50%; transform: translateY(-50%); z-index: 2; display: inline-flex; align-items: center; gap: 2px; padding: 2px 3px; visibility: hidden; background: var(--white); border: 1px solid var(--border-subtle); border-radius: 9px; box-shadow: 0 2px 8px rgba(17,31,53,0.1); }
+            :root.dark-mode .cl-hbar { background: var(--bg-card); }
+            .checklist-card-header:hover .cl-hbar, .checklist-card-header:focus-within .cl-hbar { visibility: visible; }
+            .checklist-card-header:hover .cl-dl-face, .checklist-card-header:focus-within .cl-dl-face { visibility: hidden; }
+            .checklist-card-header:hover .cl-tagslot > .cb-chip, .checklist-card-header:focus-within .cl-tagslot > .cb-chip { visibility: hidden; }
+        }
+        .cl-hb { display: inline-flex; align-items: center; gap: 2px; height: 24px; min-width: 26px; padding: 0 5px; border: 1px solid transparent; border-radius: 6px; background: transparent; font-family: inherit; font-size: 0.8rem; line-height: 1; white-space: nowrap; cursor: pointer; flex-shrink: 0; justify-content: center; }
+        .cl-hb:hover { background: rgba(100,116,139,0.12); }
+        .cl-hb.off { filter: grayscale(1); opacity: 0.45; }
+        .cl-hb.off:hover { filter: none; opacity: 1; }
+        .cl-hb.on.tip { background: rgba(245,158,11,0.14); border-color: rgba(245,158,11,0.35); }
+        .cl-hb.on.fmt { background: rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.35); }
+        .cl-hb.on.dl { background: rgba(37,99,235,0.1); border-color: rgba(37,99,235,0.3); }
+        .cl-hb b { font-size: 0.68rem; font-weight: 700; color: var(--text-gray); }
+        .cl-hb-guide { height: 24px; padding: 0 9px; margin-right: 2px; border-color: rgba(139,92,246,0.3); border-radius: 999px; background: rgba(139,92,246,0.08); font-size: 0.72rem; font-weight: 700; }
+        :root:root .cl-hb-guide { color: #7c3aed; }
+        .cl-hb-guide:hover { background: rgba(139,92,246,0.16); border-color: #8b5cf6; }
+        :root.dark-mode:root .cl-hb-guide { color: #c4b5fd; }
+        .cl-hb-more { font-weight: 800; color: var(--text-gray); }
         .checklist-card-header .cl-col-dots { width: 24px; gap: 3px; justify-content: flex-start; }
         .cl-dot-empty { width: 6px; height: 6px; display: inline-block; }
         .checklist-card.sub-item .checklist-card-header .cl-right { margin-right: 2px; }  /* 할 일 줄은 테두리가 없어 2px 더 넓음 — 상위 단계와 칸을 맞춤 */
@@ -2562,6 +2591,8 @@
         @media (max-width: 640px) { .checklist-card-header .cl-col-sub { width: auto; } .checklist-card-header .cl-col-sub .stage-bar { display: none; } }  /* 번호·제목·마감일은 한 줄에, 제목 칸 안에서만 줄바꿈 */
         .checklist-card-header .cl-main { flex: 1 1 auto; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; column-gap: 8px; row-gap: 4px; }
         .checklist-card-header .cl-main .item-title-text { flex: 0 1 auto; min-width: 0; overflow-wrap: anywhere; }  /* 제목+정보가 한 줄에 안 들어가면 정보가 다음 줄로 */
+        /* 일하는 화면: 제목은 늘 한 줄 — 넘치면 말줄임(전체 제목은 마우스를 올려서), 눌러서 펼친 줄은 전체를 보여 줌 */
+        .checklist-card:not(:has(> .cl-peek)) > .checklist-card-header > .cl-main > .item-title-text { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .checklist-card-header .cl-meta { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px; min-width: 0; }
         .checklist-card-header .cl-meta .stage-chip { margin-left: 0; }
         .cl-hover-guide { display: none; align-items: center; gap: 3px; height: 24px; padding: 0 9px; border: 1px solid rgba(139,92,246,0.3); border-radius: 999px; background: rgba(139,92,246,0.08); font-family: inherit; font-size: 0.72rem; font-weight: 700; white-space: nowrap; cursor: pointer; flex-shrink: 0; }
@@ -35454,6 +35485,7 @@ ${aiPartnerCitationFirstRules}
                 
                 // 마감일 배지 생성 (건너뛴 항목은 표시 안 함)
                 let deadlineBadge = '';
+                const dlOpenJs = `event.stopPropagation();var _i=document.getElementById('dl-input-${workflow.id}-${index}');if(_i){try{_i.showPicker();}catch(e){_i.click();}}`;
                 if (!isSkipped) {
                     const _dlId = `dl-input-${workflow.id}-${index}`;
                     const _dlVal = item.deadline || '';
@@ -35470,7 +35502,8 @@ ${aiPartnerCitationFirstRules}
                         const deadlineText = daysLeft < 0 ? `D+${Math.abs(daysLeft)}` : daysLeft === 0 ? 'D-Day' : `D-${daysLeft}`;
                         deadlineBadge = `<span style="position:relative;display:inline-flex;align-items:center;">${_dlInput}<span class="deadline-badge deadline-item-badge" onclick="${_dlOpen}" style="font-size:0.72rem;color:${deadlineColor};font-weight:700;cursor:pointer;white-space:nowrap;padding:2px 5px;border-radius:4px;border:1px solid color-mix(in srgb, ${deadlineColor} 22%, transparent);background:color-mix(in srgb, ${deadlineColor} 6%, transparent);" title="마감일: ${item.deadline} (클릭하여 수정)">${deadlineText}</span></span>`;
                     } else {
-                        deadlineBadge = `<span style="position:relative;display:inline-flex;align-items:center;">${_dlInput}<span class="deadline-badge deadline-item-badge" onclick="${_dlOpen}" style="font-size:0.72rem;color:var(--text-muted);cursor:pointer;padding:2px 4px;border-radius:4px;opacity:0.4;display:inline-flex;align-items:center;" title="마감일 추가"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span></span>`;
+                        // 마감일이 없으면 아무것도 그리지 않는다 (빈 📅 아이콘 없음) — 마우스를 올리면 나오는 📅 버튼이 이 입력칸을 연다
+                        deadlineBadge = `<span style="position:relative;display:inline-flex;align-items:center;">${_dlInput}</span>`;
                     }
                 }
 
@@ -35517,14 +35550,17 @@ ${aiPartnerCitationFirstRules}
                     const subs = this.findSubItems(cl, index).filter(s => s.item.skipped !== true);
                     if (subs.length > 0 && asTemplate) {
                         // 본보기: 진행 막대 없이 할 일 개수만
-                        stageBadge = `<span class="stage-badge">할 일 ${subs.length}개</span>`;
+                        stageBadge = `<span class="stage-badge" title="할 일 ${subs.length}개">${subs.length}개</span>`;
                     } else if (subs.length > 0) {
                         const done = subs.filter(s => this.normalizeCompleted(s.item)).length;
                         const pct = Math.round(done / subs.length * 100);
-                        const inner = `할 일 ${done}/${subs.length}<span class="stage-bar"><i style="width:${pct}%"></i></span>`;
+                        void pct;
+                        // 숫자만 (다 끝나면 초록) — 접을 수 있는 목록에서는 눌러서 펼치기·접기
+                        const inner = `${done}/${subs.length}`;
+                        const tipTxt = `할 일 ${subs.length}개 중 ${done}개 끝남`;
                         stageBadge = opts.collapsible
-                            ? `<button type="button" class="stage-badge${done === subs.length ? ' done' : ''}" onclick="event.stopPropagation();app.toggleStageOpen(${workflow.id},${index})" title="${opts.collapsed ? '할 일 펼치기' : '할 일 접기'}">${inner}<span class="stage-arrow">${opts.collapsed ? '▸' : '▾'}</span></button>`
-                            : `<span class="stage-badge${done === subs.length ? ' done' : ''}">${inner}</span>`;
+                            ? `<button type="button" class="stage-badge stage-num${done === subs.length ? ' done' : ''}${opts.collapsed ? ' folded' : ''}" onclick="event.stopPropagation();app.toggleStageOpen(${workflow.id},${index})" title="${tipTxt} — 눌러서 ${opts.collapsed ? '펼치기' : '접기'}">${inner}</button>`
+                            : `<span class="stage-badge stage-num${done === subs.length ? ' done' : ''}" title="${tipTxt}">${inner}</span>`;
                     }
                 }
                 const stageChip = !isSub && stageState === 'stage-current' ? '<span class="stage-chip">진행중</span>' : '';
@@ -35561,11 +35597,20 @@ ${aiPartnerCitationFirstRules}
                 const hasTip    = !!(item.tip?.content) || tipN > 0;
                 const hasFormats = (item.formats && item.formats.length > 0) || (item.linkedDocs && item.linkedDocs.length > 0);
                 const fmN = (item.formats || []).length + (item.linkedDocs || []).length;
-                const ind = (on, tab, ico, tip) => on ? `<button type="button" class="cl-ind" onclick="event.stopPropagation();app.showChecklistItemModal(${workflow.id},${index},'${tab}')" title="${tip} — 눌러서 보기">${ico}</button>` : '<span class="cl-ind-empty"></span>';
-                const indicatorDots = [  // 자리 고정 — 같은 아이콘은 모든 줄에서 같은 위치 (Asana처럼 들어 있는 것만)
-                    ind(hasResult, 'result', '📝', '조치결과 있음'),
-                    ind(hasTip, 'tip', '💡', `업무팁${tipN ? ` · 예시 ${tipN}` : ''}: ${this.escapeHtml(this._tipPreview(item))}`),
-                    ind(hasFormats, 'formats', `📄<b>${fmN}</b>`, `서식 ${fmN}개`),
+                void hasResult;
+                // 업무팁·서식이 있으면 제목 뒤에 작은 점 하나 (무엇이 있는지는 마우스를 올리면 나오는 버튼 색으로)
+                const hasDot = !isSkipped && (hasTip || hasFormats);
+                const dotTip = [hasTip ? `업무팁${tipN ? `(예시 ${tipN})` : ''}` : '', hasFormats ? `서식 ${fmN}개` : ''].filter(Boolean).join(' · ');
+                // 마우스를 올린 줄: 오른쪽 날짜 자리에 ✨길잡이 · 💡업무팁 · 📄서식 · 📅마감일 · ⋯ (Gmail처럼 — 제목 끝을 가려도 됨)
+                // 순서는 오른쪽 클릭 메뉴와 같게. 내용이 있는 버튼만 색, 없는 버튼은 흐리게
+                const canMenu = !workflow.isReference && !workflow.completedProcessed;
+                const hb = (cls, onclick, title, html) => `<button type="button" class="cl-hb ${cls}" onclick="event.stopPropagation();${onclick}" title="${title}">${html}</button>`;
+                const hoverBar = [
+                    !isSkipped ? hb('cl-hb-guide', `app.showChecklistHelp(${workflow.id},${index})`, '이 항목의 업무팁·서식·법령을 한 화면에 모아 보기', `✨ ${this.isAIAvailable() ? 'AI 길잡이' : '길잡이'}`) : '',
+                    !isSkipped ? hb(hasTip ? 'on tip' : 'off', `app.showChecklistItemModal(${workflow.id},${index},'tip')`, hasTip ? `업무팁${tipN ? ` · 예시 ${tipN}` : ''}: ${this.escapeHtml(this._tipPreview(item))}` : '업무팁 — 아직 없음 (눌러서 쓰기)', '💡') : '',
+                    !isSkipped ? hb(hasFormats ? 'on fmt' : 'off', `app.showChecklistItemModal(${workflow.id},${index},'formats')`, hasFormats ? `서식 ${fmN}개` : '서식 — 아직 없음 (눌러서 연결)', `📄${hasFormats ? `<b>${fmN}</b>` : ''}`) : '',
+                    !isSkipped && !asTemplate ? hb(item.deadline ? 'on dl' : 'off', dlOpenJs, item.deadline ? `마감일: ${item.deadline} (눌러서 바꾸기)` : '마감일 정하기', '📅') : '',
+                    canMenu ? hb('cl-hb-more', `app.openChecklistItemMenu(event,${workflow.id},${index})`, '메뉴 (오른쪽 클릭과 같음)', '⋯') : '',
                 ].join('');
 
                 return `
@@ -35581,8 +35626,8 @@ ${aiPartnerCitationFirstRules}
                             ${checkboxHtml}
                             ${subItemIcon}
                             <div class="cl-main">
-                                <span class="item-title-text" style="${textStyle}">
-                                    ${this.escapeHtml(item.text)}${isNow ? '<span class="cl-now">· 지금 할 일</span>' : ''}${item.collabFrom && !isSkipped ? `<span class="cl-from-tag" title="회수하기 전에 받은 조치결과입니다">${this.escapeHtml(item.collabFrom)}</span>` : ''}${item.collabNew && !isSkipped ? `<span class="cl-new-dot" title="새 회신 — ${this.escapeHtml(item.collabNew.from || '')} 님 (${this.escapeHtml(fmtDateTime(item.collabNew.at, { short: true }))}) · 열어 보면 사라집니다"></span>` : ''}
+                                <span class="item-title-text" style="${textStyle}" title="${this.escapeHtml(item.text)}">
+                                    ${this.escapeHtml(item.text)}${hasDot ? `<span class="cl-has-dot" title="${this.escapeHtml(dotTip)}">•</span>` : ''}${isNow ? '<span class="cl-now">· 지금 할 일</span>' : ''}${item.collabFrom && !isSkipped ? `<span class="cl-from-tag" title="회수하기 전에 받은 조치결과입니다">${this.escapeHtml(item.collabFrom)}</span>` : ''}${item.collabNew && !isSkipped ? `<span class="cl-new-dot" title="새 회신 — ${this.escapeHtml(item.collabNew.from || '')} 님 (${this.escapeHtml(fmtDateTime(item.collabNew.at, { short: true }))}) · 열어 보면 사라집니다"></span>` : ''}
                                     ${item.skipReason ? (item.skipManual
                                         ? `<span style="font-size:0.78rem;color:var(--text-muted);margin-left:8px;font-weight:500;">(${this.escapeHtml(item.skipReason)})</span>`
                                         : `<span style="font-size:0.78rem;color:#ef4444;margin-left:8px;font-weight:500;">(사유: ${item.skipReason})</span>`) : ''}
@@ -35597,14 +35642,13 @@ ${aiPartnerCitationFirstRules}
                                 ${isSkipped && item.skipManual && !asTemplate ? `<button class="na-restore-btn" onclick="event.stopPropagation();app.restoreNotApplicable(${workflow.id},${index})" title="해당 없음을 풀고 다시 할 항목으로 되돌립니다">되살리기</button>` : ''}
                                 ${isCompleted && item.branchActionTaken && !isSkipped ? `<button onclick="event.stopPropagation();app.undoBranchOption(${workflow.id},${index})" style="flex-shrink:0;padding:2px 7px;font-size:0.73rem;background:transparent;color:#6b7280;border:1px solid rgba(107,114,128,0.25);border-radius:5px;cursor:pointer;font-family:inherit;">실행취소</button>` : ''}
                                 ${(() => {
-                                    // 담당 이름표가 있으면 길잡이 버튼과 한 칸에 (평소 이름표, 마우스를 올리면 길잡이)
-                                    const guide = !isSkipped ? `<button type="button" class="cl-hover-guide" onclick="event.stopPropagation();app.showChecklistHelp(${workflow.id},${index})" title="이 항목의 업무팁·서식·법령을 한 화면에 모아 보기">✨ ${this.isAIAvailable() ? 'AI 길잡이' : '길잡이'}</button>` : '';
+                                    // 담당 이름표 (마우스를 올리면 버튼 줄이 이 자리까지 덮음)
                                     const tag = this._collabChipHtml(workflow, item, index);
-                                    return tag ? `<span class="cl-tagslot">${tag}${guide}</span>` : guide;
+                                    return tag ? `<span class="cl-tagslot">${tag}</span>` : '';
                                 })()}
+                                <span class="cl-col cl-col-dl"><span class="cl-dl-face">${deadlineBadge}</span>${hoverBar ? `<span class="cl-hbar" ondblclick="event.stopPropagation()">${hoverBar}</span>` : ''}</span>
                                 ${this._clHasSubs(workflow) ? `<span class="cl-col cl-col-sub">${stageBadge}</span>` : ''}
-                                <span class="cl-col cl-col-dl">${deadlineBadge}</span>
-                                <span class="cl-col cl-col-dots cl-dots">${indicatorDots}</span>                            </div>
+                            </div>
                         </div>
                         ${this._clPeekHtml(workflow, item, index, { isSkipped, locked: collabLockMsg, asTemplate })}
                     </div>
@@ -36086,13 +36130,15 @@ ${aiPartnerCitationFirstRules}
                 }
                 entries.push(['여러 항목 해당 없음…', () => this.openNotApplicablePicker(workflowId, (!isSkipped && !done) ? [index] : [])]);
                 // 펼친 칸에 있던 버튼들 — 줄을 두 줄로 늘리지 않고 여기서
-                const tail = [
-                    '-',
+                // 순서는 마우스를 올린 줄의 버튼(✨ · 💡 · 📄 · 📅)과 같게
+                const tail = ['-'];
+                if (!isSkipped) tail.push([this.isAIAvailable() ? 'AI 길잡이' : '업무 길잡이', () => this.showChecklistHelp(workflowId, index), '✨']);
+                tail.push(
                     ['조치결과', () => this.showChecklistItemModal(workflowId, index, 'result'), '📝'],
                     ['업무팁', () => this.showChecklistItemModal(workflowId, index, 'tip'), '💡'],
                     ['서식', () => this.showChecklistItemModal(workflowId, index, 'formats'), '📄'],
-                ];
-                if (!isSkipped) tail.push(['마감일 정하기', () => this.showChecklistItemDeadlinePicker(workflowId, index), '📅'], [this.isAIAvailable() ? 'AI 길잡이' : '업무 길잡이', () => this.showChecklistHelp(workflowId, index), '✨']);
+                );
+                if (!isSkipped) tail.push(['마감일 정하기', () => this.showChecklistItemDeadlinePicker(workflowId, index), '📅']);
                 entries.push(...tail);
                 this._openCiMenu(e.clientX, e.clientY, entries);
             }

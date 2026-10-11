@@ -7,7 +7,7 @@ const file = process.argv[2];
 const chrome = (process.env.CHROME_PATH || (process.platform === 'win32' ? 'C:/Program Files/Google/Chrome/Application/chrome.exe' : 'google-chrome'));
 const prof = path.join(dir, 'chrome-prof2');
 fs.rmSync(prof, { recursive: true, force: true });
-const proc = spawn(chrome, ['--headless=new', '--remote-debugging-port=9335', `--user-data-dir=${prof}`, '--window-size=1460,900', '--allow-file-access-from-files', 'about:blank'], { stdio: 'ignore' });
+const proc = spawn(chrome, ['--headless=new', '--remote-debugging-port=9335', `--user-data-dir=${prof}`, '--window-size=1460,900', '--allow-file-access-from-files', /* 헤드리스도 마우스 있는 화면으로 */ '--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4', ...(process.getuid?.() === 0 ? ['--no-sandbox'] : []), 'about:blank'], { stdio: 'ignore' });
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 let ws, id = 0; const pend = new Map(); const logs = [];
 async function connect() {
@@ -35,7 +35,10 @@ try {
   for (const s of steps) {
     if (s.wait) await sleep(s.wait);
     if (s.js) console.log('>', s.label || '', '=>', JSON.stringify(await ev(s.js)));
+    // hover: [x,y]를 돌려주는 식 — 그 자리에 마우스를 올린 채 찍고, 찍은 뒤에는 마우스를 구석으로 치움
+    if (s.hover) { const p = JSON.parse(await ev(s.hover)); await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: p[0], y: p[1] }); await sleep(300); }
     if (s.shot) await shot(s.shot);
+    if (s.shot && s.hovered) await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 2, y: 2 });
   }
   console.log('LOGS:', logs.slice(0, 20).join('\n'));
 } finally { try { ws?.close(); } catch (e) {} proc.kill(); }
