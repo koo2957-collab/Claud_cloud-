@@ -44330,7 +44330,9 @@ ${pdfContent.length > 100000 ? pdfContent.substring(0, 100000) + '\n\n[중략: �
             const resHtml = it => { const lines = resLines(it); const h = lines.length > 1 ? lines.map(t => `· ${esc(t)}`).join('<br>') : lines.map(esc).join(''); return h || skipNote(it); };
             // 빠진 까닭을 업무 절차 패널과 같게 나눔: 직접 뺀 것은 「해당 없음」, 건너뛰기 버튼으로 건너뛴 것은 「건너뜀」 + 「⤼ 버튼 이름」
             const skipBtn = it => { if (it.skipped !== true || it.skipManual) return ''; const r = String(it.skipReason || ''); return /^해당 없음/.test(r) ? '' : (r.split(' (')[0].trim() || '건너뛰기'); };
-            const mark = it => blank ? '☐' : it.skipped === true ? `<span style="color:#888;font-size:8.5pt;">${skipBtn(it) ? '건너뜀' : '해당 없음'}</span>` : this.normalizeCompleted(it) ? '☑' : '☐';
+            const mark = it => blank ? '☐' : it.skipped === true ? `<span style="color:#888;font-size:8pt;white-space:nowrap;">${skipBtn(it) ? '건너뜀' : '해당 없음'}</span>` : this.normalizeCompleted(it) ? '☑' : '☐';
+            // 빠진 줄을 넣어 보여 줄 때는 상태 칸에 「해당 없음」이 한 줄로 들어가게 조금 넓힘
+            const stW = !blank && opts.clSkipped && cl.some(it => it.skipped === true) ? 16 : 11;
             const skipNote = it => skipBtn(it) ? `<span style="color:#7c3aed;font-size:8.5pt;">⤼ ${esc(skipBtn(it))}</span>` : '';
             const dateOf = it => {   // 완료일, 안 끝났으면 회색 ~마감일
                 if (blank || it.skipped === true) return '';
@@ -44368,11 +44370,11 @@ ${pdfContent.length > 100000 ? pdfContent.substring(0, 100000) + '\n\n[중략: �
                 });
             });
             // 칸 폭(mm): 번호·상태·날짜는 고정, 나머지를 나눔
-            const Wmm = (land ? 297 : 210) - 26, fixed = 12 + 11 + 17, rest = Wmm - fixed;
+            const Wmm = (land ? 297 : 210) - 26, fixed = 12 + stW + 17, rest = Wmm - fixed;
             let widths;
-            if (blank) widths = [12, rest - Math.round(Wmm * 0.18), 11, 17, Math.round(Wmm * 0.18)];
-            else if (showRes) { const r = resLen + nameLen ? Math.max(0.3, Math.min(0.7, nameLen / (nameLen + resLen))) : 0.5; const nw = Math.round(rest * r); widths = [12, nw, 11, 17, rest - nw]; }
-            else widths = [12, rest, 11, 17];
+            if (blank) widths = [12, rest - Math.round(Wmm * 0.18), stW, 17, Math.round(Wmm * 0.18)];
+            else if (showRes) { const r = resLen + nameLen ? Math.max(0.3, Math.min(0.7, nameLen / (nameLen + resLen))) : 0.5; const nw = Math.round(rest * r); widths = [12, nw, stW, 17, rest - nw]; }
+            else widths = [12, rest, stW, 17];
             const cols = `<colgroup>${widths.map(w => `<col style="width:${(w / Wmm * 100).toFixed(2)}%">`).join('')}</colgroup>`;
             const thead = `<thead><tr><th style="${th}">번호</th><th style="${th}">${blank ? '점검 항목' : '할 일'}</th><th style="${th}">${blank ? '확인' : '상태'}</th><th style="${th}">${blank ? '확인일' : '완료일'}</th>${showRes ? `<th style="${th}">처리결과</th>` : ''}${blank ? `<th style="${th}">비고</th>` : ''}</tr></thead>`;
             const prog = [blank ? '' : `진행 ${doneStages}/${live.length}단계(${pct}%)`, dl ? `업무 마감 ${this._prFmt(dl)}` : '', anyDue ? '<span style="color:#888;">~ 표시는 마감일</span>' : ''].filter(Boolean).join(' · ');

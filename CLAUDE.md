@@ -89,7 +89,7 @@
 1. `tools/mkman2.py`: 시연 시나리오(예시는 징계처분·물품 구매 계약·감찰조사)를 실행할 `steps.json`을 만듭니다.
 2. `node tools/cdp2.mjs <index.html 경로> > tools/man2_out.txt`: 장면마다 촬영해 `tools/man2/*.png`를 만들고, 강조 위치를 기록합니다.
 3. `tools/manual_data2.py`: 장·장면·설명 문구를 담습니다. 새 장면을 넣거나 문구를 고치는 곳입니다.
-4. `python tools/build_manual2.py 사용설명서`: HTML과 img를 만듭니다(장면 48개).
+4. `python tools/build_manual2.py 사용설명서`: HTML과 img를 만듭니다(장면 52개, 설명서 버전은 index.html의 `APP_VERSION`을 읽음). 만든 뒤 HTML은 CRLF로 바꾸고, img는 화면이 실제로 바뀐 장면만 남깁니다(`git checkout -- 사용설명서/img/` 뒤 바뀐 것만 복사).
 
 ## 시연 영상 (선택)
 
@@ -98,7 +98,7 @@
 
 ## 이어서 할 일 (2026-10-11 저녁 기준 · 윈도우 PC 세션에서 클라우드 세션으로 넘김)
 
-**지금 상태:** 앱 v1.5.2. 이 PC에서 한 작업은 모두 GitHub main에 합쳐져 있습니다(PR #6~#9). 클라우드 세션은 main을 받아 그대로 이어서 하면 됩니다.
+**지금 상태:** 앱 v1.5.6. 배포 전 큰 작업 ①~④ 끝(PR #13~#15 + ④), 남은 것은 ⑤ 영상. 클라우드 세션 작업은 GitHub main에 합쳐져 있습니다.
 
 **정해진 것:**
 1. 한글(HWPX)·워드(DOCX) 파일 만들기는 하지 않기로 함(미리보기에서 다 고치고 「PDF로 저장」·「한글에 붙여넣기용 복사」로 충분)
@@ -120,6 +120,7 @@
 - 윈도우 PC 저장소는 `core.autocrlf=false`로 둠(받을 때 CRLF로 바뀌어 패치가 멈추던 것)
 
 **최근에 끝낸 것(이번 작업 묶음):**
+- 배포 전 큰 작업 ①~④(클라우드 세션, v1.5.6): ① 설명서↔프로그램 대조 39곳 고침·10곳 보탬, 외부 통신 잠금(`NET_LOCKED`, `#aiPolicyLock`이 보이는 판만 fetch·XHR 막음), [완료 처리]·[완료 취소]는 묻지 않고 [되돌리기], 미리 보기 중 Esc는 미리 보기만 풂 ② 「연습 업무 넣기」(새 업무 ▾, `insertPracticeWorkflows` — `#practicePkg`를 그대로 가져오기로 넣고 날짜를 오늘 기준으로 옮김, 두 번 넣으면 (2)) + `사용설명서/연습업무.json` ③ 내보내기 알림 [예시·사진 빼고 다시 저장](`exportMultipleWorkflowPackages` opts.excludeTipFiles), 전체 흐름 시험 `mk_flow_test.py` 51단계, 출력에서 건너뛰기 버튼 줄은 「건너뜀」+「⤼ 버튼 이름」(빠진 줄을 넣을 때 상태 칸 16mm) ④ 설명서 52장면(28b_tipexclude, 10장 39~41 연습 업무)
 - v1.5.5 사진 미리보기 확대·축소: 누르면 누른 곳 중심으로 100%(작은 사진은 2배), 다시 누르면 맞춤, Ctrl+휠(마우스 자리 중심), 확대 중 끌어 옮기기, 아래 막대 [－ 배율 ＋ 맞춤], ＋/－/0 키(맨 위 미리보기 창이면 초점 상관없이). 예전 `pv-actual`(왼쪽 위로 붙던 원래 크기) 대신 `_pvZoomSet(pc,s,cx,cy)` — 확대 때 사진을 가운데 정렬 상자 `.pv-zw`(최소 100%·max-content)에 넣어 왼쪽이 잘리지 않게, `#previewContent.pv-zoom`은 display:block. 다음 예시로 넘기면 맞춤, PDF면 막대 숨김. 시험 대본 `tools/mk_zoom_test.py`(cdp3에 `wheel`+`mods`(Ctrl=2)·`drag:[dx,dy]` 추가). 설명서 장면 21b_zoom 추가(장면 48개)
 - v1.5.4 인쇄는 작은 별도 창(사용자 선택, Gmail 방식): `_openPrintWindow({title,pages,landscape})` — 가운데 작은 창(`_popupFeatures(w,h)`, 세로 900·가로 1220 너비), 위 [인쇄 · PDF]·[닫기](Esc, 인쇄 때 숨김), 열리면 바로 `print()`. 막히면(null) 알림 + 예전 숨은 iframe 인쇄. 저장된 문서·보고서 보기 창(`openSavedDocInNewWindow`·`openDocumentInNewWindow`·`downloadReport`)도 `_popupFeatures(1000,860)`. 팝업은 사용자가 누른 직후에만 열리므로 시험에서 `app._prPrint()`를 바로 부르면 막혀 숨은 틀로 갈 수 있음 — 시험 대본은 둘 다 받도록(`pw()` 도우미). `printWorkflow`·`printAllWorkflows`·`openPDFModal` 안쪽 옛 인쇄 코드는 부르는 곳 없음. 시험 대본 `tools/mk_printwin_test.py`
 - v1.5.4 진행상황 출력: 탭 순서 「체크리스트 · 진행상황 보고」, 처음 열면 체크리스트(`_prTab` 기본값 checklist). 체크리스트·점검표 제목 고치기(`.pr-ed[data-k=clTitle|clTitleB]`, `_clBindTitle`, 저장 `progressReport.clTitle`·`clTitleB`, 비우면 기본 `_clDefaultTitle`, 인쇄 제목·복사에도 `_clTitleHtml/_clTitleText`). 시험 대본 `tools/mk_cltitle_test.py`. 설명서는 22d_checklist(먼저) → 22c_report 순서
