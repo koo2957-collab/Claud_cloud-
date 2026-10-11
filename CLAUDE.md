@@ -75,6 +75,8 @@
 | `mk_hold_test.py` / `mk_panel_motion.py` | 단계가 접히는 동안 빠른 클릭 무시 / 업무 절차 패널이 단계 넘어갈 때 시간별 움직임 기록 시험 대본 |
 | `mk_practice_build.py` → `embed_practice.py` | 연습 업무카드 만들기: `practice_data.py`(내용)·`practice/`(빈 양식·법령 PDF)로 실제 프로그램 안에서 업무를 만들어 내보내기 → `사용설명서/연습업무.json`, 이것을 index.html 끝 `<script id="practicePkg">`에 넣음(「연습 업무 넣기」). 빈 양식은 `make_practice_forms.py`. cdp3 `save` 단계로 결과를 파일에 씀 |
 | `mk_practice_test.py` | 연습 업무 넣기(실제 클릭)·마감일 오늘 기준·건너뛰기 버튼 실행·예시 그림·.json 가져오기·두 번 넣기 시험 |
+| `mk_flow_test.py` (collab2로) | 실제로 쓰는 흐름 전체(브라우저 3개): 연습 업무 → 건너뛰기 → 업무 분담(주소록 새 사람·단계 나누기·전달사항) → 담당자 둘 처리·중간/최종 회신 → [파일 고르기]·끌어다 놓기·[업무 가져오기]로 합치기 → 출력 → 완료 → 레퍼런스 → 복사하여 시작 / 내보내기 → 가져와 다시 나누기 / 공유. `python mk_flow_test.py && node collab2.mjs <index.html> steps_flow.json`. collab2는 `choose`(파일 고르기 창에 파일 넣기) 단계를 받음 |
+| `mk_tipexclude_test.py` | 내보내기 알림의 [예시·사진 빼고 다시 저장] 시험 |
 | `mk_netlock_test.py` / `mk_done_test.py` | 외부 통신 잠금(배포판 막힘·시험판 열림) / 완료 처리·완료 취소 [되돌리기] 시험 |
 | `vcheck2.mjs` | 만든 영상의 길이·소리 크기·화면 프레임 확인 |
 
