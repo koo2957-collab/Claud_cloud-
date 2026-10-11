@@ -56,6 +56,7 @@
 | `collab2.mjs <앱 경로> <steps 파일>` | 브라우저 여러 개(A=관리자, B·C=담당자)로 업무 분담 파일 주고받기를 시험. 저장 창만 가로채고 받는 쪽은 실제 파일 입력칸으로 엶 |
 | `mk_collab.py` | 업무 분담 전체 흐름 시험 대본 → `steps_collab.json` |
 | `mk_row_test.py` | 일하는 화면 줄 표시(「1/2」·버튼 줄·⋯ 메뉴·한 줄 제목) 시험 대본 → `steps3.json` |
+| `mk_skippanel_test.py` | 업무 절차 패널 건너뛴 항목 표시 시험 대본 → `steps3.json` |
 | `mk_tip3_test.py` | 업무팁 세 칸·「지난번엔 이렇게」 시험 대본 → `steps3.json` |
 | `mk_panel_test.py` / `mk_pick_test.py` | 업무 절차 패널 아이콘 / 서식 바로 열기·고른 줄 미리 보기 시험 대본 → `steps3.json` (mk_pick_test는 예전 파란 상자 방식 기준 — 지금은 `mk_pick_panel_test.py`) |
 | `mk_skip_test.py` / `mk_tip_test.py` | 체크리스트 편집·건너뛰기 / 업무팁 예시 시험 대본 → `steps3.json` |
@@ -80,7 +81,7 @@
 1. `tools/mkman2.py`: 시연 시나리오(예시는 징계처분·물품 구매 계약·감찰조사)를 실행할 `steps.json`을 만듭니다.
 2. `node tools/cdp2.mjs <index.html 경로> > tools/man2_out.txt`: 장면마다 촬영해 `tools/man2/*.png`를 만들고, 강조 위치를 기록합니다.
 3. `tools/manual_data2.py`: 장·장면·설명 문구를 담습니다. 새 장면을 넣거나 문구를 고치는 곳입니다.
-4. `python tools/build_manual2.py 사용설명서`: HTML과 img를 만듭니다(장면 44개).
+4. `python tools/build_manual2.py 사용설명서`: HTML과 img를 만듭니다(장면 47개).
 
 ## 시연 영상 (선택)
 
@@ -92,9 +93,8 @@
 **지금 상태:** 앱 v1.5.2. 이 PC에서 한 작업은 모두 GitHub main에 합쳐져 있습니다(PR #6~#9). 클라우드 세션은 main을 받아 그대로 이어서 하면 됩니다.
 
 **사용자가 정할 것 (추천만 하고 아직 답을 받지 않은 것):**
-1. 업무 절차 패널의 건너뛴 항목 표시 — 지금은 단계를 건너뛰면(해당 없음·건너뛰기 버튼 모두) 패널에서 아예 사라지고, 할 일을 건너뛰면 남은 일처럼 빈 동그라미로 보임. 추천안: 단계·할 일 모두 제자리에 흐리게(회색·취소선) + 알약 「해당 없음」(회색) 또는 「⤼ 버튼 이름」(보라), 마우스를 올리면 사유, 연달아 여러 개면 「⤼ n개 건너뜀 ▸」 한 줄로 접기, 진행 줄에 「완료 3/6 · 건너뜀 2」
-2. 시연 영상은 프로그램을 모두 완성한 뒤 사용자가 설명서를 따라 하는 화면을 직접 녹화해 새로 만듦 — 그전까지 손대지도, 다시 만들지 묻지도 않음
-3. 한글(HWPX)·워드(DOCX) 파일 만들기는 하지 않기로 함(미리보기에서 다 고치고 「PDF로 저장」·「한글에 붙여넣기용 복사」로 충분)
+1. 시연 영상은 프로그램을 모두 완성한 뒤 사용자가 설명서를 따라 하는 화면을 직접 녹화해 새로 만듦 — 그전까지 손대지도, 다시 만들지 묻지도 않음
+2. 한글(HWPX)·워드(DOCX) 파일 만들기는 하지 않기로 함(미리보기에서 다 고치고 「PDF로 저장」·「한글에 붙여넣기용 복사」로 충분)
 
 **이어받을 때 알아 둘 것:**
 - 진행상황 출력(`openProgressReport`)은 앱이 직접 A4 쪽을 나눔 — 쪽 나눔·칸 폭을 바꾸면 `tools/mk_report3_test.py`(29단계)로 확인. 보고서 편집본은 `checklistDetails['project-{id}'].progressReport = {edits, lvs, adds}`, 출력 설정은 localStorage `progressReportOpts`, 창 크기 `prSize`
@@ -104,6 +104,8 @@
 - 윈도우 PC 저장소는 `core.autocrlf=false`로 둠(받을 때 CRLF로 바뀌어 패치가 멈추던 것)
 
 **최근에 끝낸 것(이번 작업 묶음):**
+- v1.5.3 체크리스트 출력 표 칸 맞춤(클라우드 세션, 사용자 선택): 단계 줄도 머리줄과 같은 칸(번호 · 단계 이름 · 상태에 끝낸 할 일 수 「2/3」 · 완료일 · 처리결과 · 점검표는 비고)에 진한 바탕, 할 일은 번호 칸까지 합친 한 칸(colspan 2)에 「○ 할 일」(늘 빈 동그라미, 1-1 번호 없앰), ☐/☑는 늘 상태 칸. `mk_report3_test.py`에 「단계 줄이 머리줄 칸에 맞음」 확인 추가(처리결과는 이제 줄의 맨 끝 칸). 「처리결과 3줄까지」 확인은 시험 자료에 3줄 넘는 결과가 없어 예전부터 false
+- 업무 절차 패널 건너뛴 항목 표시(클라우드 세션): 건너뛴 단계·할 일을 제자리에 흐리게(취소선) + 알약 「해당 없음」(회색)·「⤼ 버튼 이름」(보라, `skipReason`의 괄호 앞), 마우스를 올리면 사유, 연달아 2개 이상 건너뛴 단계는 「⤼ n개 건너뜀 ▸」 한 줄(`app.toggleProcSkipRun`, 화면 기억만), 진행 줄 「완료 1/3단계 · 건너뜀 3」, 진행중 단계 앞의 건너뛴 단계는 끝난 단계와 함께 접힘. 진행·지금 할 일 계산은 예전처럼 건너뛰지 않은 단계로. 시험 대본 `tools/mk_skippanel_test.py`, 설명서 장면 22e_skip 추가
 - 체크리스트 표 6: 모든 단계를 같은 띠(할 일 없는 단계는 띠 오른쪽에 ☑ 완료일 / ☐ ~마감), 「완료일」 칸(안 끝난 것은 회색 ~마감일, 머리 줄에 「~ 표시는 마감일」), 칸 폭 mm 고정(번호 12·상태 11·날짜 17) + 할 일·처리결과는 글 길이 비율(30~70%), 점검표는 「점검 항목·확인·확인일·비고 18%」 · 작성자 정보 창 안내 문구 삭제
 - 진행상황 출력 5: 보고서 키(`_prBindEdit`: Enter 새 줄=`progressReport.adds`[{id:'u:…',after,lv,html}], Shift+Enter 줄바꿈, Tab/Shift+Tab `progressReport.lvs`, 빈 줄 Backspace) · 바뀜 알림 없앰 · 체크리스트 단계 띠 표(`_checklistParts` colspan 띠) · 세로/가로(`clLand`, 인쇄 `size:A4 landscape`) · 창 크기 조절(`_prWinSize`, `prSize`). cdp3 `key`에 `mods`(Shift=8)
 - 진행상황 출력 3: 앱이 직접 A4 쪽 나눔(`_prPaginate`, 블록 높이를 재서 장마다 담음, keep=다음 줄과 같은 장, 인쇄는 `@page{margin:0}`이라 크롬 머리말 없음, 쪽 번호는 앱이 넣음, (계속) 없음) · 맨 위 오른쪽 한 줄 `_prMetaLine`('YY.MM.DD. 작성자) → 제목 · 기호/글 칸 분리(flex, 복사는 내어쓰기) · 엔터=줄바꿈(insertLineBreak, 제목만 끝냄) · ⤢ 전체화면(mx 'report') · 보고서 블록(`_prReportBlocks`, 키 p:/r:/f:{itemId}) + 편집본(`progressReport.edits`, `sig`로 바뀜 알림, `_prResetEdits`) · 작성자 = 내 정보(`_collabMe`+`collabMyPhone`, `authorInfoSet`) · 체크리스트 「처리결과 3줄까지」. 시험 대본 `tools/mk_report3_test.py`
