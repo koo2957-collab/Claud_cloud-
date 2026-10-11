@@ -7573,7 +7573,9 @@
                 '연습 업무 넣기 — 새 업무 만들기 ▾ → 「연습 업무 넣기」로 설명서를 따라 해 볼 예시 업무 2개(소모품 구매 계약 · 월간 실적 보고, 가상 자료)를 넣음. 업무팁·근거 조문·건너뛰기 버튼·서식·참고 자료가 갖춰져 있고 마감일은 넣는 날 기준',
                 '외부 통신 잠금 — 배포판은 화면만 막는 것이 아니라 외부 AI·법제처로 나가는 통신 자체를 막음 (이 PC 안 파일은 그대로)',
                 '[완료 처리]·[↩ 완료 취소]는 묻지 않고 바로 옮긴 뒤 알림의 [되돌리기]로 되돌림',
-                '줄을 눌러 오른쪽 업무 절차에서 미리 보는 중 Esc는 미리 보기만 풀고 업무 화면에 남음 (한 번 더 누르면 목록)'
+                '줄을 눌러 오른쪽 업무 절차에서 미리 보는 중 Esc는 미리 보기만 풀고 업무 화면에 남음 (한 번 더 누르면 목록)',
+                '내보내기·공유·업무 분담 파일을 저장하면 알림에 「업무팁 예시·사진 n개 포함」과 [예시·사진 빼고 다시 저장] — 붙여 둔 화면 캡처가 남에게 넘어가지 않게',
+                '진행상황 출력(체크리스트): 건너뛰기 버튼으로 건너뛴 줄은 「건너뜀」 + 「⤼ 버튼 이름」, 직접 뺀 줄은 「해당 없음」 (업무 절차 패널과 같게)'
             ] },
             { version: '1.5.5', date: '2026-10-11', notes: [
                 '사진 미리보기 확대·축소 — 누른 곳을 중심으로 확대(다시 누르면 맞춤, 예전처럼 왼쪽 위로 쏠리지 않음) · Ctrl+휠은 마우스 자리 중심 · 확대한 사진은 끌어서 옮기기 · 아래 [－ 배율 ＋ 맞춤] 막대 · ＋/－/0 키 · 창보다 작은 사진은 늘 가운데',
@@ -21042,6 +21044,11 @@ ${item.result.text}
                         );
                         detailKeys.forEach(k => { allChecklistDetails[k] = this.checklistDetails[k]; });
                     }
+                    // 업무팁 「예시·사진」(키 {id}-t-{itemId}) — 화면 캡처처럼 남에게 넘기면 안 되는 것이 있을 수 있어,
+                    // 저장 뒤 알림에서 [예시·사진 빼고 다시 저장]을 고를 수 있게 개수를 센다
+                    const tipKeys = Object.keys(allChecklistDetails).filter(k => /-t-/.test(k) && (allChecklistDetails[k]?.attachments || []).length);
+                    const tipFileCount = tipKeys.reduce((n, k) => n + allChecklistDetails[k].attachments.length, 0);
+                    if (opts.excludeTipFiles) tipKeys.forEach(k => { allChecklistDetails[k] = { ...allChecklistDetails[k], attachments: [] }; });
 
                     if (workflows.length === 0) {
                         this.showToast('error', '❌', '선택한 업무를 찾을 수 없습니다');
@@ -21088,14 +21095,20 @@ ${item.result.text}
                         : `업무묶음_${workflows.length}개_${dateStr}.json`);
                     const saved = await this._saveFileWithPicker(blob, fileName);
                     if (!saved) return false;
-                    if (opts.successText) { this.showToast('success', '✅', opts.successText, 7000); return true; }
+                    // 예시·사진이 들어 있으면 알림에 [예시·사진 빼고 다시 저장] (묻지 않고 저장한 뒤 고를 수 있게)
+                    const tipNote = tipFileCount && !opts.excludeTipFiles ? ` · 업무팁 예시·사진 ${tipFileCount}개 포함` : (opts.excludeTipFiles && tipFileCount ? ` · 예시·사진 ${tipFileCount}개는 뺌` : '');
+                    const tipAction = tipFileCount && !opts.excludeTipFiles
+                        ? { actionLabel: '예시·사진 빼고 다시 저장', onAction: () => this.exportMultipleWorkflowPackages(workflowIds, { ...opts, excludeTipFiles: true }) }
+                        : undefined;
+                    if (opts.successText) { this.showToast('success', '✅', opts.successText + tipNote, tipAction ? 12000 : 7000, tipAction); return true; }
 
                     const formCount = Object.values(allFormsData).flat().length;
                     const attachCount = Object.values(allAttachmentsData).flat().length;
                     const libCount = allLawLibraryData.files.length;
                     const repoDocCount = allRepoDocumentsData.files.length;
                     const repoDocPart = repoDocCount > 0 ? ` · 서식·문서함 ${repoDocCount}개` : '';
-                    this.showToast('success', '✅', `업무 파일 생성 완료 — 진행 상태·처리결과 포함 (업무 ${workflows.length}개 · 서식 ${formCount}개 · 첨부자료 ${attachCount}개 · 법령·매뉴얼 ${libCount}개${repoDocPart} 포함)`);
+                    this.showToast('success', '✅', `업무 파일 생성 완료 — 진행 상태·처리결과 포함 (업무 ${workflows.length}개 · 서식 ${formCount}개 · 첨부자료 ${attachCount}개 · 법령·매뉴얼 ${libCount}개${repoDocPart} 포함)${tipNote}`, tipAction ? 12000 : undefined, tipAction);
+                    return true;
                 } catch (err) {
                     console.error('공유 패키지 생성 오류:', err);
                     this.showToast('error', '❌', '업무 파일 생성 실패: ' + err.message);
@@ -44314,8 +44327,11 @@ ${pdfContent.length > 100000 ? pdfContent.substring(0, 100000) + '\n\n[중략: �
             const grey = t => `<span style="color:#888;">${t}</span>`;
             let anyDue = false;
             const resLines = it => { let lines = showRes ? this._prLines(it) : []; if (opts.clShort && lines.length > 3) lines = [...lines.slice(0, 3), '…']; return lines; };
-            const resHtml = it => { const lines = resLines(it); return lines.length > 1 ? lines.map(t => `· ${esc(t)}`).join('<br>') : lines.map(esc).join(''); };
-            const mark = it => blank ? '☐' : it.skipped === true ? '<span style="color:#888;font-size:8.5pt;">해당 없음</span>' : this.normalizeCompleted(it) ? '☑' : '☐';
+            const resHtml = it => { const lines = resLines(it); const h = lines.length > 1 ? lines.map(t => `· ${esc(t)}`).join('<br>') : lines.map(esc).join(''); return h || skipNote(it); };
+            // 빠진 까닭을 업무 절차 패널과 같게 나눔: 직접 뺀 것은 「해당 없음」, 건너뛰기 버튼으로 건너뛴 것은 「건너뜀」 + 「⤼ 버튼 이름」
+            const skipBtn = it => { if (it.skipped !== true || it.skipManual) return ''; const r = String(it.skipReason || ''); return /^해당 없음/.test(r) ? '' : (r.split(' (')[0].trim() || '건너뛰기'); };
+            const mark = it => blank ? '☐' : it.skipped === true ? `<span style="color:#888;font-size:8.5pt;">${skipBtn(it) ? '건너뜀' : '해당 없음'}</span>` : this.normalizeCompleted(it) ? '☑' : '☐';
+            const skipNote = it => skipBtn(it) ? `<span style="color:#7c3aed;font-size:8.5pt;">⤼ ${esc(skipBtn(it))}</span>` : '';
             const dateOf = it => {   // 완료일, 안 끝났으면 회색 ~마감일
                 if (blank || it.skipped === true) return '';
                 if (this.normalizeCompleted(it)) return fmtS(it.completedAt ? new Date(it.completedAt) : null);
@@ -44342,13 +44358,13 @@ ${pdfContent.length > 100000 ? pdfContent.substring(0, 100000) + '\n\n[중략: �
                 const stageMark = subs.length && !blank && it.skipped !== true ? prog : mark(it);
                 nameLen += String(it.text || '').length; resLen += resLines(it).join('').length;
                 const sb = `${td}background:#dde4ee;border-color:#7d8794;`;
-                rows.push({ keep: subs.length > 0, html: `<tr style="break-inside:avoid;page-break-inside:avoid;"><td style="${sb}text-align:center;white-space:nowrap;font-weight:bold;font-size:10pt;">${no}</td><td style="${sb}font-weight:bold;font-size:10pt;"><span style="${strike(it)}">${esc(it.text || '')}</span></td><td style="${sb}text-align:center;white-space:nowrap;font-size:${subs.length && !blank && it.skipped !== true ? '9pt' : '11pt'};">${stageMark}</td><td style="${sb}text-align:center;white-space:nowrap;">${stageDate}</td>${showRes ? `<td style="${sb}">${resHtml(it)}</td>` : ''}${blank ? `<td style="${sb}"></td>` : ''}</tr>` });
+                rows.push({ keep: subs.length > 0, html: `<tr style="break-inside:avoid;page-break-inside:avoid;"><td style="${sb}text-align:center;white-space:nowrap;font-weight:bold;font-size:10pt;">${no}</td><td style="${sb}font-weight:bold;font-size:10pt;"><span style="${strike(it)}">${esc(it.text || '')}</span>${!showRes && skipNote(it) ? ` ${skipNote(it)}` : ''}</td><td style="${sb}text-align:center;white-space:nowrap;font-size:${subs.length && !blank && it.skipped !== true ? '9pt' : '11pt'};">${stageMark}</td><td style="${sb}text-align:center;white-space:nowrap;">${stageDate}</td>${showRes ? `<td style="${sb}">${resHtml(it)}</td>` : ''}${blank ? `<td style="${sb}"></td>` : ''}</tr>` });
                 subs.forEach(x => {
                     const s2 = x.item;
                     nameLen += String(s2.text || '').length; resLen += resLines(s2).join('').length;
                     // ○ 할 일 — 늘 빈 동그라미(끝났는지는 상태 칸 ☑로), 글자 기호라 한글에 붙여 넣어도 그대로
                     const dot = '○';
-                    rows.push({ keep: false, html: `<tr style="break-inside:avoid;page-break-inside:avoid;"><td colspan="2" style="${td}padding-left:12pt;"><span style="color:${s2.skipped === true ? '#aaa' : '#444'};font-size:8pt;margin-right:4pt;">${dot}</span><span style="${strike(s2)}">${esc(s2.text || '')}</span></td><td style="${td}text-align:center;font-size:11pt;">${mark(s2)}</td><td style="${td}text-align:center;white-space:nowrap;">${dateOf(s2)}</td>${showRes ? `<td style="${td}">${resHtml(s2)}</td>` : ''}${blank ? `<td style="${td}"></td>` : ''}</tr>` });
+                    rows.push({ keep: false, html: `<tr style="break-inside:avoid;page-break-inside:avoid;"><td colspan="2" style="${td}padding-left:12pt;"><span style="color:${s2.skipped === true ? '#aaa' : '#444'};font-size:8pt;margin-right:4pt;">${dot}</span><span style="${strike(s2)}">${esc(s2.text || '')}</span>${!showRes && skipNote(s2) ? ` ${skipNote(s2)}` : ''}</td><td style="${td}text-align:center;font-size:11pt;">${mark(s2)}</td><td style="${td}text-align:center;white-space:nowrap;">${dateOf(s2)}</td>${showRes ? `<td style="${td}">${resHtml(s2)}</td>` : ''}${blank ? `<td style="${td}"></td>` : ''}</tr>` });
                 });
             });
             // 칸 폭(mm): 번호·상태·날짜는 고정, 나머지를 나눔

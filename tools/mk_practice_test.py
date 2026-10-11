@@ -39,6 +39,11 @@ click("document.getElementById('branchPreviewConfirmBtn')")
 step("J [5천만원 이하] → 계약서·보증금 건너뜀", "await W(1200);const w=buy();return ['계약서 작성','계약보증금 받기 (계약금액의 10% 이상)','청구서·각서 등 증거서류 받기 (계약서 생략 시)'].map(t=>t.slice(0,8)+'='+(w.checklist[ix(w,t)].skipped?'건너뜀':'남음')).join(' ')")
 S.append({"shot": "pr_j_panel.png"})
 step("K 업무 절차 패널: 건너뛴 줄 알약", "const pills=[...document.querySelectorAll('#aiPanelOfflineDashboard .proc-skip-pill')].map(p=>p.textContent.trim());return '알약='+pills.join(', ')+' | 진행 줄='+(document.querySelector('#procProg .proc-prog-text')?.textContent||'')")
+step("K2 진행상황 출력(체크리스트): 직접 뺀 줄은 「해당 없음」, 건너뛰기 버튼은 「건너뜀」 + 「⤼ 버튼 이름」", "const w=buy();app._collabSetMe({dept:'사하소방서 행정과',rank:'소방위',name:'홍길동',phone:'4521'});localStorage.setItem('progressReportOpts',JSON.stringify({clResult:true,clSkipped:true}));app.openProgressReport(w.id);await W(1300);"
+     "const rows=[...document.querySelectorAll('#prPage tr')].map(r=>[...r.cells].map(c=>c.textContent.trim()));const f=t=>rows.find(r=>r[0]&&r[0].replace(/^○\\s*/,'')===t)||[];"
+     "const na=f('예정가격 작성'),sk=f('나라장터 수의계약 안내공고 (2인 이상 견적)'),sk2=f('계약서 작성');app.closeProgressReport();await W(300);"
+     "return '예정가격(직접 뺌)='+na.slice(1).join('|')+' || 나라장터(건너뛰기)='+sk.slice(1).join('|')+' || 계약서='+sk2.slice(1).join('|')")
+S.append({"shot": "pr_k2_report.png"})
 step("L e호조 예시 그림 미리보기", "const w=buy();app.previewTipFile(w.id,ix(w,'지출 처리 (e호조)'),0);await W(1500);const im=[...document.querySelectorAll('.pv-win #previewContent img')].pop();return '그림='+(im?im.naturalWidth+'x'+im.naturalHeight:'없음')")
 S.append({"shot": "pr_l_flow.png"})
 step("M 닫기", "document.querySelectorAll('.pv-modal').forEach(m=>m.querySelector('.close-preview-modal')?.click());await W(400);app.exitFocusMode();await W(500);return 'ok'")

@@ -1,0 +1,127 @@
+{
+  "version": "6.5",
+  "appVersion": "1.5.6",
+  "exportDate": "2026-10-11T14:35:43.646Z",
+  "type": "workflow_package",
+  "workflows": [
+    {
+      "id": 1791729253040,
+      "type": "manual",
+      "title": "[연습] 월간 업무 실적 보고 (매달 5일)",
+      "checklist": [
+        {
+          "text": "자료 모으기",
+          "indent": 0,
+          "completed": true,
+          "tip": {
+            "type": "text",
+            "content": "지난달 실적을 부서별로 받습니다\n⚠ 각 부서에 늦어도 3일까지 보내 달라고 미리 알립니다",
+            "saved": true
+          },
+          "itemId": "item_1791727343224_m61xwsij6",
+          "completedAt": "2026-10-11T14:02:23.224Z",
+          "deadline": null,
+          "formats": [],
+          "result": {
+            "text": "",
+            "summary": ""
+          }
+        },
+        {
+          "text": "부서별 실적 요청",
+          "indent": 1,
+          "completed": true,
+          "deadline": "2026-10-12",
+          "itemId": "item_1791727343224_zputv3672",
+          "completedAt": "2026-10-11T14:02:23.224Z"
+        },
+        {
+          "text": "실적 받아 확인",
+          "indent": 1,
+          "completed": true,
+          "deadline": "2026-10-14",
+          "itemId": "item_1791727343224_t6yfr0jjq",
+          "completedAt": "2026-10-11T14:02:23.224Z"
+        },
+        {
+          "text": "보고서 작성",
+          "indent": 0,
+          "completed": false,
+          "tip": {
+            "type": "text",
+            "content": "지난달 보고서를 레퍼런스로 두고 숫자만 바꿉니다",
+            "saved": true
+          },
+          "itemId": "item_1791727343224_uakeow89p",
+          "deadline": null,
+          "formats": [],
+          "result": {
+            "text": "",
+            "summary": ""
+          },
+          "completedAt": null
+        },
+        {
+          "text": "표·그래프 정리",
+          "indent": 1,
+          "completed": false,
+          "deadline": "2026-10-15",
+          "itemId": "item_1791727343224_4rqjh7aaj",
+          "formats": [],
+          "result": {
+            "text": "",
+            "summary": ""
+          },
+          "tip": {
+            "type": "none",
+            "content": "",
+            "saved": false
+          },
+          "completedAt": null
+        },
+        {
+          "text": "결재·보고",
+          "indent": 0,
+          "completed": false,
+          "tip": {
+            "type": "text",
+            "content": "⚠ 매달 5일까지 — 5일이 휴일이면 그 전 근무일",
+            "saved": true
+          },
+          "deadline": "2026-10-15",
+          "itemId": "item_1791727343224_bstiat38x",
+          "formats": [],
+          "result": {
+            "text": "",
+            "summary": ""
+          },
+          "completedAt": null
+        }
+      ],
+      "date": "2026. 10. 11.",
+      "createdAt": "2026-10-11T14:34:03.029Z",
+      "deadline": "2026-10-15",
+      "lastProgressAt": "2026-10-11T14:02:23.224Z",
+      "updatedAt": "2026-10-11T14:35:43.217Z",
+      "isPractice": true,
+      "isDeleted": false,
+      "isArchived": false,
+      "completedProcessed": false,
+      "isReference": false,
+      "importedAt": "2026-10-11T14:34:03.050Z",
+      "subIndentMigrated": true
+    }
+  ],
+  "checklistDetailsMap": {},
+  "formsData": {},
+  "attachmentsData": {},
+  "lawLibraryData": {
+    "files": [],
+    "groups": []
+  },
+  "repoDocumentsData": {
+    "files": [],
+    "folders": []
+  },
+  "docSummaries": {}
+}
