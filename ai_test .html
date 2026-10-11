@@ -2551,6 +2551,9 @@
         /* 제목 뒤 작은 점: 업무팁·서식이 있음 */
         .cl-has-dot { display: inline-block; margin-left: 5px; font-size: 0.9em; line-height: 1; color: #f59e0b; font-weight: 900; text-decoration: none; cursor: default; }
         .checklist-card.completed .cl-has-dot { color: var(--text-muted); }
+        /* 다크 모드의 「.main-content * { color: inherit }」가 점 색을 덮어써서 흰 점이 되던 문제 — 우선순위를 높임 */
+        :root.dark-mode:root .cl-has-dot { color: #fbbf24; }
+        :root.dark-mode:root .checklist-card.completed .cl-has-dot { color: var(--text-muted); }
         /* 마우스를 올린 줄의 버튼 줄 — 날짜 자리에서 왼쪽으로 펼쳐져 제목 끝을 가림 (Gmail 방식) */
         .cl-hbar { display: none; }
         @media (hover: hover) {
@@ -2560,19 +2563,23 @@
             .checklist-card-header:hover .cl-dl-face, .checklist-card-header:focus-within .cl-dl-face { visibility: hidden; }
             .checklist-card-header:hover .cl-tagslot > .cb-chip, .checklist-card-header:focus-within .cl-tagslot > .cb-chip { visibility: hidden; }
         }
-        .cl-hb { display: inline-flex; align-items: center; gap: 2px; height: 24px; min-width: 26px; padding: 0 5px; border: 1px solid transparent; border-radius: 6px; background: transparent; font-family: inherit; font-size: 0.8rem; line-height: 1; white-space: nowrap; cursor: pointer; flex-shrink: 0; justify-content: center; }
+        .cl-hb { display: inline-flex; align-items: center; gap: 2px; height: 26px; min-width: 28px; padding: 0 5px; border: 1px solid transparent; border-radius: 6px; background: transparent; font-family: inherit; font-size: 0.8rem; line-height: 1; white-space: nowrap; cursor: pointer; flex-shrink: 0; justify-content: center; }
+        .cl-hb .cl-ico { flex-shrink: 0; display: block; }
         .cl-hb:hover { background: rgba(100,116,139,0.12); }
-        .cl-hb.off { filter: grayscale(1); opacity: 0.45; }
-        .cl-hb.off:hover { filter: none; opacity: 1; }
-        .cl-hb.on.tip { background: rgba(245,158,11,0.14); border-color: rgba(245,158,11,0.35); }
-        .cl-hb.on.fmt { background: rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.35); }
-        .cl-hb.on.dl { background: rgba(37,99,235,0.1); border-color: rgba(37,99,235,0.3); }
-        .cl-hb b { font-size: 0.68rem; font-weight: 700; color: var(--text-gray); }
-        .cl-hb-guide { height: 24px; padding: 0 9px; margin-right: 2px; border-color: rgba(139,92,246,0.3); border-radius: 999px; background: rgba(139,92,246,0.08); font-size: 0.72rem; font-weight: 700; }
+        /* 내용이 없으면 연한 회색 선, 있으면 그 색(업무팁 주황 · 서식 초록 · 마감일 파랑) + 옅은 바탕 */
+        :root:root .cl-hb.off, :root:root .cl-hb-more { color: #9aa5b5; }
+        :root:root .cl-hb.off:hover, :root:root .cl-hb-more:hover { color: var(--text-dark); }
+        :root:root .cl-hb.on.tip { color: #f59e0b; background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.32); }
+        :root:root .cl-hb.on.fmt { color: #10b981; background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.32); }
+        :root:root .cl-hb.on.dl { color: #2563eb; background: rgba(37,99,235,0.08); border-color: rgba(37,99,235,0.28); }
+        :root.dark-mode:root .cl-hb.off, :root.dark-mode:root .cl-hb-more { color: #7b8698; }
+        :root.dark-mode:root .cl-hb.on.dl { color: #60a5fa; }
+        .cl-hb b { font-size: 0.68rem; font-weight: 700; color: currentColor; margin-left: 1px; }
+        .cl-hb-guide { gap: 4px; height: 26px; padding: 0 10px 0 8px; margin-right: 2px; border-color: rgba(139,92,246,0.3); border-radius: 999px; background: rgba(139,92,246,0.08); font-size: 0.72rem; font-weight: 700; }
         :root:root .cl-hb-guide { color: #7c3aed; }
         .cl-hb-guide:hover { background: rgba(139,92,246,0.16); border-color: #8b5cf6; }
         :root.dark-mode:root .cl-hb-guide { color: #c4b5fd; }
-        .cl-hb-more { font-weight: 800; color: var(--text-gray); }
+        .ci-menu-ico .cl-ico { display: block; }
         .checklist-card-header .cl-col-dots { width: 24px; gap: 3px; justify-content: flex-start; }
         .cl-dot-empty { width: 6px; height: 6px; display: inline-block; }
         .checklist-card.sub-item .checklist-card-header .cl-right { margin-right: 2px; }  /* 할 일 줄은 테두리가 없어 2px 더 넓음 — 상위 단계와 칸을 맞춤 */
@@ -35606,11 +35613,11 @@ ${aiPartnerCitationFirstRules}
                 const canMenu = !workflow.isReference && !workflow.completedProcessed;
                 const hb = (cls, onclick, title, html) => `<button type="button" class="cl-hb ${cls}" onclick="event.stopPropagation();${onclick}" title="${title}">${html}</button>`;
                 const hoverBar = [
-                    !isSkipped ? hb('cl-hb-guide', `app.showChecklistHelp(${workflow.id},${index})`, '이 항목의 업무팁·서식·법령을 한 화면에 모아 보기', `✨ ${this.isAIAvailable() ? 'AI 길잡이' : '길잡이'}`) : '',
-                    !isSkipped ? hb(hasTip ? 'on tip' : 'off', `app.showChecklistItemModal(${workflow.id},${index},'tip')`, hasTip ? `업무팁${tipN ? ` · 예시 ${tipN}` : ''}: ${this.escapeHtml(this._tipPreview(item))}` : '업무팁 — 아직 없음 (눌러서 쓰기)', '💡') : '',
-                    !isSkipped ? hb(hasFormats ? 'on fmt' : 'off', `app.showChecklistItemModal(${workflow.id},${index},'formats')`, hasFormats ? `서식 ${fmN}개` : '서식 — 아직 없음 (눌러서 연결)', `📄${hasFormats ? `<b>${fmN}</b>` : ''}`) : '',
-                    !isSkipped && !asTemplate ? hb(item.deadline ? 'on dl' : 'off', dlOpenJs, item.deadline ? `마감일: ${item.deadline} (눌러서 바꾸기)` : '마감일 정하기', '📅') : '',
-                    canMenu ? hb('cl-hb-more', `app.openChecklistItemMenu(event,${workflow.id},${index})`, '메뉴 (오른쪽 클릭과 같음)', '⋯') : '',
+                    !isSkipped ? hb('cl-hb-guide', `app.showChecklistHelp(${workflow.id},${index})`, '이 항목의 업무팁·서식·법령을 한 화면에 모아 보기', `${this._clIco('guide', 13)}${this.isAIAvailable() ? 'AI 길잡이' : '길잡이'}`) : '',
+                    !isSkipped ? hb(hasTip ? 'on tip' : 'off', `app.showChecklistItemModal(${workflow.id},${index},'tip')`, hasTip ? `업무팁${tipN ? ` · 예시 ${tipN}` : ''}: ${this.escapeHtml(this._tipPreview(item))}` : '업무팁 — 아직 없음 (눌러서 쓰기)', this._clIco('tip')) : '',
+                    !isSkipped ? hb(hasFormats ? 'on fmt' : 'off', `app.showChecklistItemModal(${workflow.id},${index},'formats')`, hasFormats ? `서식 ${fmN}개` : '서식 — 아직 없음 (눌러서 연결)', `${this._clIco('formats')}${hasFormats ? `<b>${fmN}</b>` : ''}`) : '',
+                    !isSkipped && !asTemplate ? hb(item.deadline ? 'on dl' : 'off', dlOpenJs, item.deadline ? `마감일: ${item.deadline} (눌러서 바꾸기)` : '마감일 정하기', this._clIco('deadline')) : '',
+                    canMenu ? hb('cl-hb-more', `app.openChecklistItemMenu(event,${workflow.id},${index})`, '메뉴 (오른쪽 클릭과 같음)', this._clIco('more', 16)) : '',
                 ].join('');
 
                 return `
@@ -36132,13 +36139,13 @@ ${aiPartnerCitationFirstRules}
                 // 펼친 칸에 있던 버튼들 — 줄을 두 줄로 늘리지 않고 여기서
                 // 순서는 마우스를 올린 줄의 버튼(✨ · 💡 · 📄 · 📅)과 같게
                 const tail = ['-'];
-                if (!isSkipped) tail.push([this.isAIAvailable() ? 'AI 길잡이' : '업무 길잡이', () => this.showChecklistHelp(workflowId, index), '✨']);
+                if (!isSkipped) tail.push([this.isAIAvailable() ? 'AI 길잡이' : '업무 길잡이', () => this.showChecklistHelp(workflowId, index), this._clIco('guide', 15, '#8b5cf6')]);
                 tail.push(
-                    ['조치결과', () => this.showChecklistItemModal(workflowId, index, 'result'), '📝'],
-                    ['업무팁', () => this.showChecklistItemModal(workflowId, index, 'tip'), '💡'],
-                    ['서식', () => this.showChecklistItemModal(workflowId, index, 'formats'), '📄'],
+                    ['조치결과', () => this.showChecklistItemModal(workflowId, index, 'result'), this._clIco('result', 15, '#8b5cf6')],
+                    ['업무팁', () => this.showChecklistItemModal(workflowId, index, 'tip'), this._clIco('tip', 15, '#f59e0b')],
+                    ['서식', () => this.showChecklistItemModal(workflowId, index, 'formats'), this._clIco('formats', 15, '#10b981')],
                 );
-                if (!isSkipped) tail.push(['마감일 정하기', () => this.showChecklistItemDeadlinePicker(workflowId, index), '📅']);
+                if (!isSkipped) tail.push(['마감일 정하기', () => this.showChecklistItemDeadlinePicker(workflowId, index), this._clIco('deadline', 15, '#2563eb')]);
                 entries.push(...tail);
                 this._openCiMenu(e.clientX, e.clientY, entries);
             }
@@ -36614,6 +36621,20 @@ ${aiPartnerCitationFirstRules}
             // 건너뛰기 아이콘 (꺾여 넘어가는 화살표 — 글꼴마다 모양이 다른 기호 대신 그림으로)
             // 건너뛰기 아이콘 ⤼ — 화살표가 아래 항목(짧은 막대)을 아치 모양으로 뛰어넘는 그림.
             // 문자 ⤼는 PC 글꼴에 따라 네모로 깨질 수 있어 같은 모양을 SVG로 그린다(편집 표시·일하는 화면 버튼·규칙 표시 공용)
+            // 체크리스트 줄 버튼·오른쪽 클릭 메뉴용 선 아이콘 (Lucide 모양, ISC 라이선스) — 이모지는 PC마다 모양이 달라 그림으로
+            // name: guide(반짝이) · result(메모) · tip(전구) · formats(문서) · deadline(달력) · more(⋯)
+            _clIco(name, size = 15, color = '') {
+                const P = {
+                    guide: '<path d="M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.14-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14a2 2 0 0 0 1.44 1.44l6.14 1.58a.5.5 0 0 1 0 .96l-6.14 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/>',
+                    result: '<path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.38 2.63a1 1 0 0 1 3 3l-9.01 9.01a2 2 0 0 1-.85.51l-2.87.84a.5.5 0 0 1-.62-.62l.84-2.87a2 2 0 0 1 .51-.85z"/>',
+                    tip: '<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>',
+                    formats: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/>',
+                    deadline: '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
+                    more: '<circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="19" cy="12" r="1.3" fill="currentColor"/><circle cx="5" cy="12" r="1.3" fill="currentColor"/>',
+                };
+                return `<svg class="cl-ico" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"${color ? ` style="color:${color}"` : ''}>${P[name] || ''}</svg>`;
+            }
+
             _skipIco(size = 11) {
                 return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;margin-right:3px;vertical-align:-1px;"><path d="M4 18Q12 2 20 16"/><polyline points="20 10.5 20 16 15 13.5"/><line x1="9" y1="21" x2="15" y2="21"/></svg>`;
             }
