@@ -57,8 +57,8 @@ scene("00_seed",
  "app.saveData();app.displayWorkflows();" + W(900))
 # ── 0. 하루의 시작: 마감 임박 알림 · 사이드바
 scene("01_main", "", "'.sidebar, #sidebarUrgent, .urgent-section'")
-scene("02_banner", "app.checkDeadlineNotifications();" + W(900), "'#deadlineBanner'", keepToast=True)
-scene("03_notify", "document.getElementById('deadlineBanner')?.classList.remove('show');const b=document.getElementById('deadlineBanner');if(b)b.style.display='none';app.toggleNotifyCenter();" + W(700), "'#notifyCenterMenu'")
+scene("02_banner", "app.checkDeadlineNotifications({startup:true});" + W(900), "'#deadlineBanner'", keepToast=True)
+scene("03_notify", "app.hideDeadlineBanner();document.getElementById('deadlineBanner')?.classList.remove('show');const b=document.getElementById('deadlineBanner');if(b)b.style.display='none';app.toggleNotifyCenter();" + W(700), "'#notifyCenterMenu'")
 # ── 1. 새 업무 만들기 (징계처분)
 scene("04_newmenu", "if(document.getElementById('notifyCenterMenu')?.classList.contains('show'))app.toggleNotifyCenter();document.body.click();" + W(300) + "document.querySelector('[onclick*=\"newWorkMenu\"]').click();" + W(400), "'#newWorkMenu'")
 scene("05_step1", "app.closeAllDropdowns();app.openModal('manualModal');" + W(500) + "document.getElementById('manualProjectName').value='소방장 품위유지의무 위반 징계처분';", "'#manualProjectName'")
