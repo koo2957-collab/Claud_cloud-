@@ -36,7 +36,7 @@ step("닫기", "[...document.querySelectorAll('.modal.show')].reverse().forEach(
 rows = "const rows=sel=>[...document.querySelectorAll(sel)].filter(x=>x.offsetParent).map(r=>{const cs=getComputedStyle(r);const ico=r.querySelector('.rf-ico,.rf-thumb');const ir=ico?ico.getBoundingClientRect():null;return Math.round(r.getBoundingClientRect().height)+'px'+(cs.borderLeftWidth!=='0px'?' 상자':'')+(ir?' 표 '+Math.round(ir.width)+'x'+Math.round(ir.height):'')}).join(', ');"
 step("항목 창 서식 탭 줄", rows + "await app.showChecklistItemModal(8801,1,'formats');await W(800);return rows('#cimOverlay .rf-row')")
 S.append({"shot": "fl_fm.png"})
-step("항목 창 조치결과 첨부 줄", rows + "app.switchChecklistItemTab(8801,1,'result');await W(600);return rows('#cimOverlay .rf-box .rf-row')")
+step("항목 창 처리결과 첨부 줄", rows + "app.switchChecklistItemTab(8801,1,'result');await W(600);return rows('#cimOverlay .rf-box .rf-row')")
 step("항목 창 업무팁 예시 줄", rows + "app.switchChecklistItemTab(8801,1,'tip');await W(800);return rows('#cimOverlay .tf-box .rf-row')")
 S.append({"shot": "fl_tip.png"})
 step("길잡이 서식 줄", "app.closeChecklistItemModal();await W(400);await app.showChecklistHelp(8801,1);await W(1400);const c=[...document.querySelectorAll('.gd-modal .gd-card')];return c.map(x=>{const cs=getComputedStyle(x);const ico=x.querySelector('.rf-ico').getBoundingClientRect();return Math.round(x.getBoundingClientRect().height)+'px 테두리='+cs.borderLeftWidth+' 표 '+Math.round(ico.width)+'x'+Math.round(ico.height)+' ⬇보임='+getComputedStyle(x.querySelector('.attach-file-btn')||x).opacity}).join(' / ')")

@@ -1,0 +1,61 @@
+import json
+# 진행상황 출력 3: A4 쪽 나눔(머리말 없음·쪽 번호) · 모든 줄 고치기·편집본·바뀜 알림·처음으로 · 작성자(연락처) 위치 · 넘침 · 날짜 규칙 → steps3.json
+P = "(async()=>{try{const W=ms=>new Promise(r=>setTimeout(r,ms));const wf=()=>app.allData.workflows.find(w=>w.id===8951);"
+E = "}catch(e){return 'ERR '+e.message+' '+(e.stack||'').split('\\n')[1]}})()"
+S = []
+def step(label, body): S.append({"label": label, "js": P + body + E})
+def pt(body): S.append({"pt": True, "js": P + body + E})
+pages = "const pgs=()=>[...document.querySelectorAll('#prPage .pr-pg')];const pinfo=()=>{const p=pgs();return p.length+'쪽 · 크기 '+p.map(x=>Math.round(x.getBoundingClientRect().width)+'x'+Math.round(x.getBoundingClientRect().height)).slice(0,1)+' · 쪽 번호 '+p.map(x=>x.lastElementChild.textContent.trim()).join(' ')+' · 넘침='+p.some(x=>x.querySelector('.pr-doc, table')&&[...x.querySelectorAll('.pr-b, td')].some(e=>e.scrollWidth>e.clientWidth+2))+' · 아래로 넘침='+p.some(x=>{const b=x.getBoundingClientRect();return [...x.querySelectorAll('.pr-b, tr')].some(e=>e.getBoundingClientRect().bottom>b.bottom-15*3.78)})};"
+step("seed", "localStorage.setItem('startupPromptShown','1');localStorage.setItem('deadlineNotifyMode','off');document.querySelectorAll('.modal.show').forEach(m=>m.classList.remove('show'));"
+     "app._collabSetMe({dept:'사하소방서 감사팀',rank:'소방위',name:'홍길동',phone:'4521'});"
+     "const ago=n=>new Date(Date.now()-n*864e5).toISOString();const D=n=>{const d=new Date(Date.now()+n*864e5);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};const cl=[];"
+     "for(let s=1;s<=9;s++){cl.push({text:'단계 '+s+' — 관계 기관 협의 및 사실관계 확인을 위한 자료 요청과 회신 검토',indent:0,completed:s<=4,completedAt:s<=4?ago(40-s*4):null});for(let k=1;k<=3;k++){const dn=s<=4;cl.push({text:'할 일 '+s+'-'+k+' 공문 발송 및 회신 확인',indent:1,completed:dn,completedAt:dn?ago(40-s*4-k):null,deadline:dn?undefined:D(s*3+k),result:dn?{text:(k===2?'2026.10.16.(금)등기우편발송,10.19.(월)수령확인완료—관련자료일체첨부http://example.go.kr/very/long/path/without/spaces/0123456789':'회신 접수\\n검토 의견 작성\\n결재 완료')}:undefined});}}"
+     "app.allData.workflows.unshift({id:8951,type:'manual',title:'종합감사 처리절차',checklist:cl,date:'2026. 9. 1.',createdAt:ago(45),deadline:D(30),folderPath:''});wf().checklist.forEach(it=>app.ensureChecklistItemId(it));"
+     "app.saveData();app.displayWorkflows();await W(400);app.focusWorkflow(8951);await W(1500);app.openProgressReport(8951,'report');await W(1000);return 'ok'")
+step("보고서 쪽 나눔", pages + "return pinfo()")
+S.append({"shot": "r3_p1.png"})
+step("맨 위 오른쪽 한 줄('YY.MM.DD. 소속 계급 이름) → 제목", "const p=document.querySelector('#prPage .pr-pg');const bs=[...p.querySelectorAll('.pr-b')].slice(0,2).map(b=>b.dataset.k+'['+getComputedStyle(b).textAlign+']「'+b.innerText.trim()+'」');return bs.join(' / ')")
+step("두 줄 넘는 글: 둘째 줄도 글 첫 글자 아래(기호 아래로 안 파고듦)", "const ed=[...document.querySelectorAll('#prPage .pr-ed')].find(e=>/http/.test(e.textContent));const r=document.createRange();r.selectNodeContents(ed);const ls=[...r.getClientRects()].map(x=>Math.round(x.left));const pre=ed.previousElementSibling.getBoundingClientRect();return '줄 수='+new Set([...r.getClientRects()].map(x=>Math.round(x.top))).size+' | 줄 왼쪽='+[...new Set(ls)].join(',')+' | 기호 오른쪽='+Math.round(pre.right)")
+step("할 일이 있는 단계 줄에는 날짜 없음, 할 일 앞에 날짜, 처리결과는 · 줄", "const t=[...document.querySelectorAll('#prPage .pr-b')].map(b=>b.innerText.trim());const i=t.findIndex(x=>/^○ 단계 1 /.test(x));return t.slice(i,i+6).join(' ¶ ')")
+step("둘째 쪽에 「(계속)」 없음", "const p=document.querySelectorAll('#prPage .pr-pg')[1];if(!p)return '한 쪽뿐';const d=p.querySelector('.pr-doc');return [...d.children].slice(0,3).map(c=>c.innerText.trim().slice(0,30)).join(' / ')")
+# 줄 고치기
+pt("const el=[...document.querySelectorAll('#prPage .pr-ed')].find(e=>/단계 1 —/.test(e.textContent));el.scrollIntoView({block:'center'});await W(300);const r=el.getBoundingClientRect();window.__k=el.dataset.k;return JSON.stringify([r.right-5,r.top+8])")
+S.append({"clickpt": 1, "wait": 100})
+S.append({"key": "End", "vk": 35})
+S.append({"text": " (보완 요청 포함)"})
+S.append({"key": "Enter", "vk": 13})
+step("○ 줄 실제로 고침 → 저장·쪽 다시 나눔", "await W(700);const e=app._prSaved(wf()).edits||{};return '저장='+(e[window.__k]||'').slice(-12)+' | 보이는 글='+[...document.querySelectorAll('#prPage .pr-ed')].find(x=>x.dataset.k===window.__k)?.textContent.slice(-12)")
+pt("const el=[...document.querySelectorAll('#prPage .pr-ed')].find(e=>/보완 요청 포함/.test(e.textContent));el.scrollIntoView({block:'center'});await W(300);const r=el.getBoundingClientRect();return JSON.stringify([r.right-3,r.bottom-8])")
+S.append({"clickpt": 1, "wait": 100})
+S.append({"key": "End", "vk": 35})
+S.append({"key": "Enter", "vk": 13})
+S.append({"text": "추가한 줄입니다"})
+step("Enter = 같은 기호(○)의 새 줄", "await W(400);const a=app._prSaved(wf()).adds||[];const el=document.activeElement;return '넣은 줄='+a.length+' 기호='+(a[0]&&a[0].lv)+' 글='+(a[0]&&a[0].html)+' | 앞 줄 바로 아래='+(el.closest('.pr-b').previousElementSibling?.querySelector('.pr-ed')?.dataset.k===window.__k)")
+S.append({"key": "Tab", "vk": 9})
+step("Tab = 들이기(○ → -)", "await W(400);const a=app._prSaved(wf()).adds||[];return '기호='+a[0].lv+' | 화면 기호='+document.activeElement.previousElementSibling?.textContent")
+S.append({"key": "Tab", "vk": 9, "mods": 8})
+step("Shift+Tab = 내기(- → ○)", "await W(400);return '기호='+(app._prSaved(wf()).adds||[])[0].lv")
+S.append({"key": "Enter", "vk": 13, "mods": 8})
+S.append({"text": "같은 줄 둘째 줄"})
+step("Shift+Enter = 줄 안에서 줄바꿈", "await W(400);const h=(app._prSaved(wf()).adds||[])[0].html;return '줄바꿈='+/<br>/i.test(h)+' | '+h")
+S.append({"key": "Enter", "vk": 13})
+S.append({"key": "Backspace", "vk": 8})
+step("새 빈 줄에서 Backspace = 그 줄 지우기", "await W(500);const a=app._prSaved(wf()).adds||[];return '넣은 줄 수='+a.length+' | 초점='+(document.activeElement.textContent||'').slice(0,12)")
+step("출력에 넣은 줄이 들어감", "document.activeElement.blur();await W(500);const t=app._prReportFlatHtml(wf(),app._prOpts()).replace(/<br>/g,'/').replace(/<[^>]+>/g,'');return /추가한 줄입니다.같은 줄 둘째 줄/.test(t)?'들어감':'안 들어감: '+t.slice(0,80)")
+step("⤢ 전체화면 버튼", "const b=document.querySelector('#progressReportModal .mx-btn');b.click();await W(400);const m=document.getElementById('progressReportModal');const r=m.querySelector('.pr-win').getBoundingClientRect();const on=m.classList.contains('mx-full');b.click();await W(300);return '전체화면='+on+' 크기='+Math.round(r.width)+'x'+Math.round(r.height)+' (창 '+innerWidth+'x'+innerHeight+') | 다시 누르면 원래='+!m.classList.contains('mx-full')")
+step("줄을 비우면 출력에서 빠짐", "const ed=Object.assign({},app._prSaved(wf()).edits);const k=[...document.querySelectorAll('#prPage .pr-ed')].find(x=>/^할 일 1-1/.test(x.textContent.replace(/^[\\d. ()월화수목금토일]+/,''))||/할 일 1-1/.test(x.textContent)).dataset.k;ed[k]='';app._prSave(wf(),{edits:ed});app._prRender(wf());await W(500);const html=app._prReportFlatHtml(wf(),app._prOpts());return '편집 화면에 흐리게 남음='+!!document.querySelector('#prPage .pr-b.pr-gone')+' | 출력에서 빠짐='+!/할 일 1-1/.test(html.replace(/<[^>]+>/g,''))")
+step("체크리스트가 바뀌어도 알림 없음, 고친 줄 그대로", "app.toggleChecklistItem(8951,wf().checklist.findIndex(x=>x.text==='할 일 5-1 공문 발송 및 회신 확인'));await W(1500);app._prRender(wf());await W(400);return '알림='+!!document.querySelector('.pr-stale')+' | 고친 줄='+/보완 요청 포함/.test(document.getElementById('prPage').textContent)+' | 새로 끝낸 할 일 반영='+/할 일 5-1/.test(document.querySelector('#prPage').textContent.split('3. 향후 계획')[0])")
+step("[↺ 처음 내용으로] → [되돌리기]", "document.querySelector('.pr-reset').click();await W(500);const a=/보완 요청 포함/.test(document.getElementById('prPage').textContent);const b=[...document.querySelectorAll('.toast button, .toast [class*=action]')].find(x=>/되돌리기/.test(x.textContent));b&&b.click();await W(500);return '처음으로='+!a+' | 되돌리기 후 고친 줄='+/보완 요청 포함/.test(document.getElementById('prPage').textContent)")
+step("인쇄: 여백 0(머리말 없음)·쪽 그대로", "app._prPrint(8951);await W(800);const f=document.getElementById('prPrintFrame');const d=f.contentDocument;return '여백0='+/@page\\{size:A4 portrait;margin:0\\}/.test(f.srcdoc)+' | 인쇄 쪽 수='+d.querySelectorAll('.pr-pg').length+' = 미리보기 '+document.querySelectorAll('#prPage .pr-pg').length")
+# 체크리스트
+step("체크리스트 쪽 나눔(머리줄 반복)", pages + "document.querySelector('.pr-tabs [data-tab=checklist]').click();await W(800);return pinfo()+' | 쪽마다 머리줄='+pgs().map(p=>p.querySelectorAll('thead').length).join(',')")
+S.append({"shot": "r3_cl.png"})
+step("체크리스트 맨 위 오른쪽 한 줄", "const p=document.querySelector('#prPage .pr-pg');return [...p.querySelector('div').children].slice(0,3).map(c=>'['+getComputedStyle(c).textAlign+']'+c.innerText.trim().slice(0,40)).join(' / ')")
+step("단계 띠(표 전체 폭) + 할 일 줄", "const tr=[...document.querySelectorAll('#prPage tbody tr')].slice(0,3).map(r=>(r.children[0].colSpan>1?'[띠 '+r.children[0].colSpan+'칸] ':'')+[...r.children].map(c=>c.innerText.replace(/\\s+/g,' ').trim()).join('|').slice(0,70));return tr.join(' / ')")
+step("가로 버튼", "document.querySelector('[data-land=\"1\"]').click();await W(700);const p=document.querySelector('#prPage .pr-pg').getBoundingClientRect();const r='쪽 크기='+Math.round(p.width)+'x'+Math.round(p.height)+' 쪽 수='+document.querySelectorAll('#prPage .pr-pg').length+' 처리결과 칸 폭='+Math.round(document.querySelector('#prPage thead th:nth-child(5)').getBoundingClientRect().width);app._prPrint(8951);await W(600);const ok=/size:A4 landscape/.test(document.getElementById('prPrintFrame').srcdoc);document.querySelector('[data-land=\"0\"]').click();await W(500);return r+' | 인쇄 가로='+ok+' | 다시 세로 폭='+Math.round(document.querySelector('#prPage .pr-pg').getBoundingClientRect().width)")
+step("창 크기 끌어서 조절(기억)", "const box=document.querySelector('.pr-win');const h=box.querySelector('.pr-rz-br');const r0=box.getBoundingClientRect();const b=h.getBoundingClientRect();h.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,button:0,clientX:b.left+5,clientY:b.top+5}));window.dispatchEvent(new PointerEvent('pointermove',{clientX:b.left-95,clientY:b.top-45}));window.dispatchEvent(new PointerEvent('pointerup',{}));await W(300);const r1=box.getBoundingClientRect();return Math.round(r0.width)+'x'+Math.round(r0.height)+' → '+Math.round(r1.width)+'x'+Math.round(r1.height)+' | 기억='+localStorage.getItem('prSize')")
+step("할 일이 있는 단계의 날짜 칸", "const r=[...document.querySelectorAll('#prPage tbody tr')].slice(0,2).map(tr=>[...tr.children].slice(0,4).map(c=>c.innerText.trim()).join('|'));return r.join(' / ')")
+step("처리결과 3줄까지", "document.querySelector('[data-opt=clShort]').click();await W(500);const c=[...document.querySelectorAll('#prPage tbody tr td:nth-child(5)')].find(td=>/…/.test(td.textContent));const r='줄인 칸='+!!c;document.querySelector('[data-opt=clShort]').click();await W(300);return r")
+step("환경설정 → 일반에 연락처", "app.closeProgressReport();await W(300);app.openPreferences('general');await W(700);const rows=[...document.querySelectorAll('.prefs-row')].map(r=>r.querySelector('.prefs-row-label')?.textContent.trim().slice(0,8)).filter(t=>/소속|계급|이름|연락처/.test(t));const v=[...document.querySelectorAll('.prefs-row input')].map(i=>i.value).filter(Boolean);app.closeModal&&app.closeModal('prefsModal');document.querySelectorAll('.modal.show').forEach(m=>m.classList.remove('show'));return rows.join(',')+' | 값='+v.join(',')")
+json.dump(S, open('steps3.json', 'w', encoding='utf-8'), ensure_ascii=False)
+print(len(S))
