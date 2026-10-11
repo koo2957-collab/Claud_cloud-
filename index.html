@@ -2623,6 +2623,13 @@
         .proc-more:hover, .proc-tip-fold:hover { text-decoration: underline; }
         :root.dark-mode:root .proc-more { color: #c4b5fd; }
         :root.dark-mode:root .proc-tip-src { color: #c4b5fd; }
+        /* 업무 절차 상자의 묶음 제목 — 줄 버튼과 같은 아이콘·색 (업무팁 주황 · 서식 초록) */
+        .proc-sec-label { display: flex; align-items: center; gap: 5px; }
+        .proc-sec-label .cl-ico { flex-shrink: 0; }
+        :root:root .proc-sec-label.tip .cl-ico { color: #f59e0b; }
+        :root:root .proc-sec-label.fmt .cl-ico { color: #10b981; }
+        .proc-fmt-ico { flex-shrink: 0; margin-top: 3px; display: inline-flex; }
+        :root:root .proc-fmt-ico { color: #10b981; opacity: 0.8; }
 
         /* ── 업무팁·서식 아이콘 (업무 절차) ── */
         .cl-ind-btn { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; padding: 0; border: none; border-radius: 5px; background: transparent; font-size: 0.86rem; line-height: 1; cursor: pointer; opacity: 0.95; flex-shrink: 0; transition: opacity 0.12s, background 0.12s, transform 0.12s; }
@@ -3243,7 +3250,8 @@
             transition: background 0.15s, color 0.15s;
         }
         .ai-panel-view-tab:hover:not(.disabled):not(.active) { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.85); }
-        .ai-panel-view-tab.active { background: white; }
+        .ai-panel-view-tab.active { background: white; color: #7c3aed; }
+        .ai-panel-view-tab svg, .ai-panel-header-close svg { display: block; }
         .ai-panel-view-tab.disabled { opacity: 0.35; cursor: not-allowed; }
 
         /* 컨텍스트 토글 바 */
@@ -6115,10 +6123,10 @@
                     <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
                         <button type="button" class="tts-auto-toggle tts-auto-toggle--dark" id="aiPanelTtsToggle" data-tts-scope="panel" onclick="app.toggleTTSAuto('panel', this)" aria-pressed="false"><span class="tts-auto-icon"></span><span class="ai-toggle-wrap"><span class="ai-toggle-knob"></span></span></button>
                         <div class="ai-panel-view-switch" id="aiPanelViewTabs">
-                            <button class="ai-panel-view-tab" id="aiPanelTabProcedure" onclick="app.setAiPanelView('procedure')" title="업무 절차">📋</button>
-                            <button class="ai-panel-view-tab" id="aiPanelTabChat" onclick="app.setAiPanelView('chat')" title="AI 업무파트너">💬</button>
+                            <button class="ai-panel-view-tab" id="aiPanelTabProcedure" onclick="app.setAiPanelView('procedure')" title="업무 절차"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg></button>
+                            <button class="ai-panel-view-tab" id="aiPanelTabChat" onclick="app.setAiPanelView('chat')" title="AI 업무파트너"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/></svg></button>
                         </div>
-                        <button class="ai-panel-header-close" onclick="app.toggleAiPanel()" title="패널 닫기">✕</button>
+                        <button class="ai-panel-header-close" onclick="app.toggleAiPanel()" title="패널 닫기"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
                     </div>
                 </div>
             </div>
@@ -12405,7 +12413,7 @@
                     const g = document.createElement('div');
                     g.className = 'proc-fold' + (this._procDoneOpen && this._procDoneOpen[workflowId] ? ' open' : '');
                     g.id = 'procFold';
-                    g.innerHTML = `<button type="button" class="proc-fold-btn" onclick="app.toggleProcFold(${workflowId})"><span class="proc-fold-ico">✓</span><span id="procFoldLabel"></span><span class="proc-fold-arrow">▾</span></button><div class="proc-fold-list" id="procFoldList"></div>`;
+                    g.innerHTML = `<button type="button" class="proc-fold-btn" onclick="app.toggleProcFold(${workflowId})"><span class="proc-fold-ico"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span><span id="procFoldLabel"></span><span class="proc-fold-arrow">▾</span></button><div class="proc-fold-list" id="procFoldList"></div>`;
                     track.insertBefore(g, track.firstChild);
                     list = g.querySelector('#procFoldList');
                 }
@@ -27364,14 +27372,14 @@ ${docScope === 'internal' ? `[내부결재 — 보고·검토·승인용]
                         : (subTip ? `<div class="proc-tip-src">${esc(stepItem.text || '')}</div>` : '') + noteHtml(stageTip, both ? 3 : 7, opt.stageIdx);
                     const subSec = !subTip ? '' : `<div class="proc-tip-src${stageTip ? ' sep' : ''}">${esc(subItem.text || '')} <span>· 지금 할 일</span></div>${noteHtml(subTip, both ? 4 : 7, opt.subIdx)}`;
                     const tipBlock = !tipText && !thumbsHtml ? '' : `<div>
-                            <div style="${sectionLabelStyle}">업무팁</div>
+                            <div class="proc-sec-label tip" style="${sectionLabelStyle}">${this._clIco('tip', 13)}업무팁</div>
                             ${stageSec}${subSec}${thumbsHtml}
                         </div>`;
                     clearTimeout(this._procClampT);
                     this._procClampT = setTimeout(() => this._procClampCheck(), 30);
                     const formatsBlock = formatNames.length > 0 ? `<div${tipText ? ' style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(139,92,246,0.15);"' : ''}>
-                            <div style="${sectionLabelStyle}">필요 서식·문서</div>
-                            ${formatNames.map(n => `<div style="display:flex;align-items:flex-start;gap:6px;font-size:0.78rem;color:var(--text-dark,#1e2d47);line-height:1.55;margin-bottom:3px;"><span style="color:#8b5cf6;flex-shrink:0;margin-top:3px;font-size:0.62rem;">▸</span><span>${esc(n)}</span></div>`).join('')}
+                            <div class="proc-sec-label fmt" style="${sectionLabelStyle}">${this._clIco('formats', 13)}필요 서식·문서</div>
+                            ${formatNames.map(n => `<div style="display:flex;align-items:flex-start;gap:6px;font-size:0.78rem;color:var(--text-dark,#1e2d47);line-height:1.55;margin-bottom:3px;"><span class="proc-fmt-ico">${this._clIco('formats', 12)}</span><span>${esc(n)}</span></div>`).join('')}
                         </div>` : '';
                     return `<div ${idAttr}class="proc-step-detail" style="margin-top:6px;padding:9px 11px;background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.15);border-radius:8px;">
                         ${tipBlock}${formatsBlock}
@@ -27386,11 +27394,11 @@ ${docScope === 'internal' ? `[내부결재 — 보고·검토·승인용]
 
                 let deadlineHtml = '';
                 if (currentStepPos === -1 && awayLeft) {
-                    deadlineHtml = `<span style="font-size:0.78rem;font-weight:700;color:#b45309;">⏳ 회신 대기 ${awayLeft}</span>`;
+                    deadlineHtml = `<span style="font-size:0.78rem;font-weight:700;color:#b45309;display:inline-flex;align-items:center;gap:4px;">${this._clIco('wait', 13)}회신 대기 ${awayLeft}</span>`;
                 } else if (currentStepPos === -1) {
                     deadlineHtml = procMine
-                        ? `<span style="font-size:0.78rem;font-weight:700;color:#10b981;">✅ 내 담당 완료</span>`
-                        : `<span style="font-size:0.78rem;font-weight:700;color:#10b981;">🎉 완료</span>`;
+                        ? `<span style="font-size:0.78rem;font-weight:700;color:#10b981;display:inline-flex;align-items:center;gap:4px;">${this._clIco('done', 14)}내 담당 완료</span>`
+                        : `<span style="font-size:0.78rem;font-weight:700;color:#10b981;display:inline-flex;align-items:center;gap:4px;">${this._clIco('done', 14)}완료</span>`;
                 } else if (workflow.deadline) {
                     const today = new Date(); today.setHours(0, 0, 0, 0);
                     const dl = new Date(workflow.deadline); dl.setHours(0, 0, 0, 0);
@@ -27410,7 +27418,7 @@ ${docScope === 'internal' ? `[내부결재 — 보고·검토·승인용]
                     let iconHtml, textColor, lineColor;
                     if (isAway) {
                         // 맡겨서 기다리는 중: 점선 동그라미 안 모래시계
-                        iconHtml = `<div class="proc-step-icon-wait" style="width:18px;height:18px;border-radius:5px;border:2px dashed #f59e0b;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;line-height:1;">⏳</div>`;
+                        iconHtml = `<div class="proc-step-icon-wait" style="width:18px;height:18px;border-radius:5px;border:2px dashed #f59e0b;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#f59e0b;">${this._clIco('wait', 10)}</div>`;
                         textColor = 'var(--text-gray,#64748b)';
                         lineColor = 'var(--border-light,#dde3ee)';
                     } else if (isDone) {
@@ -27495,7 +27503,7 @@ ${docScope === 'internal' ? `[내부결재 — 보고·검토·승인용]
                 });
                 const procFoldOpen = !!(this._procDoneOpen && this._procDoneOpen[workflowId]);
                 const stepsHtml = (foldedRows.length ? `<div class="proc-fold${procFoldOpen ? ' open' : ''}" id="procFold">
-                        <button type="button" class="proc-fold-btn" onclick="app.toggleProcFold(${workflowId})"><span class="proc-fold-ico">✓</span><span id="procFoldLabel">${this._procFoldLabel(workflow, foldedIdx)}</span><span class="proc-fold-arrow">▾</span></button>
+                        <button type="button" class="proc-fold-btn" onclick="app.toggleProcFold(${workflowId})"><span class="proc-fold-ico"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span><span id="procFoldLabel">${this._procFoldLabel(workflow, foldedIdx)}</span><span class="proc-fold-arrow">▾</span></button>
                         <div class="proc-fold-list" id="procFoldList">${foldedRows.join('')}</div>
                     </div>` : '') + shownRows.join('');
 
@@ -36622,7 +36630,7 @@ ${aiPartnerCitationFirstRules}
             // 건너뛰기 아이콘 ⤼ — 화살표가 아래 항목(짧은 막대)을 아치 모양으로 뛰어넘는 그림.
             // 문자 ⤼는 PC 글꼴에 따라 네모로 깨질 수 있어 같은 모양을 SVG로 그린다(편집 표시·일하는 화면 버튼·규칙 표시 공용)
             // 체크리스트 줄 버튼·오른쪽 클릭 메뉴용 선 아이콘 (Lucide 모양, ISC 라이선스) — 이모지는 PC마다 모양이 달라 그림으로
-            // name: guide(반짝이) · result(메모) · tip(전구) · formats(문서) · deadline(달력) · more(⋯)
+            // name: guide(반짝이) · result(메모) · tip(전구) · formats(문서) · deadline(달력) · more(⋯) · wait(모래시계) · done(동그라미 ✓)
             _clIco(name, size = 15, color = '') {
                 const P = {
                     guide: '<path d="M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.14-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14a2 2 0 0 0 1.44 1.44l6.14 1.58a.5.5 0 0 1 0 .96l-6.14 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/>',
@@ -36630,6 +36638,8 @@ ${aiPartnerCitationFirstRules}
                     tip: '<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>',
                     formats: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/>',
                     deadline: '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
+                    wait: '<path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.17a2 2 0 0 0-.59-1.42L12 12l-4.41 4.41A2 2 0 0 0 7 17.83V22"/><path d="M7 2v4.17a2 2 0 0 0 .59 1.42L12 12l4.41-4.41A2 2 0 0 0 17 6.17V2"/>',
+                    done: '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
                     more: '<circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="19" cy="12" r="1.3" fill="currentColor"/><circle cx="5" cy="12" r="1.3" fill="currentColor"/>',
                 };
                 return `<svg class="cl-ico" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"${color ? ` style="color:${color}"` : ''}>${P[name] || ''}</svg>`;
