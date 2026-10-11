@@ -56,6 +56,7 @@
 | `collab2.mjs <앱 경로> <steps 파일>` | 브라우저 여러 개(A=관리자, B·C=담당자)로 업무 분담 파일 주고받기를 시험. 저장 창만 가로채고 받는 쪽은 실제 파일 입력칸으로 엶 |
 | `mk_collab.py` | 업무 분담 전체 흐름 시험 대본 → `steps_collab.json` |
 | `mk_row_test.py` | 일하는 화면 줄 표시(「1/2」·버튼 줄·⋯ 메뉴·한 줄 제목) 시험 대본 → `steps3.json` |
+| `mk_zoom_test.py` | 사진 미리보기 확대·축소(누른 곳 중심·Ctrl+휠·끌기·막대·키·PDF에서 막대 숨김) 시험 대본 → `steps3.json` |
 | `mk_printwin_test.py` | 작은 인쇄 창(열기·닫기·Esc·가로·팝업 막힘) 시험 대본 → `steps3.json` |
 | `mk_cltitle_test.py` | 진행상황 출력: 체크리스트 탭 먼저·제목 고치기 시험 대본 → `steps3.json` |
 | `mk_skippanel_test.py` | 업무 절차 패널 건너뛴 항목 표시 시험 대본 → `steps3.json` |
@@ -83,7 +84,7 @@
 1. `tools/mkman2.py`: 시연 시나리오(예시는 징계처분·물품 구매 계약·감찰조사)를 실행할 `steps.json`을 만듭니다.
 2. `node tools/cdp2.mjs <index.html 경로> > tools/man2_out.txt`: 장면마다 촬영해 `tools/man2/*.png`를 만들고, 강조 위치를 기록합니다.
 3. `tools/manual_data2.py`: 장·장면·설명 문구를 담습니다. 새 장면을 넣거나 문구를 고치는 곳입니다.
-4. `python tools/build_manual2.py 사용설명서`: HTML과 img를 만듭니다(장면 47개).
+4. `python tools/build_manual2.py 사용설명서`: HTML과 img를 만듭니다(장면 48개).
 
 ## 시연 영상 (선택)
 
@@ -106,6 +107,7 @@
 - 윈도우 PC 저장소는 `core.autocrlf=false`로 둠(받을 때 CRLF로 바뀌어 패치가 멈추던 것)
 
 **최근에 끝낸 것(이번 작업 묶음):**
+- v1.5.5 사진 미리보기 확대·축소: 누르면 누른 곳 중심으로 100%(작은 사진은 2배), 다시 누르면 맞춤, Ctrl+휠(마우스 자리 중심), 확대 중 끌어 옮기기, 아래 막대 [－ 배율 ＋ 맞춤], ＋/－/0 키(맨 위 미리보기 창이면 초점 상관없이). 예전 `pv-actual`(왼쪽 위로 붙던 원래 크기) 대신 `_pvZoomSet(pc,s,cx,cy)` — 확대 때 사진을 가운데 정렬 상자 `.pv-zw`(최소 100%·max-content)에 넣어 왼쪽이 잘리지 않게, `#previewContent.pv-zoom`은 display:block. 다음 예시로 넘기면 맞춤, PDF면 막대 숨김. 시험 대본 `tools/mk_zoom_test.py`(cdp3에 `wheel`+`mods`(Ctrl=2)·`drag:[dx,dy]` 추가). 설명서 장면 21b_zoom 추가(장면 48개)
 - v1.5.4 인쇄는 작은 별도 창(사용자 선택, Gmail 방식): `_openPrintWindow({title,pages,landscape})` — 가운데 작은 창(`_popupFeatures(w,h)`, 세로 900·가로 1220 너비), 위 [인쇄 · PDF]·[닫기](Esc, 인쇄 때 숨김), 열리면 바로 `print()`. 막히면(null) 알림 + 예전 숨은 iframe 인쇄. 저장된 문서·보고서 보기 창(`openSavedDocInNewWindow`·`openDocumentInNewWindow`·`downloadReport`)도 `_popupFeatures(1000,860)`. 팝업은 사용자가 누른 직후에만 열리므로 시험에서 `app._prPrint()`를 바로 부르면 막혀 숨은 틀로 갈 수 있음 — 시험 대본은 둘 다 받도록(`pw()` 도우미). `printWorkflow`·`printAllWorkflows`·`openPDFModal` 안쪽 옛 인쇄 코드는 부르는 곳 없음. 시험 대본 `tools/mk_printwin_test.py`
 - v1.5.4 진행상황 출력: 탭 순서 「체크리스트 · 진행상황 보고」, 처음 열면 체크리스트(`_prTab` 기본값 checklist). 체크리스트·점검표 제목 고치기(`.pr-ed[data-k=clTitle|clTitleB]`, `_clBindTitle`, 저장 `progressReport.clTitle`·`clTitleB`, 비우면 기본 `_clDefaultTitle`, 인쇄 제목·복사에도 `_clTitleHtml/_clTitleText`). 시험 대본 `tools/mk_cltitle_test.py`. 설명서는 22d_checklist(먼저) → 22c_report 순서
 - v1.5.3 체크리스트 출력 표 칸 맞춤(클라우드 세션, 사용자 선택): 단계 줄도 머리줄과 같은 칸(번호 · 단계 이름 · 상태에 끝낸 할 일 수 「2/3」 · 완료일 · 처리결과 · 점검표는 비고)에 진한 바탕, 할 일은 번호 칸까지 합친 한 칸(colspan 2)에 「○ 할 일」(늘 빈 동그라미, 1-1 번호 없앰), ☐/☑는 늘 상태 칸. `mk_report3_test.py`에 「단계 줄이 머리줄 칸에 맞음」 확인 추가(처리결과는 이제 줄의 맨 끝 칸). 「처리결과 3줄까지」 확인은 시험 자료에 3줄 넘는 결과가 없어 예전부터 false

@@ -95,6 +95,9 @@ scene("17b_thumbs", "app.closeChecklistItemModal();" + W(400) + "app.refreshAIPa
 scene("17c_pick", "app.toggleStageOpen(window.__wid,idxOf('징계 처분'));" + W(500) + "app.toggleChecklistPeek(window.__wid,idxOf('처분사유설명서 교부'));" + W(900), "'.proc-step-row.is-picked'")
 scene("20_refpop", "app.toggleStageOpen(window.__wid,idxOf('징계 처분'));" + W(500) + "app.closeChecklistItemModal();" + W(400) + "const m=document.querySelector('.ref-chip-more');m&&m.click();" + W(500), "'#refPop'")
 scene("21_preview", "app._refPopClose();" + W(200) + "await app.previewLibraryFile(7401);" + W(900), "'.pv-modal .modal-content'")
+# 사진 미리보기 확대: 등기 수령증 예시의 「수령일」 쪽을 눌러 그 자리를 중심으로 확대
+scene("21b_zoom", "document.querySelectorAll('.pv-modal').forEach(m=>m.remove());app.restoreBodyScroll&&app.restoreBodyScroll();" + W(300) + "app.previewTipFile(window.__wid,idxOf('출석통지서 발송 (회의 3일 전 도달)'),0);" + W(1500) +
+ "const pc=[...document.querySelectorAll('.pv-win #previewContent')].pop();const im=pc&&pc.querySelector('img');if(im){const r=im.getBoundingClientRect();app._pvZoomSet(pc,Math.max(1.4,app._pvZoomFit(pc,im)*2),r.left+r.width*0.42,r.top+r.height*0.66);}" + W(500), "[...document.querySelectorAll('.pv-zbar')].pop()")
 scene("22_menu", "document.querySelectorAll('.pv-modal').forEach(m=>m.remove());app.restoreBodyScroll&&app.restoreBodyScroll();" + W(300) +
  "const r=row('출석통지서 발송');const h=r.querySelector('.checklist-card-header');const b=h.getBoundingClientRect();h.dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true,clientX:b.left+240,clientY:b.top+16}));" + W(400), "'#checklistItemMenu'")
 scene("22b_guide", "app._closeChecklistItemMenu&&app._closeChecklistItemMenu();await app.showChecklistHelp(window.__wid,idxOf('출석통지서 발송 (회의 3일 전 도달)'));" + W(1200), "[...document.querySelectorAll('[id^=aiGuideModal_]')].filter(x=>/_content$/.test(x.id)).pop()")
