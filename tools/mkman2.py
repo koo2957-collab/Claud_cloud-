@@ -8,10 +8,11 @@ HL = ("const R=(sel)=>{const el=typeof sel==='string'?document.querySelector(sel
       "const row=(txt)=>[...document.querySelectorAll('.checklist-card')].find(c=>c.querySelector('.item-title-text, .fci-title-text')?.textContent.trim().startsWith(txt));"
       "const idxOf=(t)=>wf().checklist.findIndex(x=>x.text===t);"
       "const D=(n)=>{const d=new Date(Date.now()+n*864e5);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};")
-def scene(name, code, hl=None, keepToast=False):
+def scene(name, code, hl=None, keepToast=False, hover=None):
     ret = f"return JSON.stringify({{hl: R({hl})}})" if hl else "return JSON.stringify({hl:null})"
     S.append({"label": name, "js": "(async()=>{try{" + HL + code + ("" if keepToast else "toastOff();") + W(300) + ret + "}catch(e){return JSON.stringify({err:e.message})}})()"})
-    S.append({"wait": 300, "shot": "man2/" + name + ".png"})
+    if hover: S.append({"hover": "(()=>{" + HL + hover + "})()"})
+    S.append({"wait": 300, "shot": "man2/" + name + ".png", **({"hovered": True} if hover else {})})
 
 # 예시 체크리스트 만들기 (단계·할 일)
 def cl(rows, day0):
@@ -80,7 +81,8 @@ scene("15_branch", "const w=wf();const cl=w.checklist;const i=idxOf('징계 의�
 scene("16_edit_tags", "app.saveBranchPick();" + W(400) + "app.refreshFocusChecklist(wf());" + W(400) + "document.getElementById('focus-checklist-scroll-'+window.__wid).scrollTop=260;" + W(300) + "const t=document.querySelector('.fci-cond');t&&t.dispatchEvent(new MouseEvent('mouseenter'));" + W(300), "'.fci-mark-branch'")
 scene("17_work", "document.querySelectorAll('.fci-cond').forEach(t=>t.dispatchEvent(new MouseEvent('mouseleave')));app.exitFocusEditMode();" + W(900) +
  "['감찰 결과 보고서 접수','징계의결요구서 작성·제출'].forEach(t=>app.toggleChecklistItem(window.__wid,idxOf(t)));" + W(1500) +
- "const r=row('위원 구성·회의 일정 확정');r&&r.querySelector('.checklist-card-header').click();" + W(600) + "const ta=document.querySelector('.cl-peek .cl-result-input');if(ta){ta.value='위원 5명 구성, 10.23.(금) 14:00 소회의실';ta.dispatchEvent(new Event('input',{bubbles:true}));}" + W(300), "'.cl-peek'")
+ "const r=row('위원 구성·회의 일정 확정');r&&r.querySelector('.checklist-card-header').click();" + W(600) + "const ta=document.querySelector('.cl-peek .cl-result-input');if(ta){ta.value='위원 5명 구성, 10.23.(금) 14:00 소회의실';ta.dispatchEvent(new Event('input',{bubbles:true}));}" + W(300), "'.cl-peek'",
+ hover="const t=row('출석통지서 발송').querySelector('.item-title-text').getBoundingClientRect();return JSON.stringify([t.left+30,t.top+t.height/2])")
 scene("18_result", "const ta=document.querySelector('.cl-peek .cl-result-input');const i0=idxOf('위원 구성·회의 일정 확정');ta&&await app.saveMainChecklistResultOnBlur(window.__wid,i0,ta);app.toggleChecklistItem(window.__wid,i0);" + W(600) +
  "const i=idxOf('출석통지서 발송 (회의 3일 전 도달)');await app.showChecklistItemModal(window.__wid,i,'result');" + W(700) +
  "const rt=document.getElementById('main-checklist-result-text-'+window.__wid+'-'+i);if(rt){rt.value='10.16.(금) 등기우편 발송, 10.19.(월) 수령 확인 (회의 4일 전 도달)';rt.dispatchEvent(new Event('input',{bubbles:true}));}"
