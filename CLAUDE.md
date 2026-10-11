@@ -87,13 +87,24 @@
 - `video_script.py`(광고형 대본) → `tts/tts.ps1`(윈도우 음성 "Microsoft Heami Desktop", 윈도우에서만 가능) → `build_video2.py` → `rec.mjs`로 녹화(1920×1080 MP4, 합성 배경음악 포함)
 - 결과물 `사용설명서/업무내비게이터_시연영상.mp4`는 약 108MB라 GitHub 한도(100MB)를 넘어 저장소에 없습니다. 클라우드(리눅스)에서는 음성 생성이 안 되므로, 영상은 윈도우 PC에서 만듭니다.
 
-## 이어서 할 일 (2026-10-11 기준)
+## 이어서 할 일 (2026-10-11 저녁 기준 · 윈도우 PC 세션에서 클라우드 세션으로 넘김)
 
-**사용자가 정할 것:**
-1. 시연 영상은 프로그램을 모두 완성한 뒤 사용자가 설명서를 따라 하는 화면을 직접 녹화해 새로 만듦 — 그전까지 손대지도, 다시 만들지 묻지도 않음
-2. (끝남) 앱 안 업데이트 내역 v1.5.0 (2026-10-11)
+**지금 상태:** 앱 v1.5.2. 이 PC에서 한 작업은 모두 GitHub main에 합쳐져 있습니다(PR #6~#9). 클라우드 세션은 main을 받아 그대로 이어서 하면 됩니다.
+
+**사용자가 정할 것 (추천만 하고 아직 답을 받지 않은 것):**
+1. 업무 절차 패널의 건너뛴 항목 표시 — 지금은 단계를 건너뛰면(해당 없음·건너뛰기 버튼 모두) 패널에서 아예 사라지고, 할 일을 건너뛰면 남은 일처럼 빈 동그라미로 보임. 추천안: 단계·할 일 모두 제자리에 흐리게(회색·취소선) + 알약 「해당 없음」(회색) 또는 「⤼ 버튼 이름」(보라), 마우스를 올리면 사유, 연달아 여러 개면 「⤼ n개 건너뜀 ▸」 한 줄로 접기, 진행 줄에 「완료 3/6 · 건너뜀 2」
+2. 시연 영상은 프로그램을 모두 완성한 뒤 사용자가 설명서를 따라 하는 화면을 직접 녹화해 새로 만듦 — 그전까지 손대지도, 다시 만들지 묻지도 않음
+3. 한글(HWPX)·워드(DOCX) 파일 만들기는 하지 않기로 함(미리보기에서 다 고치고 「PDF로 저장」·「한글에 붙여넣기용 복사」로 충분)
+
+**이어받을 때 알아 둘 것:**
+- 진행상황 출력(`openProgressReport`)은 앱이 직접 A4 쪽을 나눔 — 쪽 나눔·칸 폭을 바꾸면 `tools/mk_report3_test.py`(29단계)로 확인. 보고서 편집본은 `checklistDetails['project-{id}'].progressReport = {edits, lvs, adds}`, 출력 설정은 localStorage `progressReportOpts`, 창 크기 `prSize`
+- 작성자 = 환경설정 「내 정보」(`collabMyDept·Rank·Name·Phone`, 처음 한 번 물었는지 `authorInfoSet`)
+- 시험 도구 `cdp3.mjs`에 `viewport`·`wheel`·`key`의 `mods`(Shift=8)가 있음. 시험 대본을 파이썬 문자열로 만들 때 자바스크립트 정규식 `\d`·`\s`는 파이썬 문자열 안에서 `\\d`·`\\s`로 적어야 함(heredoc·sed로 고치면 자주 틀리니 Edit 도구로) — `python -W error::SyntaxWarning mk_*.py`로 먼저 확인
+- 실제 사건 자료 파일(`업무_*.json` 등)은 사용자의 윈도우 PC에만 있고 저장소에는 없음(올리지 말 것)
+- 윈도우 PC 저장소는 `core.autocrlf=false`로 둠(받을 때 CRLF로 바뀌어 패치가 멈추던 것)
 
 **최근에 끝낸 것(이번 작업 묶음):**
+- 체크리스트 표 6: 모든 단계를 같은 띠(할 일 없는 단계는 띠 오른쪽에 ☑ 완료일 / ☐ ~마감), 「완료일」 칸(안 끝난 것은 회색 ~마감일, 머리 줄에 「~ 표시는 마감일」), 칸 폭 mm 고정(번호 12·상태 11·날짜 17) + 할 일·처리결과는 글 길이 비율(30~70%), 점검표는 「점검 항목·확인·확인일·비고 18%」 · 작성자 정보 창 안내 문구 삭제
 - 진행상황 출력 5: 보고서 키(`_prBindEdit`: Enter 새 줄=`progressReport.adds`[{id:'u:…',after,lv,html}], Shift+Enter 줄바꿈, Tab/Shift+Tab `progressReport.lvs`, 빈 줄 Backspace) · 바뀜 알림 없앰 · 체크리스트 단계 띠 표(`_checklistParts` colspan 띠) · 세로/가로(`clLand`, 인쇄 `size:A4 landscape`) · 창 크기 조절(`_prWinSize`, `prSize`). cdp3 `key`에 `mods`(Shift=8)
 - 진행상황 출력 3: 앱이 직접 A4 쪽 나눔(`_prPaginate`, 블록 높이를 재서 장마다 담음, keep=다음 줄과 같은 장, 인쇄는 `@page{margin:0}`이라 크롬 머리말 없음, 쪽 번호는 앱이 넣음, (계속) 없음) · 맨 위 오른쪽 한 줄 `_prMetaLine`('YY.MM.DD. 작성자) → 제목 · 기호/글 칸 분리(flex, 복사는 내어쓰기) · 엔터=줄바꿈(insertLineBreak, 제목만 끝냄) · ⤢ 전체화면(mx 'report') · 보고서 블록(`_prReportBlocks`, 키 p:/r:/f:{itemId}) + 편집본(`progressReport.edits`, `sig`로 바뀜 알림, `_prResetEdits`) · 작성자 = 내 정보(`_collabMe`+`collabMyPhone`, `authorInfoSet`) · 체크리스트 「처리결과 3줄까지」. 시험 대본 `tools/mk_report3_test.py`
 - v1.5.2: 「조치결과」→「처리결과」(화면 글자만, 지난 업데이트 내역은 그대로) · [진행상황 출력] 공무원 보고서 1차(작성자 정보 `_askAuthor`·`pdfAuthorInfo` 처음 한 번, 같은 창 「체크리스트」 탭 `_checklistDocHtml`(진행표/빈 점검표), `openPDFModal`도 이 탭으로 — 새 브라우저 창 없음, 보고서는 단계 아래 할 일 「-」 묶음, `openProgressReport`·`_progressDocHtml`, A4 미리보기에서 제목·의견 고침(`project-{id}`.progressReport), 넣을 것 체크 `progressReportOpts`, 한글 붙여넣기용 HTML 복사 `_prCopy`, 인쇄·PDF `_prPrint` iframe) · 예시 순서(`_tfMove`, 끌기는 서식 탭의 `_fmDragStart` 재사용 kind 'tf', 번호 `.tf-n`, 숫자로 시작하는 이름은 그 순) · AI 버튼 흐리게(`.ai-only` + `body.ai-off`, `_syncAiOff`). 시험 대본 `tools/mk_report_test.py`
@@ -117,4 +128,4 @@
 - 업무팁 「예시·사진」(Ctrl+V 붙여넣기, ← → 넘겨 보기, 업무 절차 패널 썸네일, 레퍼런스·내보내기에 포함)
 - 업무 길잡이 개선(묶음별, 누르면 바로 보기·내려받기, 다음 할 일로 넘어가기)
 
-**GitHub:** 원래 저장소 두 곳(Work_Navigator_off, ainav_final)에는 v1.4.0 이후의 변경이 아직 올라가지 않았습니다. 이 저장소(Claud_cloud-)가 지금 작업의 기준입니다.
+**GitHub:** 이 저장소(Claud_cloud-)의 main이 작업 기준입니다(v1.5.2까지 반영). 원래 저장소 두 곳(Work_Navigator_off, ainav_final)에는 v1.4.0 이후의 변경이 아직 올라가지 않았습니다.

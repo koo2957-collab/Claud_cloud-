@@ -7518,6 +7518,7 @@
         const APP_RELEASE_DATE = '2026-10-10';
         const APP_RELEASE_NOTES = [
             { version: '1.5.2', date: '2026-10-11', notes: [
+                '체크리스트 표 다듬기: 단계는 할 일이 있든 없든 모두 같은 띠(오른쪽에 ☑ 완료일 또는 진행 수), 「완료일」 칸(안 끝난 것은 회색 ~마감일), 번호·상태·날짜는 글자 폭만큼 좁게 고정하고 할 일·처리결과는 글 길이에 맞춰 나눔, 점검표는 점검 항목 중심(비고 18%) · 작성자 정보 창의 긴 안내 문구 삭제',
                 '진행상황 출력을 앱이 직접 A4 한 장씩 나눠 그림 — 인쇄할 때 장마다 찍히던 날짜·제목 머리말이 없어지고, 아래 가운데 쪽 번호 「- 1 -」, 미리보기의 쪽 나눔이 인쇄와 같음, 제목·단계 줄이 장 끝에 홀로 남지 않음',
                 '진행상황 보고는 종이 위 어느 줄이든 눌러서 고침(한글·워드 글머리표처럼: Enter 같은 기호의 새 줄 · Shift+Enter 줄 안 줄바꿈 · Tab/Shift+Tab 들이기·내기 ○→-→· · 빈 줄에서 Backspace 지우기 · Esc 끝내기) — 고친 줄·넣은 줄은 업무마다 기억, [↺ 처음 내용으로]',
                 '체크리스트 출력을 「단계 띠 + 할 일 줄」 표로 — 단계는 표 전체 폭 띠(긴 제목도 한 줄 가득, 오른쪽에 진행·마감), 할 일은 1-1·1-2 줄 · A4 세로/가로 선택(기억) · 출력 창 크기를 가장자리·모서리를 끌어 조절(기억, 모서리 두 번 누르면 기본 크기)',
@@ -43794,7 +43795,6 @@ ${pdfContent.length > 100000 ? pdfContent.substring(0, 100000) + '\n\n[중략: �
                     ${field('authorRank', '직급(계급)', '예: 소방위', a.rank)}
                     ${field('authorName', '이름', '예: 홍길동', a.name)}
                     ${field('authorPhone', '연락처(내선)', '예: 4521', a.phone)}
-                    <div class="info-banner ib-info" style="margin:0;"><span class="ib-icon">ℹ</span><span class="ib-text">보고서 제목 위 오른쪽과 체크리스트 위쪽에 나옵니다(비운 칸은 빠짐). 환경설정 → 일반 → 「내 정보」와 같은 것이라 거기서도 고칠 수 있습니다.</span></div>
                     <div style="display:flex;gap:8px;justify-content:flex-end;padding-top:6px;border-top:1px solid var(--border-subtle);">
                         <button class="btn btn-secondary" data-x>취소</button>
                         <button class="btn btn-primary" data-ok>${edit ? '저장' : '저장하고 계속'}</button>
@@ -44000,7 +44000,8 @@ ${pdfContent.length > 100000 ? pdfContent.substring(0, 100000) + '\n\n[중략: �
         };
         // ── 체크리스트 표 — 진행표 / 빈 점검표 ──
         WorkflowManager.prototype._checklistParts = function(wf, opts) {
-            // 단계는 표 전체 폭 「띠」(긴 제목도 칸에 갇히지 않음, 오른쪽에 진행·마감), 할 일만 칸으로 — 엑셀 그룹·MS Project 요약 작업처럼
+            // 단계는 할 일이 있든 없든 모두 표 전체 폭 「띠」(오른쪽에 상태·완료일 또는 진행 수), 할 일만 칸으로 — MS Project·Smartsheet 요약 행처럼
+            // 칸 폭: 짧은 칸은 글자 폭만큼 고정(번호·상태·날짜), 남은 폭은 할 일·처리결과 글 길이에 맞춰(워드 「내용에 맞춤」) — 점검표는 점검 항목 중심, 비고 18%
             const esc = v => this.escapeHtml(String(v ?? ''));
             const cl = wf.checklist || [];
             const blank = !!opts.clBlank, land = !!opts.clLand;
@@ -44011,44 +44012,54 @@ ${pdfContent.length > 100000 ? pdfContent.substring(0, 100000) + '\n\n[중략: �
             const dl = this._prYmd(wf.deadline);
             const B = "font-family:'맑은 고딕','Malgun Gothic',sans-serif;";
             const td = 'border:1px solid #9aa3ad;padding:4pt 6pt;vertical-align:top;font-size:9.5pt;line-height:1.45;overflow-wrap:anywhere;word-break:keep-all;';
-            const th = 'border:1px solid #6b7480;padding:5pt 6pt;background:#eef1f5;font-size:9pt;font-weight:bold;text-align:center;';
+            const th = 'border:1px solid #6b7480;padding:5pt 4pt;background:#eef1f5;font-size:9pt;font-weight:bold;text-align:center;';
             const showRes = opts.clResult && !blank;
-            const nCols = 4 + (showRes ? 1 : 0) + (blank ? 1 : 0);
-            const W = land ? (showRes ? [6, 30, 6, 9, 49] : blank ? [6, 40, 6, 10, 38] : [6, 70, 8, 16]) : (showRes ? [8, 36, 8, 12, 36] : blank ? [8, 40, 8, 12, 32] : [8, 62, 8, 22]);
-            const resHtml = it => {
-                let lines = showRes ? this._prLines(it) : [];
-                if (opts.clShort && lines.length > 3) lines = [...lines.slice(0, 3), '…'];
-                return lines.length > 1 ? lines.map(t => `· ${esc(t)}`).join('<br>') : lines.map(esc).join('');
+            const nCols = 4 + (showRes || blank ? 1 : 0);
+            const grey = t => `<span style="color:#888;">${t}</span>`;
+            let anyDue = false;
+            const resLines = it => { let lines = showRes ? this._prLines(it) : []; if (opts.clShort && lines.length > 3) lines = [...lines.slice(0, 3), '…']; return lines; };
+            const resHtml = it => { const lines = resLines(it); return lines.length > 1 ? lines.map(t => `· ${esc(t)}`).join('<br>') : lines.map(esc).join(''); };
+            const mark = it => blank ? '☐' : it.skipped === true ? '<span style="color:#888;font-size:8.5pt;">해당 없음</span>' : this.normalizeCompleted(it) ? '☑' : '☐';
+            const dateOf = it => {   // 완료일, 안 끝났으면 회색 ~마감일
+                if (blank || it.skipped === true) return '';
+                if (this.normalizeCompleted(it)) return fmtS(it.completedAt ? new Date(it.completedAt) : null);
+                const d = this._prYmd(it.deadline); if (d) { anyDue = true; return grey(`~${fmtS(d)}`); }
+                return '';
             };
-            const stCell = it => { const sk = it.skipped === true; return blank ? '☐' : sk ? '<span style="color:#888;font-size:8.5pt;">해당 없음</span>' : this.normalizeCompleted(it) ? '☑' : '☐'; };
-            const dateCell = it => { if (blank || it.skipped === true) return ''; const t = it.completedAt ? new Date(it.completedAt) : null, d = this._prYmd(it.deadline); return this.normalizeCompleted(it) ? fmtS(t) : d ? `~${fmtS(d)}` : ''; };
-            const nameStyle = it => it.skipped === true ? 'color:#888;text-decoration:line-through;' : '';
+            const strike = it => it.skipped === true ? 'color:#888;text-decoration:line-through;' : '';
             const rows = [];
-            let sn = 0;
+            let sn = 0, nameLen = 0, resLen = 0;
             cl.forEach((it, i) => {
                 if (this._isSubEntry(it)) return;
                 sn++;
                 if (it.skipped === true && !opts.clSkipped) return;
                 const subs = this.findSubItems(cl, i).filter(x => opts.clSkipped || x.item.skipped !== true);
                 const no = String(sn).padStart(2, '0');
+                let right;
                 if (subs.length) {
-                    const liveSubs = subs.filter(x => x.item.skipped !== true), doneSubs = liveSubs.filter(x => this.normalizeCompleted(x.item)).length;
-                    const d = this._prYmd(it.deadline);
-                    const right = blank ? '' : it.skipped === true ? '해당 없음' : this.normalizeCompleted(it) ? `완료 ${doneSubs}/${liveSubs.length}` : `진행 ${doneSubs}/${liveSubs.length}${d ? ` · ~${fmtS(d)}` : ''}`;
-                    const own = showRes ? this._prLines(it) : [];
-                    rows.push({ keep: true, html: `<tr style="break-inside:avoid;page-break-inside:avoid;"><td colspan="${nCols}" style="${td}background:#dde4ee;border-color:#7d8794;padding:5pt 7pt;"><div style="display:flex;gap:10pt;align-items:baseline;"><span style="flex:1;min-width:0;font-weight:bold;font-size:10pt;${nameStyle(it)}">${no}&nbsp;&nbsp;${esc(it.text || '')}</span><span style="font-size:8.5pt;color:#333;white-space:nowrap;">${right}</span></div>${own.length ? `<div style="font-size:9pt;color:#333;padding-top:2pt;">${own.map(t => `· ${esc(t)}`).join('<br>')}</div>` : ''}</td></tr>` });
-                    subs.forEach((x, k) => {
-                        const s2 = x.item;
-                        rows.push({ keep: false, html: `<tr style="break-inside:avoid;page-break-inside:avoid;"><td style="${td}text-align:center;white-space:nowrap;color:#444;">${sn}-${k + 1}</td><td style="${td}"><span style="${nameStyle(s2)}">${esc(s2.text || '')}</span></td><td style="${td}text-align:center;font-size:11pt;">${stCell(s2)}</td><td style="${td}text-align:center;white-space:nowrap;">${dateCell(s2)}</td>${showRes ? `<td style="${td}">${resHtml(s2)}</td>` : ''}${blank ? `<td style="${td}"></td>` : ''}</tr>` });
-                    });
+                    const liveSubs = subs.filter(x => x.item.skipped !== true), doneSubs = liveSubs.filter(x => this.normalizeCompleted(x.item)).length, d = this._prYmd(it.deadline);
+                    if (d && !this.normalizeCompleted(it)) anyDue = true;
+                    right = blank ? '' : it.skipped === true ? '해당 없음' : this.normalizeCompleted(it) ? `완료 ${doneSubs}/${liveSubs.length}` : `진행 ${doneSubs}/${liveSubs.length}${d ? ` · ${grey('~' + fmtS(d))}` : ''}`;
                 } else {
-                    const bg = 'background:#f3f5f8;';
-                    rows.push({ keep: false, html: `<tr style="break-inside:avoid;page-break-inside:avoid;"><td style="${td}${bg}text-align:center;white-space:nowrap;font-weight:bold;">${no}</td><td style="${td}${bg}font-weight:bold;"><span style="${nameStyle(it)}">${esc(it.text || '')}</span></td><td style="${td}${bg}text-align:center;font-size:11pt;">${stCell(it)}</td><td style="${td}${bg}text-align:center;white-space:nowrap;">${dateCell(it)}</td>${showRes ? `<td style="${td}${bg}">${resHtml(it)}</td>` : ''}${blank ? `<td style="${td}${bg}"></td>` : ''}</tr>` });
+                    right = blank ? '☐' : `${mark(it)}${dateOf(it) ? `&nbsp;&nbsp;${dateOf(it)}` : ''}`;   // 할 일 없는 단계: 같은 띠, 오른쪽에 상태·완료일
                 }
+                const own = resLines(it);
+                rows.push({ keep: subs.length > 0, html: `<tr style="break-inside:avoid;page-break-inside:avoid;"><td colspan="${nCols}" style="${td}background:#dde4ee;border-color:#7d8794;padding:5pt 7pt;"><div style="display:flex;gap:10pt;align-items:baseline;"><span style="flex:1;min-width:0;font-weight:bold;font-size:10pt;${strike(it)}">${no}&nbsp;&nbsp;${esc(it.text || '')}</span><span style="font-size:${subs.length ? '8.5pt' : '10pt'};color:#333;white-space:nowrap;">${right}</span></div>${own.length ? `<div style="font-size:9pt;color:#333;padding:2pt 0 0 1.6em;">${own.map(t => `· ${esc(t)}`).join('<br>')}</div>` : ''}</td></tr>` });
+                subs.forEach((x, k) => {
+                    const s2 = x.item;
+                    nameLen += String(s2.text || '').length; resLen += resLines(s2).join('').length;
+                    rows.push({ keep: false, html: `<tr style="break-inside:avoid;page-break-inside:avoid;"><td style="${td}text-align:center;white-space:nowrap;color:#444;">${sn}-${k + 1}</td><td style="${td}"><span style="${strike(s2)}">${esc(s2.text || '')}</span></td><td style="${td}text-align:center;font-size:11pt;">${mark(s2)}</td><td style="${td}text-align:center;white-space:nowrap;">${dateOf(s2)}</td>${showRes ? `<td style="${td}">${resHtml(s2)}</td>` : ''}${blank ? `<td style="${td}"></td>` : ''}</tr>` });
+                });
             });
-            const cols = `<colgroup>${W.map(w => `<col style="width:${w}%">`).join('')}</colgroup>`;
-            const thead = `<thead><tr><th style="${th}">번호</th><th style="${th}">할 일</th><th style="${th}">상태</th><th style="${th}">${blank ? '날짜' : '완료·마감'}</th>${showRes ? `<th style="${th}">처리결과</th>` : ''}${blank ? `<th style="${th}">비고</th>` : ''}</tr></thead>`;
-            const prog = [blank ? '' : `진행 ${doneStages}/${live.length}단계(${pct}%)`, dl ? `업무 마감 ${this._prFmt(dl)}` : ''].filter(Boolean).join(' · ');
+            // 칸 폭(mm): 번호·상태·날짜는 고정, 나머지를 나눔
+            const Wmm = (land ? 297 : 210) - 26, fixed = 12 + 11 + 17, rest = Wmm - fixed;
+            let widths;
+            if (blank) widths = [12, rest - Math.round(Wmm * 0.18), 11, 17, Math.round(Wmm * 0.18)];
+            else if (showRes) { const r = resLen + nameLen ? Math.max(0.3, Math.min(0.7, nameLen / (nameLen + resLen))) : 0.5; const nw = Math.round(rest * r); widths = [12, nw, 11, 17, rest - nw]; }
+            else widths = [12, rest, 11, 17];
+            const cols = `<colgroup>${widths.map(w => `<col style="width:${(w / Wmm * 100).toFixed(2)}%">`).join('')}</colgroup>`;
+            const thead = `<thead><tr><th style="${th}">번호</th><th style="${th}">${blank ? '점검 항목' : '할 일'}</th><th style="${th}">${blank ? '확인' : '상태'}</th><th style="${th}">${blank ? '확인일' : '완료일'}</th>${showRes ? `<th style="${th}">처리결과</th>` : ''}${blank ? `<th style="${th}">비고</th>` : ''}</tr></thead>`;
+            const prog = [blank ? '' : `진행 ${doneStages}/${live.length}단계(${pct}%)`, dl ? `업무 마감 ${this._prFmt(dl)}` : '', anyDue ? '<span style="color:#888;">~ 표시는 마감일</span>' : ''].filter(Boolean).join(' · ');
             const head = `<div style="${B}"><div style="font-size:9.5pt;color:#222;text-align:right;padding-bottom:5pt;">${esc(this._prMetaLine())}</div>
                 <div style="font-size:15pt;font-weight:bold;padding-bottom:6pt;border-bottom:2px solid #1c3252;">${esc(wf.title || '체크리스트')} ${blank ? '점검표' : '체크리스트'}</div>
                 <div style="font-size:9pt;color:#444;padding:5pt 0 9pt;text-align:right;">${prog || '&nbsp;'}</div></div>`;
