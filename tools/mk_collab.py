@@ -47,7 +47,7 @@ S.append({"b": "B", "shot": "c_B_received.png"})
 Bb("B4 받은 화면 정리", "clickBtn('확인')||clickBtn('시작')||clickBtn('닫기');document.querySelectorAll('.modal.show').forEach(m=>{if(m.id!=='collabModal')m.classList.remove('show')});await W(400);return dlg()||'창 없음'")
 # 담당자: 맡지 않은 단계는 잠김
 Bb("B5 맡지 않은 3단계 할 일 체크 시도", "const w=wf();window.__t=[];const o=app.showToast.bind(app);app.showToast=(a,b,c,...r)=>{window.__t.push(c);return o(a,b,c,...r)};const before=app.normalizeCompleted(w.checklist[7]);app.toggleChecklistItem(w.id,7);await W(600);const t=dlg();clickBtn('확인');return 'before='+before+' after='+app.normalizeCompleted(w.checklist[7])+' | dlg='+t+' | toast='+window.__t.join(' / ')")
-# 담당자: 맡은 단계 진행 (체크 + 조치결과 + 첨부)
+# 담당자: 맡은 단계 진행 (체크 + 처리결과 + 첨부)
 Bb("B6 맡은 2단계 진행", "const w=wf();document.querySelectorAll('.modal.show').forEach(m=>m.classList.remove('show'));"
    "await app.showChecklistItemModal(w.id,5,'result');await W(700);const rt=document.getElementById('main-checklist-result-text-'+w.id+'-5');if(rt){rt.value='10.16.(금) 등기 발송, 10.19.(월) 수령 확인';rt.dispatchEvent(new Event('input',{bubbles:true}));}"
    "const sh=document.getElementById('rf-shrink-'+w.id+'-5');if(sh)sh.checked=false;await app.addResultFiles(w.id,5,{files:[new File(['%PDF-1.4 '+'0'.repeat(20000)],'출석통지서_발송본.pdf',{type:'application/pdf'})],value:''});await W(1200);app.closeChecklistItemModal();await W(400);"

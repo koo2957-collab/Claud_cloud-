@@ -1,6 +1,6 @@
 import json
 # 단계·자료가 많은 업무에서 체크·체크 취소할 때 멈춤·화면 튐 시험 → steps3.json
-# 12단계 × 할 일 5개(72줄), 항목마다 긴 업무팁·서식 2개·조치결과, 사진 예시 여러 장
+# 12단계 × 할 일 5개(72줄), 항목마다 긴 업무팁·서식 2개·처리결과, 사진 예시 여러 장
 P = "(async()=>{try{const W=ms=>new Promise(r=>setTimeout(r,ms));const wf=()=>app.allData.workflows.find(w=>w.id===7401);"
 E = "}catch(e){return 'ERR '+e.message+' '+(e.stack||'').split('\\n')[1]}})()"
 def J(body): return P + body + E
@@ -23,7 +23,7 @@ step("seed", "window.confirm=()=>true;['tipNwTab','tipSkipTargetSeen','startupPr
      "const cl=[];for(let s=1;s<=12;s++){cl.push({text:'단계 '+s+' 업무 처리',indent:0,completed:false});for(let k=1;k<=5;k++)cl.push({text:'할 일 '+s+'-'+k,indent:1,completed:false});}"
      "app.allData.workflows.unshift({id:7401,type:'manual',title:'큰 업무 시험',checklist:cl,date:'2026. 10. 11.',createdAt:new Date().toISOString(),folderPath:''});wf().checklist.forEach(it=>app.ensureChecklistItemId(it));"
      "const docs=[];for(let d=0;d<10;d++){docs.push(await app.dbManager.saveFile('repoDocuments',{name:'서식 '+d+'.hwpx',size:50000,blob:new Blob(['x'.repeat(50000)]),type:'application/octet-stream',folderId:null,uploadedAt:new Date().toISOString(),updatedAt:new Date().toISOString(),tags:[]}));}await app._loadRepoDocMetaCache();"
-     "wf().checklist.forEach((it,i)=>{it.tip={type:'text',content:Array.from({length:12},(_,k)=>(k+1)+'. 업무팁 '+i+'번 줄 '+k+' — 처리 기준과 주의할 점을 길게 적어 둔 문장입니다').join('\\n'),saved:true};it.linkedDocs=[docs[i%10],docs[(i+3)%10]];it.result={text:'조치결과 '+i+' — 처리함'};});"
+     "wf().checklist.forEach((it,i)=>{it.tip={type:'text',content:Array.from({length:12},(_,k)=>(k+1)+'. 업무팁 '+i+'번 줄 '+k+' — 처리 기준과 주의할 점을 길게 적어 둔 문장입니다').join('\\n'),saved:true};it.linkedDocs=[docs[i%10],docs[(i+3)%10]];it.result={text:'처리결과 '+i+' — 처리함'};});"
      "app.saveData();app.displayWorkflows();await W(400);app.focusWorkflow(7401);await W(1500);"
      "const cv=document.createElement('canvas');cv.width=1600;cv.height=1000;const g=cv.getContext('2d');for(let i=0;i<20;i++){g.fillStyle='hsl('+i*18+',60%,50%)';g.fillRect(0,0,1600,1000);for(let k=0;k<400;k++){g.fillStyle='hsl('+(k*7)+',70%,'+(30+k%40)+'%)';g.fillRect(Math.random()*1600,Math.random()*1000,60,40);}const b=await new Promise(r=>cv.toBlob(r,'image/png'));await app.addTipFiles(7401,1+(i%12)*6,{files:[new File([b],'사진'+i+'.png',{type:'image/png'})],value:''});}"
      "await W(1500);window.__lt=[];return 'ok 줄='+wf().checklist.length+' 저장 크기='+Math.round(JSON.stringify(app.allData).length/1024)+'KB'")
@@ -60,7 +60,7 @@ S.append({"shot": "pf_m1.png"})
 actm("M2 항목 창에서 체크 취소")
 S.append({"shot": "pf_m2.png"})
 step("M3 닫기", "app.closeChecklistItemModal();await W(600);return state('할 일 4-2')")
-# 줄을 눌러 조치결과 칸을 펼친 상태에서 체크·취소
+# 줄을 눌러 처리결과 칸을 펼친 상태에서 체크·취소
 pt("const c=card('할 일 4-3');c.__center();await W(400);const t=c.querySelector('.item-title-text, .fci-title-text');const r=t.getBoundingClientRect();return JSON.stringify([r.left+20,r.top+r.height/2])")
 S.append({"clickpt": 1})
 act("P1 펼친 줄에서 체크", "할 일 4-3")

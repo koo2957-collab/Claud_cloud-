@@ -21,7 +21,7 @@ step("seed", "window.confirm=()=>true;['tipNwTab','tipSkipTargetSeen','startupPr
      "const cv=document.createElement('canvas');cv.width=600;cv.height=380;const g=cv.getContext('2d');g.fillStyle='#2563eb';g.fillRect(0,0,600,380);g.fillStyle='#fff';g.font='bold 48px sans-serif';g.fillText('수령증 예시',60,200);const img=await new Promise(r=>cv.toBlob(r,'image/png'));"
      "await app.addTipFiles(7301,2,{files:[new File([img],'등기 수령증 예시.png',{type:'image/png'})],value:''});await W(600);return 'ok'")
 
-step("A1 항목 창 열기(조치결과 탭)", tabs + "await app.showChecklistItemModal(7301,2,'result');await W(800);const t=document.querySelector('#rf-7301-2 .mat-title');return tabs()+' | 남은 색 점='+dots()+' | 첨부 제목='+t.textContent.trim().slice(0,12)+' svg='+!!t.querySelector('svg')+' 이모지📎='+t.textContent.includes('📎')")
+step("A1 항목 창 열기(처리결과 탭)", tabs + "await app.showChecklistItemModal(7301,2,'result');await W(800);const t=document.querySelector('#rf-7301-2 .mat-title');return tabs()+' | 남은 색 점='+dots()+' | 첨부 제목='+t.textContent.trim().slice(0,12)+' svg='+!!t.querySelector('svg')+' 이모지📎='+t.textContent.includes('📎')")
 S.append({"shot": "ic_a1.png"})
 pt(tabPt.replace('{t}', '업무팁'))
 S.append({"clickpt": 1, "wait": 100})

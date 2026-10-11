@@ -23,7 +23,7 @@ step("A 패널: 세 칸 + 지난번엔 이렇게", "const d=document.querySelect
 S.append({"shot": "tip3_a.png"})
 pt("document.querySelector('#aiPanelOfflineDashboard .proc-past-item')")
 S.append({"clickpt": 1})
-step("B 지난 기록을 누르면 그 업무의 항목 창(조치결과)", "await W(900);const o=document.getElementById('cimOverlay');const r='창='+!!o+' 내용에 그때 결과='+(!!o&&(o.innerHTML.includes('9.12.(금) 등기 발송')))+' 지금 업무 그대로='+(app.focusedWorkflowId===7601);app.closeChecklistItemModal();await W(500);return r")
+step("B 지난 기록을 누르면 그 업무의 항목 창(처리결과)", "await W(900);const o=document.getElementById('cimOverlay');const r='창='+!!o+' 내용에 그때 결과='+(!!o&&(o.innerHTML.includes('9.12.(금) 등기 발송')))+' 지금 업무 그대로='+(app.focusedWorkflowId===7601);app.closeChecklistItemModal();await W(500);return r")
 step("C 항목 창 업무팁 보기도 세 칸", "await app.showChecklistItemModal(7601,2,'tip');await W(800);const o=document.getElementById('cimOverlay');return '빨간상자='+!!o.querySelector('.tip-warn')+' 근거='+!!o.querySelector('.tip-basis')")
 step("D 고치기 모드: 단추 확인", "app.switchTipToEditMode(7601,2);await W(500);const ta=document.querySelector('#cimOverlay .checklist-tip-textarea');ta.focus();await W(300);const bar=ta.previousElementSibling;return '기호줄='+!!(bar&&bar.classList.contains('ol-bar'))+' 단추='+[...bar.querySelectorAll('.ol-tag')].map(x=>x.textContent).join(',')")
 S.append({"shot": "tip3_d.png"})

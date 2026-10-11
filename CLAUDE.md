@@ -64,6 +64,8 @@
 | `mk_perf_test.py [1280x650]` | 72줄 큰 업무에서 체크·체크 취소할 때 걸린 시간(긴 작업)·화면 튐(바깥 상자 스크롤) 시험 대본 |
 | `mk_real_test.py <업무 .json> [1366x768] [seq/diag]` | 실제 내보내기 파일을 가져와 실제 클릭으로 체크·취소 반복(seq: 위에서부터 차례로) + 휠로 끝까지 내리기. 사건 자료 파일은 저장소에 올리지 않음(`.git/info/exclude`) |
 | `mk_main8_test.py [1366x768]` | 메인 화면 8가지(마감 알림 가운데·정렬 기억·목록형·고정 줄·내보내기·길잡이 참고 자료·전체화면·새 업무 버튼) 시험 대본 |
+| `mk_report3_test.py` | 진행상황 출력 쪽 나눔·줄 고치기·편집본·바뀜 알림·작성자 위치/연락처·넘침·체크리스트 쪽 나눔 시험 대본 |
+| `mk_report_test.py` | 진행상황 출력(제목·의견 입력·옵션·복사·인쇄)·예시 순서·처리결과 이름·AI 버튼 흐리게 시험 대본 |
 | `mk_files_test.py` | 예시 사진 넘기기(창 그대로·내용만 바뀜·빠른 연타·PDF 뒤 키)·파일 줄 높이/형식 표 시험 대본 |
 | `mk_common_test.py` | 단계 공통(물려받기): 패널 순서·길잡이 공통 묶음·항목 창 안내·같은 글 지우기·서식 옮기기·[되돌리기] 시험 대본 |
 | `mk_hold_test.py` / `mk_panel_motion.py` | 단계가 접히는 동안 빠른 클릭 무시 / 업무 절차 패널이 단계 넘어갈 때 시간별 움직임 기록 시험 대본 |
@@ -92,6 +94,9 @@
 2. (끝남) 앱 안 업데이트 내역 v1.5.0 (2026-10-11)
 
 **최근에 끝낸 것(이번 작업 묶음):**
+- 진행상황 출력 5: 보고서 키(`_prBindEdit`: Enter 새 줄=`progressReport.adds`[{id:'u:…',after,lv,html}], Shift+Enter 줄바꿈, Tab/Shift+Tab `progressReport.lvs`, 빈 줄 Backspace) · 바뀜 알림 없앰 · 체크리스트 단계 띠 표(`_checklistParts` colspan 띠) · 세로/가로(`clLand`, 인쇄 `size:A4 landscape`) · 창 크기 조절(`_prWinSize`, `prSize`). cdp3 `key`에 `mods`(Shift=8)
+- 진행상황 출력 3: 앱이 직접 A4 쪽 나눔(`_prPaginate`, 블록 높이를 재서 장마다 담음, keep=다음 줄과 같은 장, 인쇄는 `@page{margin:0}`이라 크롬 머리말 없음, 쪽 번호는 앱이 넣음, (계속) 없음) · 맨 위 오른쪽 한 줄 `_prMetaLine`('YY.MM.DD. 작성자) → 제목 · 기호/글 칸 분리(flex, 복사는 내어쓰기) · 엔터=줄바꿈(insertLineBreak, 제목만 끝냄) · ⤢ 전체화면(mx 'report') · 보고서 블록(`_prReportBlocks`, 키 p:/r:/f:{itemId}) + 편집본(`progressReport.edits`, `sig`로 바뀜 알림, `_prResetEdits`) · 작성자 = 내 정보(`_collabMe`+`collabMyPhone`, `authorInfoSet`) · 체크리스트 「처리결과 3줄까지」. 시험 대본 `tools/mk_report3_test.py`
+- v1.5.2: 「조치결과」→「처리결과」(화면 글자만, 지난 업데이트 내역은 그대로) · [진행상황 출력] 공무원 보고서 1차(작성자 정보 `_askAuthor`·`pdfAuthorInfo` 처음 한 번, 같은 창 「체크리스트」 탭 `_checklistDocHtml`(진행표/빈 점검표), `openPDFModal`도 이 탭으로 — 새 브라우저 창 없음, 보고서는 단계 아래 할 일 「-」 묶음, `openProgressReport`·`_progressDocHtml`, A4 미리보기에서 제목·의견 고침(`project-{id}`.progressReport), 넣을 것 체크 `progressReportOpts`, 한글 붙여넣기용 HTML 복사 `_prCopy`, 인쇄·PDF `_prPrint` iframe) · 예시 순서(`_tfMove`, 끌기는 서식 탭의 `_fmDragStart` 재사용 kind 'tf', 번호 `.tf-n`, 숫자로 시작하는 이름은 그 순) · AI 버튼 흐리게(`.ai-only` + `body.ai-off`, `_syncAiOff`). 시험 대본 `tools/mk_report_test.py`
 - 예시 넘기기: 미리보기 창을 닫고 새로 열던 것(깜박임)을 창은 그대로 두고 내용만 교체(`_tfNav`, 앞뒤 미리 읽기 `_tfBlobCached`, 바뀌는 순간 0.12초 흐림, 넘긴 뒤 창으로 초점 되돌림). 파일 목록 통일: `.rf-row`·`.gd-card`를 상자 없는 34px 줄 + 작은 형식 표(30×18)·사진 26px, 이름은 검정(올리면 파랑 밑줄), ⬇는 올린 줄만. 시험 대본 `tools/mk_files_test.py`
 - v1.5.1 메인 화면 8가지: ① 켤 때 마감 알림은 화면 가운데(`checkDeadlineNotifications({startup:true})`, 다른 창이 떠 있으면 닫힌 뒤, 배경 흐림·Esc·[닫기], 5건까지), 줄 들여쓰기 없앰 ② 기본 최근 진행순·정렬 기억(`workflowSortMethod`), 최근 = 마지막 체크·만든 때(createdAt)·가져온 때(importedAt) 중 최근 ③ 목록형 상자·색 막대 없애고 구분선·색 점, 제목 줄 고정·눌러서 정렬(`_sortByHeader`) ④ [내보내기]는 바로 저장, 「다른 사람에게 넘기기」는 업무 분담 창 머리 ⑤ 길잡이 참고 자료를 서식 카드 모양(이름 2줄 …) ⑥ 길잡이 ⤢ 전체화면(`_guideFull`, 기억 안 함) ⑦ 새 업무 두 부분 버튼(왼쪽 바로 만들기·▾ 다른 방법) ⑧ 검색·정렬 줄 고정(`.main-content > .ctrl-bar` sticky). 시험 대본 `tools/mk_main8_test.py`. 이 PC 저장소는 `core.autocrlf=false`(pull 때 CRLF로 바뀌던 것)
 - 단계 공통(물려받기): 단계에 적은 업무팁·서식 = 그 단계 할 일 모두의 공통, 할 일에 적은 것 = 그 할 일만 — 설정 없이 적은 곳에 따라. 패널·길잡이 모두 「지금 할 일 것 → 단계 공통」 순서(할 일에 자기 업무팁이 있으면 공통은 한 줄로 접힘, 같은 글·같은 서식 이름은 한 번만). 항목 창 업무팁·서식 탭 맨 위 안내 한 줄(`_stageCommonNoteHtml`), 같은 글 [여기 같은 내용 지우기](`_dropDupTip`), 서식 오른쪽 클릭 「단계 공통으로 / 할 일로 옮기기」(`_fmMoveLevel`), 모두 [되돌리기]. 시험 대본 `tools/mk_common_test.py`
