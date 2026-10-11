@@ -2,7 +2,7 @@
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-const dir = path.dirname(new URL(import.meta.url).pathname.replace(/^\/(\w:)/, '$1'));
+const dir = path.dirname(decodeURIComponent(new URL(import.meta.url).pathname).replace(/^\/(\w:)/, '$1'));
 const file = process.argv[2];
 const chrome = (process.env.CHROME_PATH || (process.platform === 'win32' ? 'C:/Program Files/Google/Chrome/Application/chrome.exe' : 'google-chrome'));
 const prof = path.join(dir, 'chrome-prof2');
@@ -23,7 +23,7 @@ async function ev(expr) {
   if (r.result?.exceptionDetails) return 'EXC: ' + (r.result.exceptionDetails.exception?.description || r.result.exceptionDetails.text);
   return r.result?.result?.value;
 }
-async function shot(name) { const r = await send('Page.captureScreenshot', { format: 'png' }); fs.writeFileSync(path.join(dir, name), Buffer.from(r.result.data, 'base64')); }
+async function shot(name) { const r = await send('Page.captureScreenshot', { format: 'png' }); const f = path.join(dir, name); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, Buffer.from(r.result.data, 'base64')); }
 try {
   ws = new WebSocket(await connect());
   await new Promise(r => ws.onopen = r);

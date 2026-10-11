@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process'; import fs from 'node:fs'; import path from 'node:path';
 const [, , file, outPrefix, timesArg] = process.argv;
-const dir = path.dirname(new URL(import.meta.url).pathname.replace(/^\/(\w:)/, '$1'));
+const dir = path.dirname(decodeURIComponent(new URL(import.meta.url).pathname).replace(/^\/(\w:)/, '$1'));
 const prof = path.join(dir, 'chrome-prof-vc'); fs.rmSync(prof, { recursive: true, force: true });
 const proc = spawn((process.env.CHROME_PATH || (process.platform === 'win32' ? 'C:/Program Files/Google/Chrome/Application/chrome.exe' : 'google-chrome')), ['--headless=new', '--remote-debugging-port=9337', `--user-data-dir=${prof}`, '--allow-file-access-from-files', '--autoplay-policy=no-user-gesture-required', 'about:blank'], { stdio: 'ignore' });
 const sleep = ms => new Promise(r => setTimeout(r, ms)); let ws, id = 0; const pend = new Map();
