@@ -8963,6 +8963,9 @@
                             if (modalId) {
                                 this.closeModal(modalId);
                             }
+                        } else if (this.focusMode && !this.focusEditMode && this._clPeek && this._clPeek.wfId === this.focusedWorkflowId) {
+                            // 줄을 눌러 오른쪽 업무 절차에서 미리 보는 중이면 Esc는 그것만 풀고 업무 화면에 남는다
+                            this.clearChecklistPick(this.focusedWorkflowId);
                         } else if (this.focusMode) {
                             // 모달이 없고 포커스 모드 중이면 한 단계 닫기 (편집 중 → 업무 화면, 업무 화면 → 목록)
                             this.focusCloseOneLevel();
@@ -19726,7 +19729,7 @@ ${GOVERNMENT_DOCUMENT_GUIDELINES}
                 if (document.getElementById('workflowManagerModal')?.classList.contains('show')) {
                     this.renderWorkflowTree();
                 }
-                this.showToast('success', '✅', `「${workflow.title}」을 처리완료 탭으로 옮겼습니다`, 7000, { actionLabel: '되돌리기', onAction: () => this.undoMarkWorkflowDone(id, true) });
+                this.showToast('success', '✅', `「${workflow.title}」 업무를 처리완료 탭으로 옮겼습니다`, 7000, { actionLabel: '되돌리기', onAction: () => this.undoMarkWorkflowDone(id, true) });
             }
 
             // 완료 처리 취소 (진행중으로 복귀) — 되돌릴 수 있는 일이라 묻지 않음. quiet: 완료 처리 알림의 [되돌리기]에서 부를 때
@@ -19742,7 +19745,7 @@ ${GOVERNMENT_DOCUMENT_GUIDELINES}
                     this.renderWorkflowTree();
                 }
                 if (quiet) this.showToast('success', '↩', '진행중으로 되돌렸습니다');
-                else this.showToast('success', '↩', `「${workflow.title}」을 진행중으로 되돌렸습니다`, 7000, { actionLabel: '되돌리기', onAction: () => this.markWorkflowDone(id) });
+                else this.showToast('success', '↩', `「${workflow.title}」 업무를 진행중으로 되돌렸습니다`, 7000, { actionLabel: '되돌리기', onAction: () => this.markWorkflowDone(id) });
             }
 
             // 완료된 업무를 레퍼런스로 등록하고, 이어서 업무관리 폴더에 바로 파일링할 수 있도록 폴더 선택창을 연다.
