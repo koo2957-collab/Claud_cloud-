@@ -2641,6 +2641,14 @@
         .proc-fmt-row:hover .proc-fmt-down, .proc-fmt-down:focus-visible { opacity: 1; }
         .proc-fmt-down:hover { background: rgba(16,185,129,0.16); }
         @media (hover: none) { .proc-fmt-down { opacity: 1; } }
+        /* 지난번엔 이렇게 — 다른 업무의 같은 항목 조치결과 (조치결과 보라) */
+        :root:root .proc-sec-label.past .cl-ico { color: #8b5cf6; }
+        .proc-past-item { display: block; width: calc(100% + 12px); margin: 0 -6px 3px; padding: 4px 6px; border: none; border-radius: 6px; background: transparent; font-family: inherit; text-align: left; cursor: pointer; }
+        .proc-past-item:hover { background: rgba(139,92,246,0.08); }
+        .proc-past-text { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 0.78rem; line-height: 1.5; }
+        :root:root .proc-past-text { color: var(--text-dark, #1e2d47); }
+        .proc-past-src { display: block; font-size: 0.68rem; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        :root:root .proc-past-src { color: var(--text-muted, #8899aa); }
         /* 체크리스트에서 고른 항목 미리 보기 (패널 맨 위) */
         .proc-pick { margin: 0 0 16px; padding: 10px 11px 8px; border: 1.5px solid rgba(37,99,235,0.35); border-radius: 10px; background: rgba(37,99,235,0.04); }
         .proc-pick-head { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; min-width: 0; }
@@ -4423,6 +4431,23 @@
         .tip-view-content .tip-l3 { display:flex;align-items:flex-start;gap:7px;padding-left:46px;margin-bottom:3px; }
         .tip-view-content .tip-l3-mark { color:#c4b5fd;flex-shrink:0;margin-top:5px;font-size:0.52rem;line-height:1; }
         .tip-view-content .tip-l3-text { font-size:0.83rem;color:var(--text-dark);line-height:1.5;opacity:0.82; }
+        /* 업무팁 세 칸: 놓치기 쉬운 것(빨간 상자) · 순서 · 근거(회색, 맨 아래) */
+        .tip-sec { display: flex; flex-direction: column; gap: 6px; }
+        .tip-warn { padding: 6px 9px 7px; border-left: 3px solid #ef4444; border-radius: 0 7px 7px 0; background: rgba(239,68,68,0.06); }
+        .tip-warn-h, .tip-basis-h { display: flex; align-items: center; gap: 5px; font-size: 0.7rem; font-weight: 800; margin-bottom: 2px; }
+        :root:root .tip-warn-h { color: #dc2626; }
+        .tip-warn-li { position: relative; padding-left: 11px; font-size: 0.8rem; line-height: 1.55; font-weight: 600; }
+        :root:root .tip-warn-li { color: var(--text-dark, #1e2d47); }
+        .tip-warn-li::before { content: ''; position: absolute; left: 1px; top: 0.62em; width: 4px; height: 4px; border-radius: 50%; background: #ef4444; }
+        .tip-basis { padding-top: 6px; border-top: 1px dashed var(--border-light, #dde3ee); }
+        :root:root .tip-basis-h { color: var(--text-gray, #64748b); }
+        .tip-basis-li { font-size: 0.74rem; line-height: 1.5; }
+        :root:root .tip-basis-li { color: var(--text-gray, #64748b); }
+        :root.dark-mode .tip-warn { background: rgba(239,68,68,0.12); }
+        :root.dark-mode:root .tip-warn-h { color: #f87171; }
+        :root:root .ol-b.ol-tag { width: auto; padding: 0 7px; font-size: 0.72rem; font-weight: 700; white-space: nowrap; }
+        :root:root .ol-b.ol-tag.warn { color: #dc2626; }
+        :root:root .ol-b.ol-tag.basis { color: var(--text-gray, #64748b); }
         .tip-view-content .tip-plain { font-size:0.86rem;color:var(--text-dark,#374151);line-height:1.6;margin-bottom:4px; }
         :root.dark-mode .tip-view-content { background:var(--bg-card);border-color:var(--border-light); }
         .checklist-tip-textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1); }
@@ -27395,11 +27420,19 @@ ${docScope === 'internal' ? `[내부결재 — 보고·검토·승인용]
                         ? `<button type="button" class="proc-thumb" data-tf-thumb="${workflowId},${idx},${fi}" data-rf-key="${esc(f.id)}" onclick="event.stopPropagation();app.previewTipFile(${workflowId},${idx},${fi})" title="${esc(f.name)} — 눌러서 보기"></button>`
                         : `<button type="button" class="proc-thumb doc" onclick="event.stopPropagation();app.previewTipFile(${workflowId},${idx},${fi})" title="${esc(f.name)} — 눌러서 보기"><b>${this._rfTypeIco(f.name)}</b><span>${esc(f.name)}</span></button>`).join('')}${tipFiles.length > MAXT ? `<button type="button" class="proc-thumb more" onclick="event.stopPropagation();app.previewTipFile(${workflowId},${tipFiles[MAXT].idx},${tipFiles[MAXT].fi})" title="나머지 예시 보기">+${tipFiles.length - MAXT}</button>` : ''}</div>`;
                     if (thumbsHtml) setTimeout(() => this._loadTipThumbs(), 0);
-                    if (formatNames.length === 0 && !tipText && !thumbsHtml) return '';
+                    // 지난번엔 이렇게: 지금 할 일 것 먼저, 그다음 단계 것 — 2개까지
+                    const past = [...(subItem ? this._pastResults(workflowId, subItem) : []), ...this._pastResults(workflowId, stepItem)].slice(0, 2);
+                    if (formatNames.length === 0 && !tipText && !thumbsHtml && !past.length) return '';
 
                     const sectionLabelStyle = 'font-size:0.7rem;font-weight:700;color:var(--text-muted,#8899aa);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;';
                     // 긴 팁은 정해진 줄 수까지만 — 넘치면 그린 뒤 _procClampCheck가 끝을 흐리게 하고 「… 전체 내용은 길잡이에서」를 붙인다
-                    const noteHtml = (t, lines, gIdx) => `<div class="proc-clamp" data-gidx="${gIdx != null ? gIdx : ''}" data-wid="${workflowId}" style="font-size:0.79rem;color:var(--text-dark,#1e2d47);line-height:1.65;max-height:calc(${lines} * 0.79rem * 1.65 + 2px);">${renderIndentedNoteHtml(t)}</div>`;
+                    const clampHtml = (t, lines, gIdx) => `<div class="proc-clamp" data-gidx="${gIdx != null ? gIdx : ''}" data-wid="${workflowId}" style="font-size:0.79rem;color:var(--text-dark,#1e2d47);line-height:1.65;max-height:calc(${lines} * 0.79rem * 1.65 + 2px);">${renderIndentedNoteLines(t)}</div>`;
+                    // 세 칸 팁: 「놓치기 쉬운 것」·「근거」는 늘 다 보이고, 줄 수 제한은 가운데 「순서」에만
+                    const noteHtml = (t, lines, gIdx) => {
+                        const sec = splitTipSections(t);
+                        if (!sec.warn.length && !sec.basis.length) return clampHtml(t, lines, gIdx);
+                        return `<div style="font-size:0.79rem;color:var(--text-dark,#1e2d47);line-height:1.65;">${tipSectionsHtml(sec, b => clampHtml(b, lines, gIdx))}</div>`;
+                    };
                     const fold = !!(opt.fold && stageTip);   // 할 일을 하나라도 끝냈으면 단계 팁은 한 줄로 접음
                     const both = !!(stageTip && subTip && !fold);
                     const stageSec = !stageTip ? '' : fold
@@ -27412,7 +27445,13 @@ ${docScope === 'internal' ? `[내부결재 — 보고·검토·승인용]
                         </div>`;
                     clearTimeout(this._procClampT);
                     this._procClampT = setTimeout(() => this._procClampCheck(), 30);
-                    const formatsBlock = formatNames.length > 0 ? `<div${tipText ? ' style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(139,92,246,0.15);"' : ''}>
+                    const sepStyle = ' style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(139,92,246,0.15);"';
+                    const pastBlock = !past.length ? '' : `<div class="proc-past"${tipBlock ? sepStyle : ''}>
+                            <div class="proc-sec-label past" style="${sectionLabelStyle}">${this._clIco('history', 13)}지난번엔 이렇게</div>
+                            ${past.map(p => `<button type="button" class="proc-past-item" onclick="event.stopPropagation();app.showChecklistItemModal(${p.w.id},${p.i},'result')" title="${esc(p.text)}
+— ${esc(p.w.title || '')} (눌러서 그때 기록 보기)"><span class="proc-past-text">${esc(p.text)}</span><span class="proc-past-src">${esc(p.w.title || '(제목 없음)')}${p.d ? ` · ${fmtDate(p.d, { short: true })}` : ''}</span></button>`).join('')}
+                        </div>`;
+                    const formatsBlock = formatNames.length > 0 ? `<div${tipBlock || pastBlock ? sepStyle : ''}>
                             <div class="proc-sec-label fmt" style="${sectionLabelStyle}">${this._clIco('formats', 13)}필요 서식·문서</div>
                             ${formatNames.map((n, k) => { const a = formatActs[k] || {}; const open = a.view || a.down;
                                 return open
@@ -27420,7 +27459,7 @@ ${docScope === 'internal' ? `[내부결재 — 보고·검토·승인용]
                                     : `<div style="display:flex;align-items:flex-start;gap:6px;font-size:0.78rem;color:var(--text-dark,#1e2d47);line-height:1.55;margin-bottom:3px;"><span class="proc-fmt-ico">${this._clIco('formats', 12)}</span><span>${esc(n)}</span></div>`; }).join('')}
                         </div>` : '';
                     return `<div ${idAttr}class="proc-step-detail" style="margin-top:6px;padding:9px 11px;background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.15);border-radius:8px;">
-                        ${tipBlock}${formatsBlock}
+                        ${tipBlock}${pastBlock}${formatsBlock}
                         <button type="button" class="tts-btn tts-btn--proc" onclick="event.stopPropagation();app.ttsProcToggle(this)">${this._ttsBtnHtml('idle')}</button>
                     </div>`;
                 };
@@ -35497,6 +35536,25 @@ ${aiPartnerCitationFirstRules}
                 this._focusTouch = { wfId: workflowId, itemId: id, at: Date.now() };
                 this._rerenderChecklist(wf);
             }
+            // 「지난번엔 이렇게」 — 다른 업무(휴지통·레퍼런스·작성 중 제외)에서 이름이 같은 항목에 남긴 조치결과, 최근 것부터
+            _pastResults(workflowId, item) {
+                const norm = t => String(t || '').trim().replace(/\s+/g, ' ');
+                const key = norm(item && item.text);
+                if (!key) return [];
+                const out = [];
+                for (const w of this.allData.workflows || []) {
+                    if (w.id === workflowId || w.isReference || w.isDeleted || w.isDraft || w.type === 'report') continue;
+                    (w.checklist || []).forEach((c, i) => {
+                        const r = c && c.result && String(c.result.text || '').trim();
+                        if (r && c.skipped !== true && norm(c.text) === key) {
+                            const d = parseAnyDate(c.completedAt) || parseAnyDate(w.completedAt) || parseAnyDate(w.createdAt);
+                            out.push({ w, i, text: r, d });
+                        }
+                    });
+                }
+                return out.sort((a, b) => (b.d ? b.d.getTime() : 0) - (a.d ? a.d.getTime() : 0));
+            }
+
             // 고른 줄 풀기 — 체크리스트의 펼친 줄도 닫히고 오른쪽 패널은 지금 할 일로 돌아간다
             clearChecklistPick(workflowId) {
                 if (!this._clPeek || this._clPeek.wfId !== workflowId) return;
@@ -36707,7 +36765,7 @@ ${aiPartnerCitationFirstRules}
             // 건너뛰기 아이콘 ⤼ — 화살표가 아래 항목(짧은 막대)을 아치 모양으로 뛰어넘는 그림.
             // 문자 ⤼는 PC 글꼴에 따라 네모로 깨질 수 있어 같은 모양을 SVG로 그린다(편집 표시·일하는 화면 버튼·규칙 표시 공용)
             // 체크리스트 줄 버튼·오른쪽 클릭 메뉴용 선 아이콘 (Lucide 모양, ISC 라이선스) — 이모지는 PC마다 모양이 달라 그림으로
-            // name: guide(반짝이) · result(메모) · tip(전구) · formats(문서) · deadline(달력) · more(⋯) · wait(모래시계) · done(동그라미 ✓)
+            // name: guide(반짝이) · result(메모) · tip(전구) · formats(문서) · deadline(달력) · more(⋯) · wait(모래시계) · done(동그라미 ✓) · history(지난 기록)
             _clIco(name, size = 15, color = '') {
                 const P = {
                     guide: '<path d="M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.14-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14a2 2 0 0 0 1.44 1.44l6.14 1.58a.5.5 0 0 1 0 .96l-6.14 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/>',
@@ -36717,6 +36775,7 @@ ${aiPartnerCitationFirstRules}
                     deadline: '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
                     wait: '<path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.17a2 2 0 0 0-.59-1.42L12 12l-4.41 4.41A2 2 0 0 0 7 17.83V22"/><path d="M7 2v4.17a2 2 0 0 0 .59 1.42L12 12l4.41-4.41A2 2 0 0 0 17 6.17V2"/>',
                     done: '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+                    history: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>',
                     more: '<circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="19" cy="12" r="1.3" fill="currentColor"/><circle cx="5" cy="12" r="1.3" fill="currentColor"/>',
                 };
                 return `<svg class="cl-ico" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"${color ? ` style="color:${color}"` : ''}>${P[name] || ''}</svg>`;
@@ -37728,6 +37787,12 @@ ${item.result.text}
             
             // 업무팁 텍스트 → 계층 HTML 렌더링
             renderTipContent(content) {
+                if (!content?.trim()) return '';
+                const sec = splitTipSections(content);
+                if (sec.warn.length || sec.basis.length) return tipSectionsHtml(sec, b => this._renderTipLines(b));
+                return this._renderTipLines(content);
+            }
+            _renderTipLines(content) {
                 if (!content?.trim()) return '';
                 const lines = content.split('\n');
                 let html = '';
@@ -43268,7 +43333,36 @@ ${pdfContent.length > 100000 ? pdfContent.substring(0, 100000) + '\n\n[중략: �
 
         // autoBulletizeText로 정리한 텍스트를 들여쓰기 단계까지 반영한 HTML 목록으로 변환.
         // (업무 절차 패널처럼 헤더·굵게 등은 필요 없고 불릿·들여쓰기만 필요한 좁은 영역용)
+        // 업무팁 세 칸 — 글은 그대로 한 칸에 쓰고, 줄 앞 표시로 나눈다(한글·공문에 복사해도 그대로 읽힘)
+        //   「⚠ …」 또는 「주의: …」 줄 → 맨 위 빨간 상자 「놓치기 쉬운 것」
+        //   「근거: …」 또는 「⚖ …」 줄 → 맨 아래 「근거」(법령 조문·지침)
+        //   나머지 → 가운데 「순서」(예전처럼)   · 표시가 없는 예전 팁은 모양이 그대로
+        const TIP_WARN_RE = /^\s*(?:⚠️?|주의\s*[:：])\s*(.*)$/;
+        const TIP_BASIS_RE = /^\s*(?:⚖️?|근거\s*[:：])\s*(.*)$/;
+        function splitTipSections(text) {
+            const warn = [], basis = [], body = [];
+            String(text || '').split('\n').forEach(l => {
+                let m;
+                if ((m = l.match(TIP_WARN_RE))) { if (m[1].trim()) warn.push(m[1].trim()); return; }
+                if ((m = l.match(TIP_BASIS_RE))) { if (m[1].trim()) basis.push(m[1].trim()); return; }
+                body.push(l);
+            });
+            return { warn, basis, body: body.join('\n').replace(/^\s*\n+|\n+\s*$/g, '') };
+        }
+        function tipSectionsHtml(sec, bodyFn) {
+            const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            const svg = d => `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+            const warn = sec.warn.length ? `<div class="tip-warn"><div class="tip-warn-h">${svg('<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>')}놓치기 쉬운 것</div>${sec.warn.map(w => `<div class="tip-warn-li">${esc(w)}</div>`).join('')}</div>` : '';
+            const body = sec.body.trim() ? `<div class="tip-sec-body">${bodyFn(sec.body)}</div>` : '';
+            const basis = sec.basis.length ? `<div class="tip-basis"><div class="tip-basis-h">${svg('<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>')}근거</div>${sec.basis.map(b => `<div class="tip-basis-li">${esc(b)}</div>`).join('')}</div>` : '';
+            return `<div class="tip-sec">${warn}${body}${basis}</div>`;
+        }
         function renderIndentedNoteHtml(text) {
+            const sec = splitTipSections(text);
+            if (sec.warn.length || sec.basis.length) return tipSectionsHtml(sec, renderIndentedNoteLines);
+            return renderIndentedNoteLines(text);
+        }
+        function renderIndentedNoteLines(text) {
             const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             return autoBulletizeText(text).split('\n').map(line => {
                 if (!line.trim()) return '<div style="height:3px;"></div>';
@@ -45320,6 +45414,11 @@ ${formatList}`;
                     + OL_OFFICIAL.slice(0, 4).map((m, i) => b(m, `공문식 ${i + 1}단계`, 'm:' + m, 'ol-num')).join('')
                     + '<span class="ol-sep"></span>'
                     + b('※', '참고(커서 자리에 넣기)', 'i:※ ') + b('▶', '커서 자리에 넣기', 'i:▶ ')
+                    + (ta.classList.contains('checklist-tip-textarea')
+                        ? '<span class="ol-sep"></span>'
+                          + b('⚠ 놓치기 쉬운 것', '지금 줄을 「놓치기 쉬운 것」으로 — 업무팁 맨 위 빨간 상자에 보여요 (한 번 더 누르면 풀림)', 't:⚠ ', 'ol-tag warn')
+                          + b('근거', '지금 줄을 「근거」(법령 조문·지침)로 — 업무팁 맨 아래에 모여요 (한 번 더 누르면 풀림)', 't:근거: ', 'ol-tag basis')
+                        : '')
                     + `<button type="button" class="ol-b ol-help" data-act="help" title="쓰는 방법">ⓘ</button>`;
                 // 버튼을 눌러도 입력칸의 커서가 그대로 있게
                 bar.addEventListener('mousedown', e => { if (e.target.closest('button')) e.preventDefault(); });
@@ -45332,6 +45431,7 @@ ${formatList}`;
                     if (act === 'up' || act === 'down') this._olShift(ta, act === 'up' ? -1 : 1, true);
                     else if (act.startsWith('m:')) this._olSetMarker(ta, act.slice(2));
                     else if (act.startsWith('i:')) this._olInsert(ta, ta.selectionStart, ta.selectionEnd, act.slice(2));
+                    else if (act.startsWith('t:')) this._olSetTag(ta, act.slice(2));
                 });
                 ta.parentNode.insertBefore(bar, ta);
             },
@@ -45362,6 +45462,9 @@ ${formatList}`;
                         ${row(k('⇥'), '한 단계 아래로', '키보드 Tab도 같아요')}
                         ${row(k('⇤'), '한 단계 위로', '키보드 Shift+Tab도 같아요')}
                         ${row('<span class="olh-sel">여러 줄 선택</span>' + k('⇥'), '한꺼번에 바꾸기', '고른 줄이 모두 바뀌어요')}
+                        <div class="olh-sec">4. 업무팁 칸 나누기 (업무팁에서만)</div>
+                        ${row(k('⚠ 놓치기 쉬운 것'), '맨 위 빨간 상자에', '꼭 지킬 기한·자주 하는 실수')}
+                        ${row(k('근거'), '맨 아래에 모아 보기', '법령 조문·지침 (「근거: 」로 시작하는 줄)')}
                         <div class="olh-sec">완성 예시</div>
                         <div class="olh-ex">
                             <div><small>보고서식</small><pre>□ 현장 점검 결과
@@ -45448,6 +45551,19 @@ ${formatList}`;
                     ta.dispatchEvent(new Event('input', { bubbles: true }));
                 }
                 if (caret != null) ta.setSelectionRange(caret, caret);
+            },
+
+            // 업무팁 줄 표시 「⚠ 」·「근거: 」 붙이기 — 같은 표시를 한 번 더 누르면 풀림, 다른 표시면 바꿈
+            _olSetTag(ta, tag) {
+                const [s, e] = this._olLineRange(ta);
+                const line = ta.value.slice(s, e);
+                const m = line.match(/^\s*(?:⚠️?\s*|주의\s*[:：]\s*|⚖️?\s*|근거\s*[:：]\s*)/);
+                let body = m ? line.slice(m[0].length) : line.replace(/^\s+/, '');
+                const om = OL_RE.exec(body);
+                if (om) body = body.slice(om[0].length);   // □·1. 같은 기호는 떼고 표시만
+                const same = m && (tag.startsWith('⚠') ? /⚠|주의/.test(m[0]) : /⚖|근거/.test(m[0]));
+                const head = same ? '' : tag;
+                this._olInsert(ta, s, e, head + body, s + head.length + body.length);
             },
 
             _olSetMarker(ta, marker) {
