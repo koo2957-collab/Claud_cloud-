@@ -1502,6 +1502,18 @@
         .mat-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
         .mat-title { font-size: 0.8rem; font-weight: 600; color: var(--text-dark); display: flex; align-items: baseline; gap: 5px; }
         .mat-title .cl-ico { align-self: center; flex-shrink: 0; }
+        /* 단계 공통 안내 한 줄 (항목 창 업무팁·서식 탭 맨 위) — 상자 없이 흐린 한 줄 */
+        .cim-inherit { flex-shrink: 0; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; padding: 0 0 8px; border-bottom: 1px dashed var(--border-light, #dde3ee); font-size: 0.76rem; line-height: 1.5; }
+        :root:root .cim-inherit { color: var(--text-gray, #5a6a85); }
+        .cim-inherit > span { flex: 1; min-width: 180px; }
+        .cim-inherit .cl-ico { flex-shrink: 0; }
+        .cim-inherit-btn { flex-shrink: 0; padding: 0; border: none; background: none; font-family: inherit; font-size: 0.76rem; font-weight: 600; cursor: pointer; }
+        :root:root .cim-inherit-btn { color: #2563eb; }
+        .cim-inherit-btn:hover { text-decoration: underline; }
+        .gd-common-fold { padding: 2px 0; border: none; background: none; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+        :root:root .gd-common-fold { color: var(--text-gray, #5a6a85); }
+        .gd-common-fold:hover { text-decoration: underline; }
+        .proc-tip-common { margin-top: 8px; padding-top: 6px; border-top: 1px dashed rgba(139,92,246,0.2); }
         .mat-hint { font-size: 0.7rem; font-weight: 400; color: var(--text-muted); margin-left: 4px; }
         .mat-empty { padding: 18px 12px; border: 1.5px dashed var(--border-light); border-radius: 8px; text-align: center; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); }
         .mat-empty span { display: block; margin-top: 3px; font-size: 0.74rem; font-weight: 400; }
@@ -7418,6 +7430,8 @@
         const APP_RELEASE_DATE = '2026-10-10';
         const APP_RELEASE_NOTES = [
             { version: '1.5.0', date: '2026-10-11', notes: [
+                '단계에 적은 업무팁·서식은 그 단계의 할 일 모두가 함께 보는 「단계 공통」, 할 일에 적은 것은 그 할 일만 — 따로 설정 없이 적은 곳에 따라 업무 절차 패널·길잡이에 「지금 할 일 것 → 단계 공통」 순서로 보임 (할 일에 자기 업무팁이 있으면 공통은 한 줄로 접힘, 같은 글·같은 서식은 한 번만)',
+                '항목 창 업무팁·서식 탭 맨 위에 단계 공통 안내 한 줄 — 할 일에 단계와 같은 업무팁을 또 적었으면 [여기 같은 내용 지우기], 서식 줄 오른쪽 클릭으로 「단계 공통으로 옮기기 / 할 일로 옮기기」 (모두 [되돌리기])',
                 '업무 절차 패널 맨 위를 늘 보이게 — 업무 제목 한 줄과 「✓ 완료 4/8단계 · 50%」 줄이 스크롤해도 그대로, 이 줄을 누르면 끝난 단계가 펼쳐짐',
                 '업무 절차 패널의 움직임을 한 번으로 — 단계가 넘어갈 때 2초 동안 여러 번 움직이던 것(돛단배 포함)을 없애고, 가운데 체크리스트가 접히는 때에 맞춰 한 번에 다음 단계로',
                 '체크리스트에서 다른 항목을 누르면 업무 절차 맨 위 줄이 「단계 › 항목 …… 지금 할 일로」 한 줄로 바뀌고, 그 항목은 절차 목록 제자리에서 펼쳐짐 (상자가 늘 하나)',
@@ -14340,6 +14354,83 @@
                     locked ? null : { label: '✕ 지우기', js: `app.removeTipFile(${w},${i},${fi})`, danger: true },
                 ]));
             }
+            // 단계 = 할 일 모두의 공통 · 할 일 = 그 할 일만. 항목 창 업무팁·서식 탭 맨 위 안내 한 줄
+            //   할 일: 「피의자 신문」 단계 공통 업무팁 · 서식 2개도 이 할 일에 함께 보입니다 [단계에서 보기] (같은 글이면 [여기 같은 내용 지우기])
+            //   단계(할 일이 있으면): 여기 적은 업무팁은 할 일 3개(1피의자 · 2피의자 …)에 함께 보입니다
+            _stageCommonNoteHtml(wf, i, tab, locked) {
+                const cl = wf.checklist || [], it = cl[i];
+                if (!it) return '';
+                const esc = v => this.escapeHtml(String(v ?? ''));
+                const ico = this._clIco('layers', 13, '#64748b');
+                if (this._isSubEntry(it)) {
+                    const si = this._stageIndexOf(cl, i), st = si >= 0 && si !== i ? cl[si] : null;
+                    if (!st) return '';
+                    const stTip = (st.tip?.content || '').trim(), stFiles = st.itemId ? this._tipFiles(wf.id, st.itemId).length : 0;
+                    const stFm = (st.formats || []).length + (st.linkedDocs || []).length;
+                    const has = tab === 'tip' ? (stTip || stFiles) : stFm;
+                    if (!has) return '';
+                    const what = tab === 'tip' ? '업무팁' : `서식 ${stFm}개`;
+                    const dup = tab === 'tip' && !locked && stTip && (it.tip?.content || '').replace(/\s+/g, ' ').trim() === stTip.replace(/\s+/g, ' ');
+                    return `<div class="cim-inherit">${ico}<span>「${esc(st.text)}」 단계 공통 ${what}도 이 할 일에 함께 보입니다${dup ? ' — <b>여기 적은 업무팁과 같습니다</b>' : ''}</span>`
+                        + (dup ? `<button type="button" class="cim-inherit-btn" onclick="app._dropDupTip(${wf.id},${i})">여기 같은 내용 지우기</button>` : '')
+                        + `<button type="button" class="cim-inherit-btn" onclick="app.showChecklistItemModal(${wf.id},${si},'${tab}')">단계에서 보기</button></div>`;
+                }
+                const subs = this.findSubItems(cl, i).filter(x => x.item.skipped !== true);
+                if (!subs.length) return '';
+                const names = subs.slice(0, 3).map(x => esc(x.item.text || '(제목 없음)')).join(' · ') + (subs.length > 3 ? ' …' : '');
+                return `<div class="cim-inherit">${ico}<span>여기 적은 ${tab === 'tip' ? '업무팁' : '서식'}은 할 일 ${subs.length}개(${names})에 함께 보입니다 · 한 할 일에만 필요하면 그 할 일에 적으세요</span></div>`;
+            }
+            // 할 일에 단계 공통과 같은 업무팁이 또 적혀 있으면 여기서만 지우기 ([되돌리기])
+            _dropDupTip(w, i) {
+                const wf = this.allData.workflows.find(x => x.id === w), it = wf?.checklist?.[i];
+                if (!it || !it.tip) return;
+                const old = it.tip.content;
+                // 항목 창을 다시 그릴 때 닫히며 입력칸 글을 저장하므로, 입력칸도 같은 값으로 맞춘 뒤 바꾼다
+                const setTip = v => {
+                    const ta = document.getElementById(`main-checklist-tip-content-${w}-${i}`);
+                    if (ta) ta.value = v;
+                    it.tip.content = v; this.saveData();
+                    if (this._cimSnap) this._cimSnap = this._cimSnapshot(w, i);   // 다시 그릴 때 「저장되었습니다」가 [되돌리기] 알림을 덮지 않게
+                    this.showChecklistItemModal(w, i, 'tip'); this._rerenderChecklist?.(wf); this.refreshAIPanelDashboardIfNeeded();
+                };
+                setTip('');
+                this.showToast('success', '✓', '같은 업무팁을 이 할 일에서 지웠습니다 (단계 공통으로 그대로 보입니다)', 6000,
+                    { actionLabel: '되돌리기', onAction: () => setTip(old) });
+            }
+            // 서식을 단계 공통 ↔ 할 일로 옮기기 (to: -1 = 이 할 일의 단계, 숫자 = 그 할 일) — 같은 서식이 이미 있으면 빼기만 ([되돌리기])
+            _fmMoveLevel(w, i, kind, idx, to) {
+                const wf = this.allData.workflows.find(x => x.id === w), cl = wf?.checklist, it = cl?.[i];
+                if (!it) return;
+                const ti = to === -1 ? this._stageIndexOf(cl, i) : to, dest = cl[ti];
+                if (!dest || ti === i) return;
+                const snap = [it, dest].map(x => ({ x, f: (x.formats || []).slice(), d: (x.linkedDocs || []).slice() }));
+                let name = '';
+                if (kind === 'fm') {
+                    const f = (it.formats || [])[idx]; if (!f) return;
+                    name = f.name || String(f);
+                    it.formats.splice(idx, 1);
+                    dest.formats = dest.formats || [];
+                    if (!dest.formats.some(g => (g.name || String(g)) === name)) dest.formats.push(f);
+                } else {
+                    const id = (it.linkedDocs || [])[idx]; if (id == null) return;
+                    name = (this._getRepoDocMeta(id) || {}).name || '서식';
+                    it.linkedDocs = it.linkedDocs.filter((_, k) => k !== idx);
+                    dest.linkedDocs = dest.linkedDocs || [];
+                    if (!dest.linkedDocs.includes(id)) dest.linkedDocs.push(id);
+                }
+                this.saveData();
+                const redraw = () => {
+                    if (document.getElementById(`main-checklist-formats-list-${w}-${i}`)) {   // 안내 줄 개수까지 새로 (「저장되었습니다」가 [되돌리기]를 덮지 않게)
+                        if (this._cimSnap) this._cimSnap = this._cimSnapshot(w, i);
+                        this.showChecklistItemModal(w, i, 'formats');
+                    }
+                    this._rerenderChecklist?.(wf);
+                    this.refreshAIPanelDashboardIfNeeded();
+                };
+                redraw();
+                this.showToast('success', '✓', to === -1 ? `「${name}」을(를) 「${dest.text || '단계'}」 단계 공통으로 옮겼습니다 — 할 일 모두에 보입니다` : `「${name}」을(를) 「${dest.text || '할 일'}」(으)로 옮겼습니다`, 6000,
+                    { actionLabel: '되돌리기', onAction: () => { snap.forEach(s0 => { s0.x.formats = s0.f; s0.x.linkedDocs = s0.d; }); this.saveData(); redraw(); } });
+            }
             // 서식 탭에 넣어 둔 예시를 업무팁 예시로 옮기기 (서식·문서함의 원본은 그대로 두고 이 항목에서만 뺌)
             async _fmToTip(w, i, kind, idx) {
                 const wf = this.allData.workflows.find(x => x.id === w), it = wf?.checklist?.[i];
@@ -15965,9 +16056,11 @@
 
                 // 업무팁 탭 내용
                 const _tipHasContent = !!(item.tip?.content?.trim());
+                const _commonTip = this._stageCommonNoteHtml(workflow, index, 'tip', locked);
+                const _commonFmt = this._stageCommonNoteHtml(workflow, index, 'formats', locked);
                 const _tipSparkSvg = '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;"><path fill-rule="evenodd" d="M9 4.5a.75.75 0 01.721.544l.813 2.846a3.75 3.75 0 002.576 2.576l2.846.813a.75.75 0 010 1.442l-2.846.813a3.75 3.75 0 00-2.576 2.576l-.813 2.846a.75.75 0 01-1.442 0l-.813-2.846a3.75 3.75 0 00-2.576-2.576l-2.846-.813a.75.75 0 010-1.442l2.846-.813A3.75 3.75 0 007.466 7.89l.813-2.846A.75.75 0 019 4.5zM18 1.5a.75.75 0 01.728.568l.258 1.036c.236.94.97 1.674 1.91 1.91l1.036.258a.75.75 0 010 1.456l-1.036.258a2.25 2.25 0 00-1.91 1.91l-.258 1.036a.75.75 0 01-1.456 0l-.258-1.036a2.25 2.25 0 00-1.91-1.91l-1.036-.258a.75.75 0 010-1.456l1.036-.258a2.25 2.25 0 001.91-1.91l.258-1.036A.75.75 0 0118 1.5z" clip-rule="evenodd"/></svg>';
                 this._installTipPaste();
-                const tipHtml = `
+                const tipHtml = `${_commonTip}
                     <div class="mat-head" style="flex-shrink:0;"><div class="mat-title">업무팁<span class="mat-hint">${locked ? '' : '눌러서 바로 고칠 수 있습니다'}</span></div><span class="mat-btns">${locked ? '' : this.isAIAvailable() ? `
                         <button id="ai-organize-tip-${workflowId}-${index}" class="mat-btn" onclick="app.switchTipToEditMode(${workflowId},${index});app.aiOrganizeTip(${workflowId},${index})">${_tipSparkSvg} AI 정리</button>` : `
                         <button id="ai-organize-tip-${workflowId}-${index}" class="mat-btn" onclick="app.switchTipToEditMode(${workflowId},${index});app.organizeTipRuleBased(${workflowId},${index})" title="공백 줄 정리·불릿 기호 통일 (내용은 바꾸지 않습니다)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> 정리</button>`}</span></div>
@@ -15987,6 +16080,7 @@
                 const formatsHtml = `
                     <div class="drag-drop-zone fm-zone" id="main-checklist-formats-${workflowId}-${index}"
                          ondragover="app.handleChecklistFormatDragOver(event)" ondragleave="app.handleChecklistFormatDragLeave(event)" ondrop="app.handleMainChecklistFormatDrop(event,${workflowId},${index})">
+                        ${_commonFmt}
                         <div class="mat-head">
                             <div class="mat-title">서식 <b class="rf-count" id="fm-count-${workflowId}-${index}">${this._fmCountText(item)}</b><span class="mat-hint" title="이 단계만의 작성례·사진은 [업무팁] 탭의 「예시·사진」에">채워서 쓰는 빈 양식 · 작성례·사진은 업무팁에</span></div>
                             ${!locked ? this._matBtns({ lib: 'repo', pickJs: `app.openDocumentPicker(${workflowId},${index})`, uploadJs: `app.addMainChecklistFormatFromInput(${workflowId},${index},this)`, accept: '.hwpx,.hwp,.doc,.docx,.pdf,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png' }) : ''}
@@ -24119,6 +24213,10 @@ ${item.result.text}
                     ...(locked ? [] : [{ label: '↑ 위로', js: mv('up'), disabled: idx === 0 }, { label: '↓ 아래로', js: mv('down'), disabled: idx === len - 1 }]),
                     locate ? { label: '📂 서식·문서함에서 위치 보기', js: locate } : null,
                     locked ? null : { label: '🖼 업무팁 예시로 옮기기', js: `app._fmToTip(${w},${i},'${kind}',${idx})` },
+                    ...(locked ? [] : this._isSubEntry(it)
+                        ? (this._stageIndexOf(wf.checklist, i) >= 0 ? [{ label: '⤴ 단계 공통으로 옮기기', js: `app._fmMoveLevel(${w},${i},'${kind}',${idx},-1)` }] : [])
+                        : this.findSubItems(wf.checklist, i).filter(x => x.item.skipped !== true).slice(0, 8)
+                            .map(x => ({ label: `⤵ 「${(x.item.text || '할 일').slice(0, 18)}」(으)로 옮기기`, js: `app._fmMoveLevel(${w},${i},'${kind}',${idx},${x.index})` }))),
                     null,
                     locked ? null : { label: delLabel, js: del, danger: true },
                 ]));
@@ -27379,11 +27477,12 @@ ${docScope === 'internal' ? `[내부결재 — 보고·검토·승인용]
                             });
                         }
                     };
+                    if (subItem) addFormats(subItem, opt.subIdx);   // 지금 할 일 것 먼저, 그다음 단계 공통 (같은 이름은 한 번만)
                     addFormats(stepItem, opt.stageIdx);
-                    if (subItem) addFormats(subItem, opt.subIdx);
                     const tipOf = it => (it && it.tip && it.tip.content && it.tip.content.trim()) ? it.tip.content.trim() : '';
-                    const stageTip = tipOf(stepItem), subTip = tipOf(subItem);
-                    const tipText = stageTip || subTip;
+                    const stageTip = tipOf(stepItem), subTip0 = tipOf(subItem);
+                    const subTip = subTip0 && subTip0.replace(/\s+/g, ' ') !== stageTip.replace(/\s+/g, ' ') ? subTip0 : '';   // 단계와 같은 글이면 한 번만
+                    const tipText = subTip0 || stageTip;
                     // 업무팁 예시·사진: 지금 할 일 것 먼저, 그다음 단계 것 (한 줄 · 넘치면 +N)
                     const tipFilesOf = (it, idx) => it && idx != null && idx >= 0 ? this._tipFiles(workflowId, it.itemId).map((f, fi) => ({ f, idx, fi })) : [];
                     const tipFiles = [...tipFilesOf(subItem, opt.subIdx), ...tipFilesOf(stepItem, opt.stageIdx)];
@@ -27405,15 +27504,15 @@ ${docScope === 'internal' ? `[내부결재 — 보고·검토·승인용]
                         if (!sec.warn.length && !sec.basis.length) return clampHtml(t, lines, gIdx);
                         return `<div style="font-size:0.79rem;color:var(--text-dark,#1e2d47);line-height:1.65;">${tipSectionsHtml(sec, b => clampHtml(b, lines, gIdx))}</div>`;
                     };
-                    const fold = !!(opt.fold && stageTip);   // 할 일을 하나라도 끝냈으면 단계 팁은 한 줄로 접음
-                    const both = !!(stageTip && subTip && !fold);
+                    // 단계 업무팁 = 할 일 모두의 공통: 지금 할 일에 자기 업무팁이 있으면 「▸ 단계 공통」 한 줄로 접고, 없으면 펼쳐서
+                    const fold = !!(stageTip && subTip);
                     const stageSec = !stageTip ? '' : fold
-                        ? `<button type="button" class="proc-tip-fold" onclick="event.stopPropagation();app._procTipFold(this)" aria-expanded="false">▸ ${esc(stepItem.text || '')} 업무팁</button><div class="proc-tip-foldbody" hidden>${noteHtml(stageTip, 7, opt.stageIdx)}</div>`
-                        : (subTip ? `<div class="proc-tip-src">${esc(stepItem.text || '')}</div>` : '') + noteHtml(stageTip, both ? 3 : 7, opt.stageIdx);
-                    const subSec = !subTip ? '' : `<div class="proc-tip-src${stageTip ? ' sep' : ''}">${esc(subItem.text || '')} <span>· 지금 할 일</span></div>${noteHtml(subTip, both ? 4 : 7, opt.subIdx)}`;
+                        ? `<button type="button" class="proc-tip-fold" onclick="event.stopPropagation();app._procTipFold(this)" aria-expanded="false">▸ ${esc(stepItem.text || '')} · 단계 공통 업무팁</button><div class="proc-tip-foldbody" hidden>${noteHtml(stageTip, 7, opt.stageIdx)}</div>`
+                        : (subItem ? `<div class="proc-tip-src">${esc(stepItem.text || '')} <span>· 단계 공통</span></div>` : '') + noteHtml(stageTip, 7, opt.stageIdx);
+                    const subSec = !subTip ? '' : `<div class="proc-tip-src">${esc(subItem.text || '')} <span>· 지금 할 일</span></div>${noteHtml(subTip, 7, opt.subIdx)}`;
                     const tipBlock = !tipText && !thumbsHtml ? '' : `<div>
                             <div class="proc-sec-label tip" style="${sectionLabelStyle}">${this._clIco('tip', 13)}업무팁</div>
-                            ${stageSec}${subSec}${thumbsHtml}
+                            ${subSec}${stageSec ? `<div class="${subSec ? 'proc-tip-common' : ''}">${stageSec}</div>` : ''}${thumbsHtml}
                         </div>`;
                     clearTimeout(this._procClampT);
                     this._procClampT = setTimeout(() => this._procClampCheck(), 30);
@@ -36669,6 +36768,7 @@ ${aiPartnerCitationFirstRules}
                     wait: '<path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.17a2 2 0 0 0-.59-1.42L12 12l-4.41 4.41A2 2 0 0 0 7 17.83V22"/><path d="M7 2v4.17a2 2 0 0 0 .59 1.42L12 12l4.41-4.41A2 2 0 0 0 17 6.17V2"/>',
                     done: '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
                     history: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>',
+                    layers: '<path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/>',
                     book: '<path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>',
                     clip: '<path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/>',
                     image: '<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>',
@@ -43347,23 +43447,51 @@ ${pdfContent.length > 100000 ? pdfContent.substring(0, 100000) + '\n\n[중략: �
             if (details?.details?.trim()) tipParts.push(details.details.trim());
             if (details?.law?.trim()) tipParts.push(`법령 정보: ${details.law.trim()}`);
             if (details?.memo?.trim()) tipParts.push(`메모: ${details.memo.trim()}`);
+            // 예시·사진 썸네일 · 서식 카드 (이 항목 것과 단계 공통 것을 같은 모양으로)
+            const thumbsOf = (files, i) => !files.length ? '' : `<div class="gd-sub">예시·사진 ${files.length}</div><div class="gd-thumbs">${files.map((f, fi) => this._isImgFile(f)
+                    ? `<button type="button" class="gd-thumb" data-tf-thumb="${w},${i},${fi}" data-rf-key="${esc(f.id)}" onclick="app.previewTipFile(${w},${i},${fi})" title="${esc(f.name)} — 눌러서 보기"><span>${esc(f.name)}</span></button>`
+                    : `<button type="button" class="gd-thumb doc" onclick="app.${this.canPreview(f.type || f.name) ? 'previewTipFile' : 'downloadTipFile'}(${w},${i},${fi})" title="${esc(f.name)} — 눌러서 보기"><b>${this._rfTypeIco(f.name)}</b><span>${esc(f.name)}</span></button>`).join('')}</div>`;
+            const fmtsOf = (x, i) => {
+                const list = [];
+                (x.formats || []).forEach((f, k) => { const name = f.name || String(f); list.push({ name, size: f.size, view: this.canPreview(f.type || name) ? `app.previewFormat(${w},${i},${k})` : '', down: `app.downloadFormat(${w},${i},${k})` }); });
+                (x.linkedDocs || []).forEach(id => { const m = this._getRepoDocMeta(id) || {}; const name = m.name || '서식'; list.push({ name, size: m.size, view: this.canPreview(m.type || name) ? `app.previewRepoDocument(${id})` : '', down: `app.downloadRepoDocument(${id})` }); });
+                return list;
+            };
+            const cardsOf = list => `<div class="gd-cards">${list.map(x => `<div class="gd-card"><button type="button" class="gd-card-main" onclick="${x.view || x.down}" title="${x.view ? '눌러서 보기' : '이 형식은 미리보기가 안 되어 내려받습니다'}"><span class="rf-ico">${this._rfTypeIco(x.name)}</span><span class="gd-card-name">${esc(x.name)}</span>${x.size ? `<span class="gd-card-size">${fmtBytes(x.size)}</span>` : ''}</button><button type="button" class="attach-file-btn" onclick="${x.down}" title="내려받기">⬇</button></div>`).join('')}</div>`;
             const tipFiles = it.itemId ? this._tipFiles(w, it.itemId) : [];
             if (tipParts.length || tipFiles.length) {
                 const textHtml = tipParts.length ? `<div class="gd-tip tip-view-content">${this.renderTipContent(tipParts.join('\n'))}</div>` : '';
-                const filesHtml = tipFiles.length ? `<div class="gd-sub">예시·사진 ${tipFiles.length}</div><div class="gd-thumbs">${tipFiles.map((f, fi) => this._isImgFile(f)
-                    ? `<button type="button" class="gd-thumb" data-tf-thumb="${w},${index},${fi}" data-rf-key="${esc(f.id)}" onclick="app.previewTipFile(${w},${index},${fi})" title="${esc(f.name)} — 눌러서 보기"><span>${esc(f.name)}</span></button>`
-                    : `<button type="button" class="gd-thumb doc" onclick="app.${this.canPreview(f.type || f.name) ? 'previewTipFile' : 'downloadTipFile'}(${w},${index},${fi})" title="${esc(f.name)} — 눌러서 보기"><b>${this._rfTypeIco(f.name)}</b><span>${esc(f.name)}</span></button>`).join('')}</div>` : '';
-                out.push(sec(this._clIco('tip', 14, '#f59e0b'), '업무팁', '', textHtml + filesHtml));
+                out.push(sec(this._clIco('tip', 14, '#f59e0b'), '업무팁', '', textHtml + thumbsOf(tipFiles, index)));
                 if (tipFiles.some(f => this._isImgFile(f))) setTimeout(() => this._loadTipThumbs(), 0);
             }
             // 서식 — 파일 카드 (누르면 보기, ⬇ 내려받기, 2개 이상이면 모두 내려받기)
-            if ((it.linkedDocs || []).length && !this._repoDocMetaCache) await this._loadRepoDocMetaCache().catch(() => {});
-            const fmts = [];
-            (it.formats || []).forEach((f, k) => { const name = f.name || String(f); fmts.push({ name, size: f.size, view: this.canPreview(f.type || name) ? `app.previewFormat(${w},${index},${k})` : '', down: `app.downloadFormat(${w},${index},${k})` }); });
-            (it.linkedDocs || []).forEach(id => { const m = this._getRepoDocMeta(id) || {}; const name = m.name || '서식'; fmts.push({ name, size: m.size, view: this.canPreview(m.type || name) ? `app.previewRepoDocument(${id})` : '', down: `app.downloadRepoDocument(${id})` }); });
+            const cl = workflow.checklist || [];
+            const si = this._isSubEntry(it) ? this._stageIndexOf(cl, index) : -1;
+            const st = si >= 0 && si !== index ? cl[si] : null;
+            if ([it, st].some(x => x && (x.linkedDocs || []).length) && !this._repoDocMetaCache) await this._loadRepoDocMetaCache().catch(() => {});
+            const fmts = fmtsOf(it, index);
             if (fmts.length) {
                 const all = fmts.length > 1 ? `<button type="button" class="mat-btn gd-all" onclick="${fmts.map(x => x.down).join(';')}" title="서식 ${fmts.length}개를 모두 내 PC에 저장">⬇ 모두 내려받기</button>` : '';
-                out.push(sec(this._clIco('formats', 14, '#10b981'), '서식', fmts.length, `<div class="gd-cards">${fmts.map(x => `<div class="gd-card"><button type="button" class="gd-card-main" onclick="${x.view || x.down}" title="${x.view ? '눌러서 보기' : '이 형식은 미리보기가 안 되어 내려받습니다'}"><span class="rf-ico">${this._rfTypeIco(x.name)}</span><span class="gd-card-name">${esc(x.name)}</span>${x.size ? `<span class="gd-card-size">${fmtBytes(x.size)}</span>` : ''}</button><button type="button" class="attach-file-btn" onclick="${x.down}" title="내려받기">⬇</button></div>`).join('')}</div>${all}`));
+                out.push(sec(this._clIco('formats', 14, '#10b981'), '서식', fmts.length, `${cardsOf(fmts)}${all}`));
+            }
+            // 단계 공통 — 할 일이면 그 단계에 적은 업무팁·서식도 (같은 글·같은 이름은 한 번만). 이 할 일에 자기 것이 있으면 접어 둠
+            if (st) {
+                const own = (it.tip?.content || '').replace(/\s+/g, ' ').trim();
+                const stTip = (st.tip?.content || '').trim();
+                const stTipShow = stTip && stTip.replace(/\s+/g, ' ') !== own ? stTip : '';
+                const stFiles = st.itemId ? this._tipFiles(w, st.itemId) : [];
+                const names = new Set(fmts.map(x => x.name));
+                const stF = fmtsOf(st, si).filter(x => !names.has(x.name));
+                if (stTipShow || stFiles.length || stF.length) {
+                    const body = (stTipShow ? `<div class="gd-tip tip-view-content">${this.renderTipContent(stTipShow)}</div>` : '') + thumbsOf(stFiles, si)
+                        + (stF.length ? `<div class="gd-sub">서식 ${stF.length}</div>${cardsOf(stF)}` : '');
+                    const parts = [stTipShow || stFiles.length ? '업무팁' : '', stF.length ? `서식 ${stF.length}개` : ''].filter(Boolean).join(' · ');
+                    const folded = !!(tipParts.length || tipFiles.length || fmts.length);
+                    out.push(sec(this._clIco('layers', 14, '#64748b'), `「${esc(st.text || '')}」 단계 공통`, '', folded
+                        ? `<button type="button" class="gd-common-fold" onclick="app._procTipFold(this)" aria-expanded="false" title="눌러서 펼치기·접기">▸ ${parts}</button><div hidden>${body}</div>`
+                        : body));
+                    if (stFiles.some(f => this._isImgFile(f))) setTimeout(() => this._loadTipThumbs(), 0);
+                }
             }
             // 참고 자료 (업무 전체)
             const refs = this._refItems(workflow).out;
