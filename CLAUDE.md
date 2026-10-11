@@ -73,6 +73,9 @@
 | `mk_files_test.py` | 예시 사진 넘기기(창 그대로·내용만 바뀜·빠른 연타·PDF 뒤 키)·파일 줄 높이/형식 표 시험 대본 |
 | `mk_common_test.py` | 단계 공통(물려받기): 패널 순서·길잡이 공통 묶음·항목 창 안내·같은 글 지우기·서식 옮기기·[되돌리기] 시험 대본 |
 | `mk_hold_test.py` / `mk_panel_motion.py` | 단계가 접히는 동안 빠른 클릭 무시 / 업무 절차 패널이 단계 넘어갈 때 시간별 움직임 기록 시험 대본 |
+| `mk_practice_build.py` → `embed_practice.py` | 연습 업무카드 만들기: `practice_data.py`(내용)·`practice/`(빈 양식·법령 PDF)로 실제 프로그램 안에서 업무를 만들어 내보내기 → `사용설명서/연습업무.json`, 이것을 index.html 끝 `<script id="practicePkg">`에 넣음(「연습 업무 넣기」). 빈 양식은 `make_practice_forms.py`. cdp3 `save` 단계로 결과를 파일에 씀 |
+| `mk_practice_test.py` | 연습 업무 넣기(실제 클릭)·마감일 오늘 기준·건너뛰기 버튼 실행·예시 그림·.json 가져오기·두 번 넣기 시험 |
+| `mk_netlock_test.py` / `mk_done_test.py` | 외부 통신 잠금(배포판 막힘·시험판 열림) / 완료 처리·완료 취소 [되돌리기] 시험 |
 | `vcheck2.mjs` | 만든 영상의 길이·소리 크기·화면 프레임 확인 |
 
 리눅스(클라우드)에서는 `CHROME_PATH=/opt/pw-browsers/chromium-1194/chrome-linux/chrome`로 씁니다. cdp2·cdp3는 헤드리스에서도 「마우스 있는 화면」(hover: hover)으로 뜨게 해 두었습니다(아니면 마우스를 올려야 나오는 버튼이 숨겨짐). `mkman2.py`·`mk_*_test.py`는 `tools` 폴더 안에서 실행합니다(대본 파일을 지금 폴더에 씀).
