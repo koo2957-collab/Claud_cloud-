@@ -3,7 +3,7 @@ S = []
 def W(ms=600): return f"await new Promise(r=>setTimeout(r,{ms}));"
 NL = "String.fromCharCode(10)"
 HL = ("const R=(sel)=>{const el=typeof sel==='string'?document.querySelector(sel):sel;if(!el)return null;const r=el.getBoundingClientRect();return {x:Math.round(r.left),y:Math.round(r.top),w:Math.round(r.width),h:Math.round(r.height)}};"
-      "const toastOff=()=>document.querySelectorAll('.toast, .toast-container > *').forEach(t=>t.remove());"
+      "const toastOff=()=>document.querySelectorAll('.toast, .toast-container > *').forEach(t=>{if(t.id==='toast')t.classList.remove('show');else t.remove();});"
       "const wf=()=>app.allData.workflows.find(w=>w.id===window.__wid);"
       "const row=(txt)=>[...document.querySelectorAll('.checklist-card')].find(c=>c.querySelector('.item-title-text, .fci-title-text')?.textContent.trim().startsWith(txt));"
       "const idxOf=(t)=>wf().checklist.findIndex(x=>x.text===t);"
