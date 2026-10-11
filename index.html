@@ -2721,6 +2721,24 @@
         .proc-fmt-down:hover { background: rgba(16,185,129,0.16); }
         @media (hover: none) { .proc-fmt-down { opacity: 1; } }
         /* 지난번엔 이렇게 — 다른 업무의 같은 항목 처리결과 (처리결과 보라) */
+        /* 업무 절차 패널: 건너뛴 단계·할 일 — 제자리에 흐리게 + 알약(해당 없음 회색 · ⤼ 버튼 이름 보라) */
+        .proc-skip-ico { width: 18px; height: 18px; border-radius: 5px; border: 2px dashed var(--border-light, #dde3ee); box-sizing: border-box; flex-shrink: 0; position: relative; }
+        .proc-skip-ico::after { content: ''; position: absolute; left: 3px; right: 3px; top: 50%; height: 2px; margin-top: -1px; border-radius: 1px; background: var(--border-light, #dde3ee); }
+        .proc-skip-title { font-size: 0.82rem; font-weight: 500; line-height: 1.5; }
+        :root:root .proc-skip-title, :root:root .proc-skip-subtext { color: var(--text-muted, #8899aa); }
+        .proc-skip-title s, .proc-skip-subtext s { text-decoration-color: var(--border-light, #c9d2df); }
+        .proc-skip-pill { display: inline-flex; align-items: center; gap: 2px; margin-left: 6px; padding: 0 6px; border-radius: 999px; font-size: 0.66rem; font-weight: 700; line-height: 1.6; vertical-align: 1px; white-space: nowrap; }
+        :root:root .proc-skip-pill.na { color: #64748b; background: rgba(100,116,139,0.12); }
+        :root:root .proc-skip-pill.br { color: #7c3aed; background: rgba(139,92,246,0.12); }
+        :root.dark-mode:root .proc-skip-pill.na { color: #a3aec0; background: rgba(148,163,184,0.16); }
+        :root.dark-mode:root .proc-skip-pill.br { color: #c4b5fd; background: rgba(139,92,246,0.2); }
+        .proc-skip-dot { width: 11px; height: 11px; border-radius: 50%; border: 1.5px dashed var(--border-light, #c9d2df); box-sizing: border-box; flex-shrink: 0; }
+        .proc-skip-subtext { font-size: 0.77rem; line-height: 1.5; }
+        .proc-skip-run-btn { display: inline-flex; align-items: center; gap: 3px; padding: 1px 8px 1px 6px; border: 1px dashed rgba(139,92,246,0.35); border-radius: 999px; background: transparent; font-family: inherit; font-size: 0.74rem; font-weight: 700; cursor: pointer; }
+        :root:root .proc-skip-run-btn { color: #7c3aed; }
+        .proc-skip-run-btn:hover { background: rgba(139,92,246,0.08); }
+        :root.dark-mode:root .proc-skip-run-btn { color: #c4b5fd; }
+        .proc-skip-run-arrow { font-size: 0.7rem; margin-left: 2px; }
         :root:root .proc-sec-label.past .cl-ico { color: #8b5cf6; }
         .proc-past-item { display: block; width: calc(100% + 12px); margin: 0 -6px 3px; padding: 4px 6px; border: none; border-radius: 6px; background: transparent; font-family: inherit; text-align: left; cursor: pointer; }
         .proc-past-item:hover { background: rgba(139,92,246,0.08); }
@@ -27809,10 +27827,44 @@ ${docScope === 'internal' ? `[내부결재 — 보고·검토·승인용]
                     }
                 }
 
-                const procRows = steps.map(({ item, idx }, pos) => {
+                // 건너뛴 항목 — 진행·「지금 할 일」 계산은 그대로 steps(건너뛰지 않은 단계)로 하고, 화면에는 제자리에 흐리게 남긴다
+                // 알약: 「해당 없음」(회색) · 「⤼ 버튼 이름」(보라), 마우스를 올리면 사유
+                const isSkippedIt = it => it.skipped === true && !this.normalizeCompleted(it);
+                const skipPill = it => {
+                    const r = String(it.skipReason || '');
+                    if (it.skipManual || /^해당 없음/.test(r)) return `<span class="proc-skip-pill na" title="${esc(r || '해당 없음')}">해당 없음</span>`;
+                    const lab = r.replace(/\s*\([^()]*\)\s*$/, '') || '건너뛰기';
+                    return `<span class="proc-skip-pill br" title="${esc(r || '건너뛰기')}">${this._skipIco(10)}${esc(this._shortLabel(lab))}</span>`;
+                };
+                const pinHtml = `<div style="margin-top:3px;color:${currentStepPos === -1 ? '#10b981' : 'var(--border-light,#dde3ee)'};" title="${currentStepPos === -1 ? '목적지 도착' : '목적지'}">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                                       </div>`;
+                const skipLine = '<div style="width:0;flex:1;min-height:10px;border-left:2px dashed var(--border-light,#dde3ee);margin-top:2px;"></div>';
+                const skipRowHtml = (item, idx, isLast, inRun = false) => `
+                        <div data-step-idx="${idx}" class="proc-step-row proc-skip-row${inRun ? ' in-run' : ''}" style="display:flex;gap:9px;cursor:pointer;" onclick="app.scrollToMainChecklistItem(${workflowId},${idx})" title="${esc(item.skipReason || '건너뜀')}">
+                            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+                                <div class="proc-skip-ico"></div>
+                                ${isLast ? pinHtml : skipLine}
+                            </div>
+                            <div style="flex:1;min-width:0;padding-bottom:${isLast ? '2px' : '10px'};">
+                                <div class="proc-step-title proc-skip-title"><s>${esc(item.text || '')}</s>${skipPill(item)}</div>
+                            </div>
+                        </div>`;
+                // 연달아 건너뛴 단계 n개 → 「⤼ n개 건너뜀 ▸」 한 줄 (누르면 펼침)
+                const skipRunHtml = (run, open, isLast) => `
+                        <div class="proc-step-row proc-skip-run" style="display:flex;gap:9px;">
+                            <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
+                                <div class="proc-skip-ico"></div>
+                                ${isLast ? pinHtml : skipLine}
+                            </div>
+                            <div style="flex:1;min-width:0;padding-bottom:${isLast ? '2px' : '10px'};">
+                                <button type="button" class="proc-skip-run-btn" onclick="event.stopPropagation();app.toggleProcSkipRun(${workflowId},${run[0].idx})" aria-expanded="${open}" title="${esc(run.map(r => r.item.text || '').join('\n'))}">${this._skipIco(11)}${run.length}개 건너뜀<span class="proc-skip-run-arrow">${open ? '▾' : '▸'}</span></button>
+                            </div>
+                        </div>`;
+
+                const rowHtml = (item, idx, pos, isLast) => {
                     const isDone = this.normalizeCompleted(item);
                     const isCurrent = pos === currentStepPos;
-                    const isLast = pos === steps.length - 1;
                     const procOther = procMine && !procMine.has(idx) ? this._collabStageOwnerName(workflow, idx) : '';
                     const isAway = !!(procAway && procAway.has(idx));
 
@@ -27854,6 +27906,8 @@ ${docScope === 'internal' ? `[내부결재 — 보고·검토·승인용]
                         <div style="margin-top:5px;padding-left:2px;display:flex;flex-direction:column;gap:3px;">
                             ${subItems.map(({ index: subIdx, item: subItem }) => {
                                 const subDone = this.normalizeCompleted(subItem);
+                                if (isSkippedIt(subItem)) return `<div class="proc-sub-row proc-skip-sub" style="display:flex;align-items:center;gap:6px;cursor:pointer;" onclick="event.stopPropagation();app.scrollToMainChecklistItem(${workflowId},${subIdx})" title="${esc(subItem.skipReason || '건너뜀')}">
+                                    <span class="proc-skip-dot"></span><span class="proc-skip-subtext"><s>${esc(subItem.text || '')}</s>${skipPill(subItem)}</span></div>`;
                                 const subSt = procSteps[subItem.itemId];
                                 const subWait = !subDone && subSt && subSt.assignee && subSt.status === 'sent' ? this._collabWaitTagHtml(subSt) : '';
                                 return `<div class="proc-sub-row${pickStage >= 0 && subIdx === pickIdx ? ' is-picked' : ''}" style="display:flex;align-items:center;gap:6px;cursor:pointer;" onclick="event.stopPropagation();app.scrollToMainChecklistItem(${workflowId},${subIdx})">
@@ -27868,9 +27922,7 @@ ${docScope === 'internal' ? `[내부결재 — 보고·검토·승인용]
                             <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
                                 ${iconHtml}
                                 ${isLast
-                                    ? `<div style="margin-top:3px;color:${currentStepPos === -1 ? '#10b981' : 'var(--border-light,#dde3ee)'};" title="${currentStepPos === -1 ? '목적지 도착' : '목적지'}">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="2.5"/></svg>
-                                       </div>`
+                                    ? pinHtml
                                     : `<div class="${isDone ? 'proc-step-line-done' : ''}" style="${isDone
                                         ? `width:2px;flex:1;min-height:14px;background:${lineColor};margin-top:2px;`
                                         : `width:0;flex:1;min-height:14px;border-left:2px dashed ${lineColor};margin-top:2px;`}"></div>`}
@@ -27882,21 +27934,42 @@ ${docScope === 'internal' ? `[내부결재 — 보고·검토·승인용]
                             </div>
                         </div>
                     `;
-                });
-                // 진행중 단계가 항상 맨 위에 오도록, 그 앞 끝난 단계들은 접어 두고 고정 머리의 진행 줄(「✓ 완료 3/6단계 ▾」)로 펼친다
-                const foldUpTo = currentStepPos > 0 ? currentStepPos : 0;
-                const foldedRows = [], shownRows = [], foldedIdx = [];
-                procRows.forEach((html, pos) => {
-                    if (pos < foldUpTo && steps[pos].idx !== pickStage && this.normalizeCompleted(steps[pos].item)) { foldedRows.push(html); foldedIdx.push(steps[pos].idx); }
-                    else shownRows.push(html);
-                });
+                };
+                // 원래 차례대로: 건너뛰지 않은 단계는 rowHtml, 건너뛴 단계는 흐린 줄(2개 이상 이어지면 한 줄로 접기)
+                const seq = workflow.checklist.map((item, idx) => ({ item, idx }))
+                    .filter(({ item }) => !this._isSubEntry(item))
+                    .filter(({ idx }) => !(procMineOnly && !procMine.has(idx)));
+                const posOf = new Map(steps.map((st, p) => [st.idx, p]));
+                const skippedCount = seq.filter(({ item }) => isSkippedIt(item)).length;
+                const curIdxNow = currentStepPos >= 0 ? steps[currentStepPos].idx : -1;
+                const curSeq = curIdxNow >= 0 ? seq.findIndex(x => x.idx === curIdxNow) : -1;
+                const skipOpen = (this._procSkipOpen && this._procSkipOpen[workflowId]) || {};
+                // 진행중 단계가 항상 맨 위에 오도록, 그 앞 끝난·건너뛴 단계들은 접어 두고 고정 머리의 진행 줄(「✓ 완료 3/6단계 ▾」)로 펼친다
+                const foldedRows = [], shownRows = [];
+                const put = (html, fold) => (fold ? foldedRows : shownRows).push(html);
+                for (let k = 0; k < seq.length;) {
+                    const { item, idx } = seq[k];
+                    if (!isSkippedIt(item)) {
+                        put(rowHtml(item, idx, posOf.get(idx), k === seq.length - 1), curSeq > 0 && k < curSeq && idx !== pickStage && this.normalizeCompleted(item));
+                        k++;
+                        continue;
+                    }
+                    let j = k;
+                    while (j < seq.length && isSkippedIt(seq[j].item)) j++;
+                    const run = seq.slice(k, j), runLast = j === seq.length, fold = curSeq > 0 && k < curSeq;
+                    if (run.length >= 2) {
+                        const open = !!skipOpen[run[0].idx];
+                        put(skipRunHtml(run, open, runLast && !open) + (open ? run.map((x, r) => skipRowHtml(x.item, x.idx, runLast && r === run.length - 1, true)).join('') : ''), fold);
+                    } else put(skipRowHtml(run[0].item, run[0].idx, runLast), fold);
+                    k = j;
+                }
                 const procFoldOpen = !!(this._procDoneOpen && this._procDoneOpen[workflowId]);
                 const stepsHtml = (foldedRows.length ? `<div class="proc-fold${procFoldOpen ? ' open' : ''}" id="procFold">
                         <div class="proc-fold-list" id="procFoldList">${foldedRows.join('')}</div>
                     </div>` : '') + shownRows.join('');
                 // ① 고정 머리 둘째 줄: 고른 항목이 있으면 그 한 줄, 없으면 진행 줄(완료 개수 · 막대 · %, 접힌 끝난 단계 펼치기)
-                const progText = procMine ? (() => { const p = this._collabMineProgress(workflow); return `내 담당 ${p.done}/${p.total}단계 · 전체 ${p.overallPct}%`; })() : `완료 ${completed}/${total}단계`;
-                const progLine = `<button type="button" class="proc-prog${procFoldOpen ? ' open' : ''}" id="procProg" ${foldedRows.length ? `onclick="app.toggleProcFold(${workflowId})" title="끝난 앞 단계 ${foldedRows.length}개 ${procFoldOpen ? '접기' : '펼쳐 보기'}"` : 'disabled'}>
+                const progText = procMine ? (() => { const p = this._collabMineProgress(workflow); return `내 담당 ${p.done}/${p.total}단계 · 전체 ${p.overallPct}%`; })() : `완료 ${completed}/${total}단계${skippedCount ? ` · 건너뜀 ${skippedCount}` : ''}`;
+                const progLine = `<button type="button" class="proc-prog${procFoldOpen ? ' open' : ''}" id="procProg" ${foldedRows.length ? `onclick="app.toggleProcFold(${workflowId})" title="끝나거나 건너뛴 앞 단계 ${foldedRows.length}줄 ${procFoldOpen ? '접기' : '펼쳐 보기'}"` : 'disabled'}>
                         <span class="proc-prog-ico">${this._clIco('done', 14)}</span><span class="proc-prog-text">${progText}</span>
                         <span class="proc-prog-bar"><i style="width:${pct}%"></i></span><b>${pct}%</b>${awayLeft ? `<span class="proc-prog-wait">회신 대기 ${awayLeft}</span>` : ''}${foldedRows.length ? '<span class="proc-prog-arrow">▾</span>' : ''}
                     </button>`;
@@ -35780,6 +35853,14 @@ ${aiPartnerCitationFirstRules}
             }
 
             // 고른 줄 풀기 — 체크리스트의 펼친 줄도 닫히고 오른쪽 패널은 지금 할 일로 돌아간다
+            // 업무 절차 패널: 연달아 건너뛴 단계 묶음 펼치기·접기 (화면 기억만, 저장 안 함)
+            toggleProcSkipRun(workflowId, firstIdx) {
+                if (!this._procSkipOpen) this._procSkipOpen = {};
+                const o = this._procSkipOpen[workflowId] || (this._procSkipOpen[workflowId] = {});
+                o[firstIdx] = !o[firstIdx];
+                this._renderAIPanelOfflineDashboard();
+            }
+
             clearChecklistPick(workflowId) {
                 if (!this._clPeek || this._clPeek.wfId !== workflowId) return;
                 this._clPeek = null;
