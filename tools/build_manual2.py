@@ -2,6 +2,9 @@ import json, os, re, shutil, sys, html
 here = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, here)
 from manual_data2 import CHAPTERS, KEYS
+# 설명서 버전 = 앱 버전 (index.html의 APP_VERSION을 읽음 — 손으로 적으면 뒤처짐)
+_m = re.search(r"const APP_VERSION = '([^']+)'", open(os.path.join(here, '..', 'index.html'), encoding='utf-8').read())
+APP_VER = _m.group(1) if _m else ''
 out_dir = sys.argv[1]
 img_dir = os.path.join(out_dir, 'img')
 os.makedirs(img_dir, exist_ok=True)
@@ -64,7 +67,7 @@ kbd {{ display:inline-block; padding:0 6px; border:1px solid #cbd5e1; border-bot
 @media (max-width:900px) {{ .wrap {{ grid-template-columns:1fr; }} nav {{ position:static; height:auto; border-right:none; border-bottom:1px solid var(--line); }} main {{ padding:20px 16px 60px; }} }}
 @media print {{ nav {{ display:none; }} .wrap {{ display:block; }} .scene {{ break-inside:avoid; }} body {{ background:#fff; }} }}
 </style></head><body><div class="wrap">
-<nav><h1>업무 내비게이터</h1><div class="ver">사용 설명서 · v1.4.0</div><ul>{''.join(toc)}<li><a href="#keys">부록 · 마우스와 단축키</a></li></ul></nav>
+<nav><h1>업무 내비게이터</h1><div class="ver">사용 설명서 · v{APP_VER}</div><ul>{''.join(toc)}<li><a href="#keys">부록 · 마우스와 단축키</a></li></ul></nav>
 <main>
 <div class="cover"><h1>업무 내비게이터 사용 설명서</h1>
 <p>예시 업무(징계처분 · 물품 구매 계약 · 감찰조사)로, 업무를 만들고 → 일하고 → 나누어 맡기고 → 공유하고 → 레퍼런스로 남기고 → 보관하는 흐름 순서로 설명합니다.</p>
