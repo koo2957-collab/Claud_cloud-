@@ -7159,7 +7159,7 @@
             <div id="settingsBody" style="padding:18px 22px;display:flex;flex-direction:column;gap:14px;max-height:calc(80dvh - 56px);overflow-y:auto;">
 
                 <!-- [TEST 전용 사본] 사내 보안정책 잠금 안내 - 테스트 파일에서는 비노출 -->
-                <div style="display:none;text-align:center;padding:22px 10px 8px;">
+                <div id="aiPolicyLock" style="display:none;text-align:center;padding:22px 10px 8px;">
                     <div style="width:42px;height:42px;margin:0 auto 12px;border-radius:11px;background:rgba(139,92,246,0.1);display:flex;align-items:center;justify-content:center;">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                     </div>
@@ -7531,6 +7531,29 @@
     </div>
 
     <script>
+        // ── 외부 통신 잠금 (보안 정책) ─────────────────────────────────────
+        // 배포판(index.html)은 환경설정의 잠금 안내(#aiPolicyLock)가 보이는 판이다. 이때는 화면만 숨기는 것이 아니라
+        // 외부 서버(AI·법제처 등)로 나가는 통신 자체를 막는다. 이 PC 안의 파일·data:·blob: 읽기는 그대로 된다.
+        // 관리자 시험판(ai_test .html)은 잠금 안내가 숨겨져 있어(display:none) 막지 않는다.
+        const NET_LOCKED = (() => { const el = document.getElementById('aiPolicyLock'); return !!el && el.style.display !== 'none'; })();
+        if (NET_LOCKED) {
+            const isLocalUrl = u => {
+                try { const x = new URL(String(u), location.href); return x.protocol === 'data:' || x.protocol === 'blob:' || x.protocol === 'file:' || x.origin === location.origin; }
+                catch (e) { return true; }
+            };
+            const blocked = () => new TypeError('보안 정책으로 외부 통신이 막혀 있습니다');
+            const nativeFetch = window.fetch.bind(window);
+            const lockedFetch = (input, init) => {
+                const u = typeof input === 'string' ? input : (input && input.url) || input;
+                return isLocalUrl(u) ? nativeFetch(input, init) : Promise.reject(blocked());
+            };
+            Object.defineProperty(window, 'fetch', { value: lockedFetch, writable: false, configurable: false });
+            const xhrOpen = XMLHttpRequest.prototype.open;
+            Object.defineProperty(XMLHttpRequest.prototype, 'open', { value: function (m, u, ...r) { if (!isLocalUrl(u)) throw blocked(); return xhrOpen.call(this, m, u, ...r); }, writable: false, configurable: false });
+            if (navigator.sendBeacon) Object.defineProperty(navigator, 'sendBeacon', { value: () => false, writable: false, configurable: false });
+            if (window.WebSocket) Object.defineProperty(window, 'WebSocket', { value: function () { throw blocked(); }, writable: false, configurable: false });
+        }
+
         // ── 날짜·시각 공통 함수 (한국 시간 기준) ─────────────────────────────
         // toISOString()은 세계 표준시(UTC) 기준이라 한국 시간 오전 0~9시에는 전날 날짜가 나온다.
         // 날짜 문자열은 아래 함수로 만들고, 화면 표기는 공문서 방식(2026. 10. 3. / 14:05, 24시각제)으로 통일한다.
@@ -19687,7 +19710,7 @@ ${GOVERNMENT_DOCUMENT_GUIDELINES}
             markWorkflowDone(id) {
                 const workflow = this.allData.workflows.find(w => w.id === id);
                 if (!workflow) return;
-                if (!confirm(`"${workflow.title}"\n\n완료 처리하시겠습니까?\n\n완료된 업무 섹션으로 이동됩니다.\n재활용 또는 삭제할 수 있습니다.`)) return;
+                // 되돌릴 수 있는 일이라 묻지 않고, 알림의 [되돌리기]로 진행중으로 돌린다 (디자인 원칙)
                 workflow.completedProcessed = true;
                 workflow.completedAt = new Date().toISOString();
                 // 보관함과 처리완료는 동시에 표시되면 안 되는 상호배타적 상태이므로,
@@ -19703,14 +19726,13 @@ ${GOVERNMENT_DOCUMENT_GUIDELINES}
                 if (document.getElementById('workflowManagerModal')?.classList.contains('show')) {
                     this.renderWorkflowTree();
                 }
-                this.showToast('success', '✅', '완료 처리되었습니다.');
+                this.showToast('success', '✅', `「${workflow.title}」을 처리완료 탭으로 옮겼습니다`, 7000, { actionLabel: '되돌리기', onAction: () => this.undoMarkWorkflowDone(id, true) });
             }
 
-            // 완료 처리 취소 (진행중으로 복귀)
-            undoMarkWorkflowDone(id) {
+            // 완료 처리 취소 (진행중으로 복귀) — 되돌릴 수 있는 일이라 묻지 않음. quiet: 완료 처리 알림의 [되돌리기]에서 부를 때
+            undoMarkWorkflowDone(id, quiet) {
                 const workflow = this.allData.workflows.find(w => w.id === id);
                 if (!workflow) return;
-                if (!confirm(`"${workflow.title}"\n\n완료 처리를 취소하시겠습니까?\n진행중 탭으로 돌아갑니다.`)) return;
                 delete workflow.completedProcessed;
                 delete workflow.completedAt;
                 this.saveData();
@@ -19719,7 +19741,8 @@ ${GOVERNMENT_DOCUMENT_GUIDELINES}
                 if (document.getElementById('workflowManagerModal')?.classList.contains('show')) {
                     this.renderWorkflowTree();
                 }
-                this.showToast('success', '↩', '진행중으로 복귀했습니다.');
+                if (quiet) this.showToast('success', '↩', '진행중으로 되돌렸습니다');
+                else this.showToast('success', '↩', `「${workflow.title}」을 진행중으로 되돌렸습니다`, 7000, { actionLabel: '되돌리기', onAction: () => this.markWorkflowDone(id) });
             }
 
             // 완료된 업무를 레퍼런스로 등록하고, 이어서 업무관리 폴더에 바로 파일링할 수 있도록 폴더 선택창을 연다.
@@ -27696,6 +27719,7 @@ ${docScope === 'internal' ? `[내부결재 — 보고·검토·승인용]
                 }, true);
             }
             isAIAvailable() {
+                if (NET_LOCKED) return false;   // 배포판: 외부 통신 잠금 — 키가 남아 있어도 AI를 쓰지 않음
                 const provider = this.allData.provider;
                 if (provider === 'gemini') return !!this.allData.geminiApiKey;
                 if (provider === 'chatgpt') return !!this.allData.chatgptApiKey;
