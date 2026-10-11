@@ -78,6 +78,7 @@
 | `mk_flow_test.py` (collab2로) | 실제로 쓰는 흐름 전체(브라우저 3개): 연습 업무 → 건너뛰기 → 업무 분담(주소록 새 사람·단계 나누기·전달사항) → 담당자 둘 처리·중간/최종 회신 → [파일 고르기]·끌어다 놓기·[업무 가져오기]로 합치기 → 출력 → 완료 → 레퍼런스 → 복사하여 시작 / 내보내기 → 가져와 다시 나누기 / 공유. `python mk_flow_test.py && node collab2.mjs <index.html> steps_flow.json`. collab2는 `choose`(파일 고르기 창에 파일 넣기) 단계를 받음 |
 | `mk_tipexclude_test.py` | 내보내기 알림의 [예시·사진 빼고 다시 저장] 시험 |
 | `mk_netlock_test.py` / `mk_done_test.py` | 외부 통신 잠금(배포판 막힘·시험판 열림) / 완료 처리·완료 취소 [되돌리기] 시험 |
+| `mk_deploy.py` | 배포용 압축 파일 `배포/업무내비게이터_v{버전}.zip`(영상 제외): 업무내비게이터.html(=index.html) · 읽어보기.txt · 사용설명서/(html·img·연습업무.json). `배포/`는 저장소에 올리지 않음 |
 | `vcheck2.mjs` | 만든 영상의 길이·소리 크기·화면 프레임 확인 |
 
 리눅스(클라우드)에서는 `CHROME_PATH=/opt/pw-browsers/chromium-1194/chrome-linux/chrome`로 씁니다. cdp2·cdp3는 헤드리스에서도 「마우스 있는 화면」(hover: hover)으로 뜨게 해 두었습니다(아니면 마우스를 올려야 나오는 버튼이 숨겨짐). `mkman2.py`·`mk_*_test.py`는 `tools` 폴더 안에서 실행합니다(대본 파일을 지금 폴더에 씀).
