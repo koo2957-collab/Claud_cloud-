@@ -1,0 +1,17 @@
+# 실행할 때 생기는 것 (다시 만들 수 있음)
+chrome-*/
+man2/
+tts/*.wav
+tts/lines.json
+*.png
+*.jpg
+*.mp4
+*.webm
+*.bin
+main.js
+steps*.json
+man2_out.txt
+*_out.txt
+video2.html
+c_*.json
+__pycache__/
