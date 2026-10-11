@@ -2,7 +2,7 @@
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-const dir = path.dirname(new URL(import.meta.url).pathname.replace(/^\/(\w:)/, '$1'));
+const dir = path.dirname(decodeURIComponent(new URL(import.meta.url).pathname).replace(/^\/(\w:)/, '$1'));
 const file = process.argv[2];
 const chrome = (process.env.CHROME_PATH || (process.platform === 'win32' ? 'C:/Program Files/Google/Chrome/Application/chrome.exe' : 'google-chrome'));
 const prof = path.join(dir, 'chrome-prof4');
@@ -34,10 +34,12 @@ try {
   const steps = JSON.parse(fs.readFileSync(path.join(dir, 'steps3.json'), 'utf8'));
   for (const s of steps) {
     if (s.wait) await sleep(s.wait);
+    if (s.viewport) { const [width, height, scale = 1] = s.viewport; await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: scale, mobile: false }); await sleep(600); }  // 작은 화면(노트북) 시험
     if (s.pt) { globalThis.__pt = JSON.parse(await ev(s.js)); continue; }
     if (s.clickpt) s.click = [...globalThis.__pt, s.clickpt];
     if (s.hoverpt) { const [x, y] = globalThis.__pt; await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y }); await sleep(300); }
     if (s.rclickpt) { const [x, y] = globalThis.__pt; await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y }); await send('Input.dispatchMouseEvent', { type: 'mousePressed', x, y, button: 'right', clickCount: 1 }); await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x, y, button: 'right', clickCount: 1 }); await sleep(400); }
+    if (s.wheel) { const [x, y] = globalThis.__pt; await send('Input.dispatchMouseEvent', { type: 'mouseWheel', x, y, deltaX: 0, deltaY: s.wheel }); await sleep(250); }  // 마우스 휠
     if (s.text) { await send('Input.insertText', { text: s.text }); await sleep(200); }
     if (s.js) console.log('>', s.label || '', '=>', JSON.stringify(await ev(s.js)));
     if (s.click) { const [x, y, n = 1] = s.click; for (let k = 1; k <= n; k++) { await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y }); await send('Input.dispatchMouseEvent', { type: 'mousePressed', x, y, button: 'left', clickCount: k }); await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x, y, button: 'left', clickCount: k }); await sleep(60); } await sleep(400); }
