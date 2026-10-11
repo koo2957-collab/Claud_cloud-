@@ -7532,9 +7532,13 @@
         // 새 버전을 배포할 때는 아래 세 가지(번호·배포일·바뀐 점)만 고친다.
         // 번호 규칙: 기능 추가는 가운데 숫자(1.1.0), 오류 수정만은 끝 숫자(1.0.1)를 올린다.
         // 업무 자료는 프로그램 파일이 아니라 브라우저 저장 공간에 있어, 파일만 바꿔도 그대로 남는다.
-        const APP_VERSION = '1.5.2';
-        const APP_RELEASE_DATE = '2026-10-10';
+        const APP_VERSION = '1.5.3';
+        const APP_RELEASE_DATE = '2026-10-11';
         const APP_RELEASE_NOTES = [
+            { version: '1.5.3', date: '2026-10-11', notes: [
+                '체크리스트 출력 표의 칸을 맞춤 — 단계 줄도 머리줄과 같은 칸(번호 · 단계 이름 · 진행 수 2/3 · 완료일 · 처리결과)에 진한 바탕, 할 일은 번호 칸까지 합친 한 칸에 「○ 할 일」(1-1 같은 번호 없앰), ☐/☑는 늘 상태 칸에 세로로 맞춤(종이에 펜으로 체크하기 쉽게) · 빈 점검표도 같은 틀',
+                '업무 절차 패널에서 건너뛴 단계·할 일이 사라지지 않고 제자리에 흐리게(취소선) — 알약으로 까닭 구분(회색 「해당 없음」 · 보라 「⤼ 버튼 이름」, 마우스를 올리면 사유), 연달아 건너뛴 단계는 「⤼ n개 건너뜀 ▸」 한 줄로 접기, 진행 줄에 「건너뜀 n」',
+            ] },
             { version: '1.5.2', date: '2026-10-11', notes: [
                 '체크리스트 표 다듬기: 단계는 할 일이 있든 없든 모두 같은 띠(오른쪽에 ☑ 완료일 또는 진행 수), 「완료일」 칸(안 끝난 것은 회색 ~마감일), 번호·상태·날짜는 글자 폭만큼 좁게 고정하고 할 일·처리결과는 글 길이에 맞춰 나눔, 점검표는 점검 항목 중심(비고 18%) · 작성자 정보 창의 긴 안내 문구 삭제',
                 '진행상황 출력을 앱이 직접 A4 한 장씩 나눠 그림 — 인쇄할 때 장마다 찍히던 날짜·제목 머리말이 없어지고, 아래 가운데 쪽 번호 「- 1 -」, 미리보기의 쪽 나눔이 인쇄와 같음, 제목·단계 줄이 장 끝에 홀로 남지 않음',
@@ -44081,7 +44085,9 @@ ${pdfContent.length > 100000 ? pdfContent.substring(0, 100000) + '\n\n[중략: �
         };
         // ── 체크리스트 표 — 진행표 / 빈 점검표 ──
         WorkflowManager.prototype._checklistParts = function(wf, opts) {
-            // 단계는 할 일이 있든 없든 모두 표 전체 폭 「띠」(오른쪽에 상태·완료일 또는 진행 수), 할 일만 칸으로 — MS Project·Smartsheet 요약 행처럼
+            // 단계 줄도 머리줄과 같은 칸(번호 · 단계 이름 · 상태(진행 수) · 완료일 · 처리결과)에 맞추고 진한 바탕으로 구분,
+            // 할 일 줄은 번호 칸까지 한 칸으로 합쳐 「○ 할 일」(늘 빈 동그라미) — MS Project·Smartsheet처럼 같은 칸, 들여쓰기로만 아래 단계
+            // 체크칸(☐/☑)은 늘 「상태」 칸에 세로로 맞춰 둔다(종이에 펜으로 체크하기 쉽게)
             // 칸 폭: 짧은 칸은 글자 폭만큼 고정(번호·상태·날짜), 남은 폭은 할 일·처리결과 글 길이에 맞춰(워드 「내용에 맞춤」) — 점검표는 점검 항목 중심, 비고 18%
             const esc = v => this.escapeHtml(String(v ?? ''));
             const cl = wf.checklist || [];
@@ -44116,20 +44122,24 @@ ${pdfContent.length > 100000 ? pdfContent.substring(0, 100000) + '\n\n[중략: �
                 if (it.skipped === true && !opts.clSkipped) return;
                 const subs = this.findSubItems(cl, i).filter(x => opts.clSkipped || x.item.skipped !== true);
                 const no = String(sn).padStart(2, '0');
-                let right;
+                let prog = '';   // 할 일이 있는 단계의 상태 칸: 끝낸 할 일 수 「2/2」
                 if (subs.length) {
                     const liveSubs = subs.filter(x => x.item.skipped !== true), doneSubs = liveSubs.filter(x => this.normalizeCompleted(x.item)).length, d = this._prYmd(it.deadline);
-                    if (d && !this.normalizeCompleted(it)) anyDue = true;
-                    right = blank ? '' : it.skipped === true ? '해당 없음' : this.normalizeCompleted(it) ? `완료 ${doneSubs}/${liveSubs.length}` : `진행 ${doneSubs}/${liveSubs.length}${d ? ` · ${grey('~' + fmtS(d))}` : ''}`;
-                } else {
-                    right = blank ? '☐' : `${mark(it)}${dateOf(it) ? `&nbsp;&nbsp;${dateOf(it)}` : ''}`;   // 할 일 없는 단계: 같은 띠, 오른쪽에 상태·완료일
+                    if (d && !this.normalizeCompleted(it) && !blank) anyDue = true;
+                    prog = `${doneSubs}/${liveSubs.length}`;
                 }
-                const own = resLines(it);
-                rows.push({ keep: subs.length > 0, html: `<tr style="break-inside:avoid;page-break-inside:avoid;"><td colspan="${nCols}" style="${td}background:#dde4ee;border-color:#7d8794;padding:5pt 7pt;"><div style="display:flex;gap:10pt;align-items:baseline;"><span style="flex:1;min-width:0;font-weight:bold;font-size:10pt;${strike(it)}">${no}&nbsp;&nbsp;${esc(it.text || '')}</span><span style="font-size:${subs.length ? '8.5pt' : '10pt'};color:#333;white-space:nowrap;">${right}</span></div>${own.length ? `<div style="font-size:9pt;color:#333;padding:2pt 0 0 1.6em;">${own.map(t => `· ${esc(t)}`).join('<br>')}</div>` : ''}</td></tr>` });
-                subs.forEach((x, k) => {
+                // 단계 줄: 할 일이 있으면 상태 칸에 진행 수(2/2), 완료일 칸에 단계 완료일 또는 회색 ~마감일
+                const stageDate = !subs.length ? dateOf(it) : (blank || it.skipped === true) ? '' : this.normalizeCompleted(it) ? fmtS(it.completedAt ? new Date(it.completedAt) : null) : (this._prYmd(it.deadline) ? grey(`~${fmtS(this._prYmd(it.deadline))}`) : '');
+                const stageMark = subs.length && !blank && it.skipped !== true ? prog : mark(it);
+                nameLen += String(it.text || '').length; resLen += resLines(it).join('').length;
+                const sb = `${td}background:#dde4ee;border-color:#7d8794;`;
+                rows.push({ keep: subs.length > 0, html: `<tr style="break-inside:avoid;page-break-inside:avoid;"><td style="${sb}text-align:center;white-space:nowrap;font-weight:bold;font-size:10pt;">${no}</td><td style="${sb}font-weight:bold;font-size:10pt;"><span style="${strike(it)}">${esc(it.text || '')}</span></td><td style="${sb}text-align:center;white-space:nowrap;font-size:${subs.length && !blank && it.skipped !== true ? '9pt' : '11pt'};">${stageMark}</td><td style="${sb}text-align:center;white-space:nowrap;">${stageDate}</td>${showRes ? `<td style="${sb}">${resHtml(it)}</td>` : ''}${blank ? `<td style="${sb}"></td>` : ''}</tr>` });
+                subs.forEach(x => {
                     const s2 = x.item;
                     nameLen += String(s2.text || '').length; resLen += resLines(s2).join('').length;
-                    rows.push({ keep: false, html: `<tr style="break-inside:avoid;page-break-inside:avoid;"><td style="${td}text-align:center;white-space:nowrap;color:#444;">${sn}-${k + 1}</td><td style="${td}"><span style="${strike(s2)}">${esc(s2.text || '')}</span></td><td style="${td}text-align:center;font-size:11pt;">${mark(s2)}</td><td style="${td}text-align:center;white-space:nowrap;">${dateOf(s2)}</td>${showRes ? `<td style="${td}">${resHtml(s2)}</td>` : ''}${blank ? `<td style="${td}"></td>` : ''}</tr>` });
+                    // ○ 할 일 — 늘 빈 동그라미(끝났는지는 상태 칸 ☑로), 글자 기호라 한글에 붙여 넣어도 그대로
+                    const dot = '○';
+                    rows.push({ keep: false, html: `<tr style="break-inside:avoid;page-break-inside:avoid;"><td colspan="2" style="${td}padding-left:12pt;"><span style="color:${s2.skipped === true ? '#aaa' : '#444'};font-size:8pt;margin-right:4pt;">${dot}</span><span style="${strike(s2)}">${esc(s2.text || '')}</span></td><td style="${td}text-align:center;font-size:11pt;">${mark(s2)}</td><td style="${td}text-align:center;white-space:nowrap;">${dateOf(s2)}</td>${showRes ? `<td style="${td}">${resHtml(s2)}</td>` : ''}${blank ? `<td style="${td}"></td>` : ''}</tr>` });
                 });
             });
             // 칸 폭(mm): 번호·상태·날짜는 고정, 나머지를 나눔
@@ -44217,7 +44227,7 @@ ${pdfContent.length > 100000 ? pdfContent.substring(0, 100000) + '\n\n[중략: �
             body.scrollTop = scrollTop;
             m.querySelector('#prFoot').textContent = tab === 'report'
                 ? '어느 줄이든 눌러서 고칩니다 · Enter 새 줄 · Shift+Enter 줄 안에서 줄바꿈 · Tab / Shift+Tab 들이기·내기(○ → - → ·) · 빈 줄에서 Backspace 지우기 · Esc 끝내기 — 업무마다 기억'
-                : '단계는 표 전체 폭 띠, 할 일은 아래 줄 · 진행표는 날짜·처리결과가 채워지고 빈 점검표는 손으로 체크하는 용도 · 표 머리줄은 장마다 반복';
+                : '단계 줄은 진한 바탕, 할 일은 ○ 줄 · 진행표는 날짜·처리결과가 채워지고 빈 점검표는 손으로 체크하는 용도 · 표 머리줄은 장마다 반복';
             const persist = x => { const v = this._prOpts(); Object.assign(v, x); try { localStorage.setItem('progressReportOpts', JSON.stringify(v)); } catch (e) {} this._prRender(wf); };
             m.querySelectorAll('[data-opt]').forEach(c => c.onchange = () => persist({ [c.dataset.opt]: c.checked }));
             m.querySelectorAll('[data-land]').forEach(b => b.onclick = () => persist({ clLand: b.dataset.land === '1' }));
