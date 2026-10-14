@@ -45,7 +45,7 @@ try {
     if (s.js && s.save) { const v = await ev(s.js); fs.writeFileSync(path.resolve(dir, s.save), typeof v === 'string' ? v : JSON.stringify(v)); console.log('>', s.label || '', '=> 저장', s.save, (typeof v === 'string' ? v.length : 0) + '자'); continue; }  // 돌려받은 글을 파일로 (연습 업무 파일 만들기 등)
     if (s.js) console.log('>', s.label || '', '=>', JSON.stringify(await ev(s.js)));
     if (s.click) { const [x, y, n = 1] = s.click; for (let k = 1; k <= n; k++) { await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y }); await send('Input.dispatchMouseEvent', { type: 'mousePressed', x, y, button: 'left', clickCount: k }); await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x, y, button: 'left', clickCount: k }); await sleep(60); } await sleep(400); }
-    if (s.key) { await send('Input.dispatchKeyEvent', { type: 'keyDown', key: s.key, code: s.key, windowsVirtualKeyCode: s.vk || 0, modifiers: s.mods || 0 }); await send('Input.dispatchKeyEvent', { type: 'keyUp', key: s.key, code: s.key, windowsVirtualKeyCode: s.vk || 0, modifiers: s.mods || 0 }); await sleep(300); }
+    if (s.key) { await send('Input.dispatchKeyEvent', { type: 'keyDown', key: s.key, code: s.key, windowsVirtualKeyCode: s.vk || 0, modifiers: s.mods || 0, ...(s.ktext ? { text: s.ktext, unmodifiedText: s.ktext } : {}) });  /* ktext: 실제 키처럼 글자도 넣기 (예: Enter → '') */ await send('Input.dispatchKeyEvent', { type: 'keyUp', key: s.key, code: s.key, windowsVirtualKeyCode: s.vk || 0, modifiers: s.mods || 0 }); await sleep(300); }
     if (s.shot) await shot(s.shot);
   }
   console.log('LOGS:', logs.slice(0, 20).join('\n'));
