@@ -23,6 +23,7 @@
      - v1.5.7 (AI 허용판만 해당) AI로 채우기 개선: 미리 보기(고르기·단계를 풀면 할 일도·업무팁 표시 ⚠/업무 팁/근거·건너뛰기 버튼 후보(고르면 필요한 항목도 함께)·뒤에 더하기/바꾸기) → [고른 것 넣기]·[다시 만들기]·[버리기], 넣은 뒤 [되돌리기] · 업무팁 세 칸 함께 · 첨부 PDF를 참고 자료로도 연결(체크, 기본 켜짐) · 진행 시간+[취소] · 「외부 AI로 보냅니다 — 개인정보 문서는 넣지 마세요」. 코드: `fillChecklistWithAI`·`_aiFillPrompt`(JSON {items:[{text,indent,warn,tip,basis}],branches:[{at,label,skip}]})·`_aiFillParse`(예전 배열·줄 글도 읽음)·`_aiFillPreviewRender`·`_aiFillInsert`
      - v1.5.7 (AI 허용판만 해당) AI로 다시 정리: 업무 화면 왼쪽 [AI로 다시 정리]·목록 오른쪽 클릭 「✨ AI로 다시 정리 사본」(배포판은 단추 흐림·메뉴 없음) → 보낼 것 안내·참고 자료 PDF 고르기·업무팁/건너뛰기 체크 → [정리 시작](진행·취소) → 원래↔새 비교(→ 01-1 번호, 유지·수정·이동·추가, AI가 빠뜨린 원래 항목은 기본으로 다시 넣기) → [고른 것을 사본에 넣기] = 「○○ (AI 정리본)」(원래 항목의 서식·업무팁 예시는 from을 따라 같은 itemId로, 진행 상태는 비움, 레퍼런스면 레퍼런스로) → 알림 [되돌리기]로 사본 지움. 코드 `openAiRestructure`·`_aiRsPrompt`·`_aiRsParse`·`_aiRsRender`·`_aiRsApply`(사본은 `executeDuplicateWorkflow(..., {keepProgress:true, silent:true, title})`)
      - v1.5.7 AI가 연결되지 않으면 업무 화면 왼쪽 [AI 기안]·[AI로 다시 정리]는 흐리게가 아니라 숨김(`body.ai-off .fap-btn.ai-only`), 키를 넣으면 바로 나타남(`updateManualAiFillButtonState`에서 `_syncAiOff`). 설명서에서 「AI 버튼은 흐리게」라고 적은 곳 고칠 것
+     - v1.5.7 (AI 허용판만 해당) AI로 다시 정리·AI로 채우기가 DOCX·한글(HWPX)·TXT 참고 자료도 읽음: PDF는 파일 그대로(쪽 번호), 나머지는 이 PC에서 글만 뽑아 「### 문서: 이름」으로 붙임(문서마다 6만·모두 15만 자, 근거는 조문 번호), 예전 HWP·DOC는 「못 읽음」 흐리게 까닭. 코드 `_aiDocKind`·`_aiDocTexts`·`_hwpxToText`(`_extractTextFromBlob`에 .hwpx 추가), AI 칸 첨부는 `_validateFile(..., {aiDocs:true})`
    - (예전 규칙, 업데이트 요청 때 따름)
    - 설명서: `사용설명서/업무내비게이터_사용설명서.html` + `사용설명서/img/*.png`
    - 바뀐 화면은 다시 찍고 설명 문구도 고칩니다(방법은 아래 「사용설명서 만들기」).
@@ -100,6 +101,7 @@
 | `mk_aifill_test.py [locked]` | 새 업무 ② 「AI로 체크리스트 채우기」(AI 칸이 고정 줄에 안 가려짐·PDF 놓은 뒤 안내막 없음·파일 고르기·다른 곳에 놓으면 참고 자료·Tab 안내 위치·키 없을 때 문구) 시험 대본 — **`ai_test .html`로 실행**(가짜 키 사용), `locked`는 index.html에서 「보안정책」 문구 확인 |
 | `mk_aifill2_test.py` | AI로 채우기 개선(가짜 AI로 답 흉내: 보안 안내·참고 자료 연결 체크·진행 시간/[취소]·미리 보기 고르기·업무팁·건너뛰기 후보·넣기·[되돌리기]·뒤에 더하기·[다시 만들기]/[버리기]·예전 답 형식) — **`ai_test .html`로 실행**. 켠 지 17초 뒤 백업 알림이 [되돌리기] 알림을 밀어내므로 대본에서 `checkBackupReminder`를 끔 |
 | `mk_rs_test.py [locked]` | AI로 다시 정리(가짜 AI: 옛날식 업무 → 창·보안 안내·PDF → 진행·[취소] → 비교(유지·수정·이동·추가·빠진 항목) → 건너뛰기 후보 → 사본에 넣기(단계/할 일·업무팁 세 칸·서식 따라옴·같은 itemId·원본 그대로) → [되돌리기] · 목록 오른쪽 클릭) — **`ai_test .html`로 실행**, `locked`는 index.html에서 단추 흐림·메뉴 없음 확인 |
+| `mk_docs_test.py` | AI 참고 자료 형식(DOCX·HWPX 글만 읽음·PDF 파일 그대로·HWP 못 읽음, AI로 다시 정리·AI로 채우기 둘 다) 시험 대본 — **`ai_test .html`로 실행**, 시험용 HWPX·HWP는 대본이 `tools/_tmp_docs/`에 만듦(저장소 제외) |
 | `mk_tipexclude_test.py` | 내보내기 알림의 [예시·사진 빼고 다시 저장] 시험 |
 | `mk_netlock_test.py` / `mk_done_test.py` | 외부 통신 잠금(배포판 막힘·시험판 열림) / 완료 처리·완료 취소 [되돌리기] 시험 |
 | `mk_deploy.py` | 배포용 압축 파일 `배포/업무내비게이터_v{버전}.zip`(영상 제외): 업무내비게이터.html(=index.html) · 읽어보기.txt · 사용설명서/(html·img·연습업무.json). `배포/`는 저장소에 올리지 않음 |

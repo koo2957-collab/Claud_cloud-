@@ -6615,10 +6615,10 @@
                                  ondragover="app._onDocDragOver(event)"
                                  ondragleave="app._onDocDragLeave(event)"
                                  ondrop="app._onDocDrop(event)">
-                                <input type="file" id="manualDocUpload" accept=".pdf" multiple style="display:none;">
+                                <input type="file" id="manualDocUpload" accept=".pdf,.docx,.hwpx,.txt,.md" multiple style="display:none;">
                                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                                <span>PDF 드래그 또는 클릭해서 첨부</span>
-                                <span style="font-size:0.7rem;color:var(--text-muted);">PDF · 최대 50MB · 구조 인식 최적</span>
+                                <span>PDF·DOCX·한글(HWPX) 드래그 또는 클릭해서 첨부</span>
+                                <span style="font-size:0.7rem;color:var(--text-muted);">PDF는 파일 그대로 · DOCX·HWPX·TXT는 글만 읽음 · 최대 50MB</span>
                             </div>
                             <button id="manualAiFillBtn" onclick="app.fillChecklistWithAI()"
                                 style="flex-shrink:0;display:flex;align-items:center;gap:5px;padding:7px 13px;font-size:0.82rem;font-weight:700;background:var(--accent);color:white;border:none;border-radius:7px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background 0.15s;"
@@ -7714,6 +7714,7 @@
                 'AI로 다시 정리(AI 허용판): 예전에 만든 업무를 지금 방식(단계 → 할 일)으로 다시 나누고 항목마다 업무팁 세 칸·건너뛰기 후보까지 — 원래와 새 절차를 나란히 보고(유지·수정·이동·추가 표시, 빠진 원래 항목은 다시 넣기) 고른 것만 사본 「○○ (AI 정리본)」에 넣음. 원래 항목의 서식·업무팁 예시·사진은 새 항목으로 따라감. 원본은 그대로, [되돌리기]로 사본 지우기. 업무 화면 왼쪽 [AI로 다시 정리]·목록 오른쪽 클릭',
                 'AI로 체크리스트 채우기(AI 허용판): 만든 절차를 먼저 미리 보고 고른 것만 넣기([다시 만들기]·[버리기], 넣은 뒤 [되돌리기]) · 항목마다 업무팁(놓치기 쉬운 것·업무 팁·근거 조문·쪽)도 함께 · 첨부한 PDF를 이 업무의 참고 자료로도 연결 · 만드는 동안 진행 시간과 [취소] · AI가 찾은 갈림길을 건너뛰기 버튼 후보로(고른 것만) · 「외부 AI로 보냅니다 — 개인정보 문서는 넣지 마세요」 안내',
                 '새 업무 ② 절차의 「AI로 체크리스트 채우기」: PDF를 끌어다 놓은 뒤 「이 업무의 참고 자료로 연결」 안내막이 남아 화면을 가리던 것 고침 · 「Tab 한 번으로 할 일」 안내가 AI 칸을 가리던 것 고침(이제 절차 안내 줄 아래에 붙어 함께 움직임) · AI 키가 없을 때 AI 허용판에서는 「AI 키를 넣어 주세요」로 바르게 안내',
+                'AI로 다시 정리·AI로 체크리스트 채우기가 PDF뿐 아니라 DOCX·한글(HWPX)·TXT 참고 자료도 읽음 — PDF는 파일 그대로, 나머지는 이 PC에서 글만 뽑아 보냄(근거는 조문 번호로). 예전 한글(HWP)처럼 못 읽는 파일은 흐리게 까닭과 함께 표시',
                 'AI가 연결되지 않았으면 업무 화면 왼쪽의 [AI 기안]·[AI로 다시 정리]를 숨김 (키를 넣으면 바로 나타남)',
                 '접힌 건너뛴 항목 알약에 까닭 표시: 「⤼ 버튼 이름 · n」(보라) / 「해당 없음 · n」(회색), 서로 다른 건너뛰기는 알약을 나눔 · 펼친 건너뛴 줄은 보라 테두리',
             ] },
@@ -17368,6 +17369,41 @@
                 }
             }
 
+            // 참고 자료를 AI에 어떻게 보낼지: pdf = 파일 그대로(쪽 번호까지) · text = 이 PC에서 글만 뽑아 붙임 · none = 못 읽음(까닭)
+            _aiDocKind(name, type) {
+                const n = String(name || '').toLowerCase();
+                if (/\.pdf$/.test(n) || /pdf/.test(type || '')) return { kind: 'pdf' };
+                if (/\.(docx|hwpx|txt|md)$/.test(n)) return { kind: 'text' };
+                if (/\.hwp$/.test(n)) return { kind: 'none', why: '예전 한글(HWP)은 읽을 수 없음 — PDF나 DOCX로 저장해 넣어 주세요' };
+                if (/\.doc$/.test(n)) return { kind: 'none', why: '예전 워드(DOC)는 읽을 수 없음 — DOCX나 PDF로 저장해 넣어 주세요' };
+                return { kind: 'none', why: '이 형식은 읽지 않습니다 (PDF·DOCX·HWPX·TXT만)' };
+            }
+            // 글로 붙일 참고 자료의 본문 (한 번 뽑은 것은 기억) — 문서마다 6만 자, 모두 15만 자까지
+            async _aiDocTexts(list) {
+                this._aiDocTextCache = this._aiDocTextCache || new Map();
+                const parts = [], cut = [];
+                let total = 0;
+                for (const f of list) {
+                    const key = f.storeName ? `${f.storeName}:${f.id}` : null;
+                    let text = key && this._aiDocTextCache.get(key);
+                    if (text == null) {
+                        let blob = f.blob || null;
+                        if (!blob && f.storeName) { const rec = await this.dbManager.getFile(f.storeName, f.id).catch(() => null); blob = rec && (rec.blob || null); }
+                        text = blob ? ((await this._extractTextFromBlob(blob, f.name || '')) || '') : '';
+                        if (key) this._aiDocTextCache.set(key, text);
+                    }
+                    text = String(text || '').replace(/\n{3,}/g, '\n\n').trim();
+                    if (!text) { cut.push(`${f.name}(글을 찾지 못함)`); continue; }
+                    let t = text;
+                    if (t.length > 60000) { t = t.slice(0, 60000); cut.push(`${f.name}(앞부분만)`); }
+                    if (total + t.length > 150000) { t = t.slice(0, Math.max(0, 150000 - total)); cut.push(`${f.name}(일부만)`); }
+                    if (!t) continue;
+                    total += t.length;
+                    parts.push(`### 문서: ${f.name}\n${t}`);
+                }
+                return { text: parts.length ? `\n[글로 붙인 참고 문서 — 업무팁 근거를 찾는 데 씀. 쪽 번호는 없으니 근거는 「문서 이름 + 조문 번호」로 적음]\n${parts.join('\n\n')}\n` : '', cut };
+            }
+
             // ══════ AI로 다시 정리 ══════
             // 예전에 만든 업무(단계·할 일 구분이 흐린 것)를 지금 방식으로 다시 나누고 업무팁 세 칸·건너뛰기 후보까지 붙여 「사본」에 넣는다.
             // 원래 ↔ 새 절차를 나란히 보여 주고(유지·수정·이동·추가) 고른 것만 넣음 — 워드 「변경 내용 추적」·GitHub 비교처럼.
@@ -17388,11 +17424,16 @@
                 // 참고 자료 중 PDF (법령·매뉴얼 연결 + 업무 첨부)
                 const d = this.checklistDetails[`project-${wf.id}`] || {};
                 const files = [];
+                const addRef = (x) => {   // PDF는 파일 그대로, DOCX·HWPX·TXT는 글만, 못 읽는 것은 흐리게 까닭과 함께
+                    const k = this._aiDocKind(x.name, x.type);
+                    const usable = files.filter(f => f.kind !== 'none').length;
+                    files.push({ ...x, inIndexedDB: true, kind: k.kind, why: k.why || '', on: k.kind !== 'none' && usable < 5 });
+                };
                 for (const id of (d.linkedLibraryDocs || [])) {
                     const f = await this._getLibraryFileById(id);
-                    if (f && /pdf/i.test(f.type || f.name || '')) files.push({ id: f.id, name: f.name, type: f.type || 'application/pdf', size: f.size, inIndexedDB: true, storeName: 'lawLibrary', on: files.length < 5 });
+                    if (f) addRef({ id: f.id, name: f.name, type: f.type || '', size: f.size, storeName: 'lawLibrary' });
                 }
-                (d.attachments || []).forEach(a => { if (a && a.inIndexedDB && /pdf/i.test(a.type || a.name || '')) files.push({ id: a.id, name: a.name, type: a.type || 'application/pdf', size: a.size, inIndexedDB: true, storeName: a.storeName || 'projectFiles', on: files.length < 5 }); });
+                (d.attachments || []).forEach(a => { if (a && a.inIndexedDB) addRef({ id: a.id, name: a.name, type: a.type || '', size: a.size, storeName: a.storeName || 'projectFiles' }); });
                 this._aiRs = { wfId: wf.id, title: wf.title || '', old, oldById: new Map(old.map(o => [o.oid, o])), files, wantTips: true, wantBranch: true, phase: 'setup' };
                 document.getElementById('aiRsModal')?.remove();
                 const m = document.createElement('div');
@@ -17419,10 +17460,13 @@
                 if (st.phase === 'setup' || st.phase === 'busy') {
                     const busy = st.phase === 'busy';
                     body.innerHTML = `
-                        <div class="aif-secure"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span><b>외부 AI로 보내는 것:</b> 업무 제목 · 항목 이름 · 업무팁 글 · 서식 이름 · 아래에서 고른 참고 자료 PDF. <b>처리결과·첨부 파일·예시 사진은 보내지 않습니다.</b> 개인정보가 든 자료는 고르지 마세요.</span></div>
+                        <div class="aif-secure"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span><b>외부 AI로 보내는 것:</b> 업무 제목 · 항목 이름 · 업무팁 글 · 서식 이름 · 아래에서 고른 참고 자료(PDF는 파일, DOCX·HWPX·TXT는 뽑은 글). <b>처리결과·첨부 파일·예시 사진은 보내지 않습니다.</b> 개인정보가 든 자료는 고르지 마세요.</span></div>
                         <p style="font-size:0.84rem;color:var(--text-gray);margin:4px 0 14px;">원본은 그대로 두고, 고른 결과를 사본 <b>「${esc(this._stripRefSuffix ? this._stripRefSuffix(st.title) : st.title)} (AI 정리본)」</b>에 넣습니다. 지금 체크리스트 ${st.old.length}줄.</p>
-                        <div class="rs-sec"><div class="rs-sec-t">업무팁 근거를 찾을 참고 자료<small>이 업무에 연결된 PDF · 5개까지 권장</small></div>
-                            ${st.files.length ? st.files.map((f, k) => `<label class="rs-chk"><input type="checkbox" ${f.on ? 'checked' : ''} ${busy ? 'disabled' : ''} onchange="app._aiRs.files[${k}].on=this.checked">${esc(f.name)}</label>`).join('') : '<div style="font-size:0.8rem;color:var(--text-muted);">연결된 PDF가 없습니다 — 업무의 「참고 자료」에 법령·지침 PDF를 넣으면 근거를 더 정확히 찾습니다.</div>'}
+                        <div class="rs-sec"><div class="rs-sec-t">업무팁 근거를 찾을 참고 자료<small>이 업무에 연결된 법령·매뉴얼·첨부 · 5개까지 권장 · PDF는 파일 그대로(쪽 번호까지), DOCX·한글(HWPX)·TXT는 이 PC에서 글만 뽑아 보냄</small></div>
+                            ${st.files.length ? st.files.map((f, k) => f.kind === 'none'
+                                ? `<label class="rs-chk" style="opacity:0.5;cursor:default;" title="${esc(f.why)}"><input type="checkbox" disabled>${esc(f.name)} <span class="rs-ch">못 읽음</span><small style="color:var(--text-muted);">${esc(f.why)}</small></label>`
+                                : `<label class="rs-chk"><input type="checkbox" ${f.on ? 'checked' : ''} ${busy ? 'disabled' : ''} onchange="app._aiRs.files[${k}].on=this.checked">${esc(f.name)} <span class="rs-ch">${f.kind === 'pdf' ? 'PDF · 파일 그대로' : '글만 읽음'}</span></label>`).join('')
+                                : '<div style="font-size:0.8rem;color:var(--text-muted);">연결된 참고 자료가 없습니다 — 업무의 「참고 자료」에 법령·지침(PDF·DOCX·HWPX)을 넣으면 근거를 더 정확히 찾습니다.</div>'}
                         </div>
                         <div class="rs-sec"><div class="rs-sec-t">함께 만들 것</div>
                             <label class="rs-chk"><input type="checkbox" checked disabled> 단계 → 할 일로 다시 나누기 (기본)</label>
@@ -17478,19 +17522,19 @@
                     ${lostList.length ? `<div class="rs-lost"><div class="rs-sec-t" style="color:#b91c1c;">새 체크리스트에 없는 원래 항목 ${lostList.length}개<small>고르면 사본 맨 끝에 그대로 넣습니다</small></div>${lostRows}</div>` : ''}
                     ${st.branches.length ? `<div class="aip-sub-head" style="border:none;padding-left:0;">건너뛰기 버튼 후보 ${st.branches.length}개<span>AI가 찾은 갈림길 — 맞는지 확인하고 고르세요</span></div><div class="aip-list">${brs}</div>` : ''}
                     <div class="aip-opts" style="border:none;padding-left:0;"><label><input type="checkbox" ${st.useTips ? 'checked' : ''} onchange="app._aiRs.useTips=this.checked;app._aiRsRender()"> 새 업무팁 넣기 (끄면 원래 업무팁 그대로)</label></div>`;
-                foot.innerHTML = `<span class="rs-note">원본은 그대로 · 사본은 [되돌리기]로 지울 수 있습니다</span>
+                foot.innerHTML = `<span class="rs-note">원본은 그대로 · 사본은 [되돌리기]로 지울 수 있습니다${st.docNote ? ` · ${esc(st.docNote)}` : ''}</span>
                     <button type="button" class="btn btn-secondary" onclick="app._aiRsClose()">버리기</button>
                     <button type="button" class="btn btn-secondary" onclick="app._aiRsStart()">다시 정리</button>
                     <button type="button" class="btn btn-primary" id="aiRsApplyBtn" onclick="app._aiRsApply()" ${st.sel.size ? '' : 'disabled'}>고른 것을 사본에 넣기 (${st.sel.size + st.keepOld.size})</button>`;
             }
             _aiRsPrompt(st) {
                 const lines = st.old.map(o => `${o.oid} | ${o.indent ? '할 일' : '단계'} | ${o.text}${o.tip ? ` | 업무팁: ${o.tip.replace(/\s+/g, ' ').slice(0, 300)}` : ''}${o.fmt.length ? ` | 서식: ${o.fmt.join(', ')}` : ''}`).join('\n');
-                const hasFiles = st.files.some(f => f.on);
+                const hasFiles = st.files.some(f => f.on && f.kind !== 'none');
                 return `다음은 공무원 업무 체크리스트입니다. 지금 작성 방식(단계 → 그 단계에서 할 일)에 맞게 다시 정리해 주세요.
 [업무 제목] ${st.title}
 [원래 체크리스트] (번호 | 단계/할 일 | 이름 | 업무팁 | 서식)
 ${lines}
-${hasFiles ? `[첨부 문서] 업로드된 ${st.files.filter(f => f.on).length}개 문서(법령·지침)는 업무팁의 근거를 찾는 데 씁니다.\n` : ''}
+${hasFiles ? `[참고 문서] 고른 ${st.files.filter(f => f.on).length}개 문서(법령·지침)는 업무팁의 근거를 찾는 데 씁니다.\n` : ''}
 【규칙】
 1. 원래 항목의 내용은 빠뜨리지 말고 단계(indent 0)와 그 단계에서 할 일(indent 1)로 나눕니다. 비슷한 것은 합치고 순서가 어색하면 바로잡습니다. 꼭 필요한 일이 빠졌으면 추가합니다.
 2. 새 항목마다 from에 원래 항목 번호를 적습니다(합쳤으면 여러 개, 새로 만든 항목이면 빈 배열). 원래 항목의 서식·사진이 from을 따라 옮겨지므로 정확히 적습니다.
@@ -17499,7 +17543,7 @@ ${hasFiles ? `[첨부 문서] 업로드된 ${st.files.filter(f => f.on).length}�
 ${st.wantTips ? `5. 업무팁(꼭 필요한 항목에만, 원래 업무팁이 있으면 그 내용을 빠뜨리지 말고 나눠 다시 씀):
    - warn: 틀리면 문제가 되는 기한·요건·자주 하는 실수 (한 줄에 하나)
    - tip: 하는 방법·요령 (짧게 1~3줄)
-   - basis: 첨부 문서에 실제로 있는 조문·지침과 쪽 번호만 (예: "공무원 징계령 제10조 (4쪽)"). 문서에 없으면 빈 배열 — 지어내지 마세요.` : '5. 업무팁은 만들지 않습니다(warn·tip·basis는 비움).'}
+   - basis: 참고 문서에 실제로 있는 조문·지침만. 파일로 붙은 PDF는 쪽 번호까지(예: "공무원 징계령 제10조 (4쪽)"), 글로 붙인 문서는 문서 이름과 조문만(예: "징계 규정.docx 제12조"). 문서에 없으면 빈 배열 — 지어내지 마세요.` : '5. 업무팁은 만들지 않습니다(warn·tip·basis는 비움).'}
 ${st.wantBranch ? `6. 조건에 따라 어떤 항목을 하지 않아도 되는 갈림길이 분명할 때만 branches에 넣습니다. at = 판단하는 새 항목 번호, label = 짧은 조건 이름, skip = 그 조건이면 하지 않아도 되는 새 항목 번호들. 번호는 새 items 배열에서 0부터. 확실하지 않으면 빈 배열.` : '6. branches는 빈 배열.'}
 다음 JSON 형식으로만 응답하세요. 다른 글은 넣지 마세요:
 {"items":[{"text":"","indent":0,"from":["o0"],"change":"유지","note":"","warn":[],"tip":"","basis":[]}],"removed":[{"id":"o5","reason":""}],"branches":[{"at":1,"label":"","skip":[3]}]}`.trim();
@@ -17529,13 +17573,23 @@ ${st.wantBranch ? `6. 조건에 따라 어떤 항목을 하지 않아도 되는 
                 const run = this._aiRsRun = { cancelled: false, done: false };
                 st.phase = 'busy';
                 this._aiRsRender();
-                const files = st.files.filter(f => f.on);
+                const pick = st.files.filter(f => f.on && f.kind !== 'none');
+                const files = pick.filter(f => f.kind === 'pdf');        // 파일 그대로
+                const textDocs = pick.filter(f => f.kind === 'text');    // 글만 뽑아 붙임
                 const stEl = () => document.getElementById('aiRsStatus');
                 const t0 = Date.now();
-                const draw = () => { const el = stEl(); if (!el) return; const sec = Math.round((Date.now() - t0) / 1000); el.innerHTML = `<div class="btn-spinner-blue" style="width:12px;height:12px;border-width:1.5px;flex-shrink:0;"></div><span>${files.length && sec < 12 ? '참고 자료를 읽는 중' : '단계·할 일로 다시 나누는 중'}… ${sec}초 <small style="color:var(--text-muted);">(항목이 많으면 1분 넘게 걸릴 수 있습니다)</small></span><button type="button" class="btn btn-secondary btn-small" onclick="app._aiRsCancel()">취소</button>`; };
+                let phase = textDocs.length ? '참고 자료에서 글을 뽑는 중' : '';
+                const draw = () => { const el = stEl(); if (!el) return; const sec = Math.round((Date.now() - t0) / 1000); el.innerHTML = `<div class="btn-spinner-blue" style="width:12px;height:12px;border-width:1.5px;flex-shrink:0;"></div><span>${phase || (pick.length && sec < 12 ? '참고 자료를 읽는 중' : '단계·할 일로 다시 나누는 중')}… ${sec}초 <small style="color:var(--text-muted);">(항목이 많으면 1분 넘게 걸릴 수 있습니다)</small></span><button type="button" class="btn btn-secondary btn-small" onclick="app._aiRsCancel()">취소</button>`; };
                 draw(); clearInterval(this._aiRsTimer); this._aiRsTimer = setInterval(draw, 1000);
                 try {
-                    const prompt = this._aiRsPrompt(st);
+                    let prompt = this._aiRsPrompt(st);
+                    if (textDocs.length) {
+                        const dt = await this._aiDocTexts(textDocs);
+                        if (run.cancelled) return;
+                        prompt += dt.text;
+                        st.docNote = dt.cut.length ? `참고 자료 일부만 보냄: ${dt.cut.join(', ')}` : '';
+                    }
+                    phase = '';
                     const response = files.length ? await this.callAIWithDocuments(prompt, files) : await this.callAI(prompt, { temperature: 0.3, jsonMode: true });
                     if (run.cancelled || this._aiRs !== st) return;
                     const res = this._aiRsParse(response, st);
@@ -17679,9 +17733,15 @@ ${st.wantBranch ? `6. 조건에 따라 어떤 항목을 하지 않아도 되는 
                 this._aiFillPreviewClose();
                 this._aiFillBusy(true, hasFiles);
                 try {
-                    const prompt = this._aiFillPrompt(requirements, hasFiles);
-                    const response = hasFiles
-                        ? await this.callAIWithDocuments(prompt, this.uploadedFiles)
+                    let prompt = this._aiFillPrompt(requirements, hasFiles);
+                    // PDF는 파일 그대로, DOCX·HWPX·TXT는 이 PC에서 글만 뽑아 붙임
+                    const objs = this._aiFileObjs || [];
+                    const pdfs = [], texts = [];
+                    this.uploadedFiles.forEach((m, k) => { (this._aiDocKind(m.name, m.type).kind === 'pdf' ? pdfs : texts).push(objs[k] ? { name: m.name, blob: objs[k] } : { ...m, storeName: m.storeName || 'aiFiles' }); });
+                    if (texts.length) { const dt = await this._aiDocTexts(texts); if (run.cancelled) return; prompt += dt.text; }
+                    const pdfMetas = this.uploadedFiles.filter(m => this._aiDocKind(m.name, m.type).kind === 'pdf');
+                    const response = pdfMetas.length
+                        ? await this.callAIWithDocuments(prompt, pdfMetas)
                         : await this.callAI(prompt, { temperature: 0.3, jsonMode: true });
                     if (run.cancelled) return;   // 취소한 뒤 온 답은 버림
                     const parsed = this._aiFillParse(response);
@@ -17704,7 +17764,7 @@ ${st.wantBranch ? `6. 조건에 따라 어떤 항목을 하지 않아도 되는 
             }
             _aiFillPrompt(requirements, hasFiles) {
                 const written = requirements ? `[수기 작성 내용 — 최우선 반영]\n${requirements}\n` : '';
-                const doc = hasFiles ? `\n[첨부 문서 — 수기 내용 보완용]\n업로드된 ${this.uploadedFiles.length}개 문서(법령·지침·공문)를 분석하여 수기 내용의 빈 부분을 보완하세요.\n` : '';
+                const doc = hasFiles ? `\n[첨부 문서 — 수기 내용 보완용]\n첨부한 ${this.uploadedFiles.length}개 문서(법령·지침·공문)를 분석하여 수기 내용의 빈 부분을 보완하세요. PDF는 파일로, DOCX·HWPX·TXT는 아래에 글로 붙어 있습니다.\n` : '';
                 return `아래 내용을 바탕으로 공무원 행정 업무 절차 체크리스트와 항목별 업무팁을 만들어 주세요.
 ${written}${doc}
 【작성 규칙】
@@ -17714,7 +17774,7 @@ ${written}${doc}
 4. 업무팁은 꼭 필요한 항목에만 씁니다(없으면 비움).
    - warn: 틀리면 문제가 되는 기한·요건·자주 하는 실수 (한 줄에 하나)
    - tip: 하는 방법·요령 (짧게 1~3줄)
-   - basis: 첨부 문서에 실제로 있는 조문·지침과 쪽 번호만 (예: "지방계약법 시행령 제30조 (3쪽)"). 문서에 없으면 빈 배열 — 지어내지 마세요.
+   - basis: 첨부 문서에 실제로 있는 조문·지침만. 파일로 붙은 PDF는 쪽 번호까지(예: "지방계약법 시행령 제30조 (3쪽)"), 글로 붙인 문서는 문서 이름과 조문만. 문서에 없으면 빈 배열 — 지어내지 마세요.
 5. 조건에 따라 어떤 항목을 하지 않아도 되는 갈림길이 수기 내용이나 문서에 분명히 있을 때만 branches에 넣습니다.
    at = 그 판단을 하는 항목 번호, label = 짧은 조건 이름(예: "2천만원 이하"), skip = 그 조건이면 하지 않아도 되는 항목 번호들.
    번호는 items 배열에서 0부터 셉니다. 확실하지 않으면 빈 배열.
@@ -18438,16 +18498,16 @@ ${written}${doc}
                     [], undefined, '확인');
             }
 
-            _validateFile(file, { checkType = false } = {}) {
+            _validateFile(file, { checkType = false, aiDocs = false } = {}) {
                 if (file.size > this._FILE_MAX_SIZE) {
                     this.showToast('error', '⚠️', `${this.escapeHtml(file.name)}은(는) 50MB를 초과합니다`);
                     return false;
                 }
                 if (checkType) {
                     const fn  = file.name.toLowerCase();
-                    const ok  = file.type === 'application/pdf' || fn.endsWith('.pdf');
+                    const ok  = file.type === 'application/pdf' || fn.endsWith('.pdf') || (aiDocs && /\.(docx|hwpx|txt|md)$/.test(fn));
                     if (!ok) {
-                        this.showToast('error', '⚠️', `${this.escapeHtml(file.name)}은(는) PDF 파일만 업로드 가능합니다`);
+                        this.showToast('error', '⚠️', aiDocs && /\.hwp$/.test(fn) ? `${this.escapeHtml(file.name)}: 예전 한글(HWP)은 읽을 수 없습니다 — PDF나 DOCX로 저장해 넣어 주세요` : `${this.escapeHtml(file.name)}은(는) ${aiDocs ? 'PDF·DOCX·한글(HWPX)·TXT' : 'PDF'} 파일만 업로드 가능합니다`);
                         return false;
                     }
                 }
@@ -18491,7 +18551,7 @@ ${written}${doc}
                     return;
                 }
                 for (const file of filesToAdd) {
-                    if (!this._validateFile(file, { checkType: true })) continue;
+                    if (!this._validateFile(file, { checkType: true, aiDocs: true })) continue;
                     try {
                         const meta = await this._storeFile(file, 'aiFiles');
                         if (!meta) continue;
@@ -32422,6 +32482,36 @@ ${aiPartnerCitationFirstRules}
             }
 
             // Blob에서 텍스트 추출 (PDF는 pdfjs 경로 재활용)
+            // 한글(HWPX) 본문 글 — 구역(section) 순서대로 문단(hp:p)마다 한 줄. 이름만 .hwpx인 예전 HWP·암호화 파일은 null
+            async _hwpxToText(blob) {
+                try {
+                    if (this._sniffFileKind && (await this._sniffFileKind(blob)) !== 'zip') return null;
+                    const zip = await this._readZip(new Uint8Array(await blob.arrayBuffer()));
+                    const dec = new TextDecoder();
+                    const sections = zip.names.filter(n => /^Contents\/section\d+\.xml$/i.test(n))
+                        .sort((a, b) => (+a.match(/(\d+)\.xml$/i)[1]) - (+b.match(/(\d+)\.xml$/i)[1]));
+                    const out = [];
+                    for (const sec of sections) {
+                        const data = await zip.get(sec);
+                        if (!data) continue;
+                        const doc = new DOMParser().parseFromString(dec.decode(data), 'application/xml');
+                        for (const p of doc.getElementsByTagName('*')) {
+                            if (p.localName !== 'p') continue;
+                            // 표 안 문단은 그 문단에서 따로 나오므로, 바로 아래 글(t)만 모음
+                            let line = '';
+                            for (const t of p.getElementsByTagName('*')) {
+                                if (t.localName !== 't') continue;
+                                let q = t.parentElement;
+                                while (q && q !== p && q.localName !== 'p') q = q.parentElement;
+                                if (q === p) line += t.textContent || '';
+                            }
+                            if (line.trim()) out.push(line.trim());
+                        }
+                    }
+                    if (!out.length) { const prv = await zip.get('Preview/PrvText.txt'); if (prv) return dec.decode(prv); }
+                    return out.join('\n') || null;
+                } catch (e) { return null; }
+            }
             async _extractTextFromBlob(blob, filename) {
                 try {
                     const fn = filename.toLowerCase();
@@ -32433,6 +32523,7 @@ ${aiPartnerCitationFirstRules}
                         const result = await mammoth.convertToHtml({ arrayBuffer });
                         return _docxHtmlToText(result.value || '') || null;
                     }
+                    if (fn.endsWith('.hwpx')) return await this._hwpxToText(blob);
                     if (fn.endsWith('.pdf') && typeof pdfjsLib !== 'undefined') {
                         pdfjsLib.GlobalWorkerOptions.workerSrc = './vendor/pdf.worker.min.js';
                         const arrayBuffer = await blob.arrayBuffer();
