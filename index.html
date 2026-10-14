@@ -244,8 +244,29 @@
             padding: 0 !important;
             box-sizing: border-box;
         }
-        .ai-panel-resize-handle { display: none; }
         .ai-panel.hidden { display: none; }
+        /* ── 업무 절차 패널 넓게 보기 (일하는 화면) — 왼쪽 패널(240)을 아이콘 줄(56)로 접고 줄어든 만큼 패널을 넓힘(380 → 564).
+              가운데 체크리스트는 너비가 그대로라 줄바꿈·줄 높이가 바뀌지 않음(왼쪽으로 184px 옮겨 갈 뿐) (VS Code 사이드바 접기 · Outlook 폴더 창 접기처럼) ── */
+        body.focus-mode.proc-wide .main-layout.ai-panel-visible { grid-template-columns: 56px 1fr 564px; }
+        body.focus-mode.proc-wide .main-layout.ai-panel-visible .focus-action-panel { padding: 12px 0; overflow: hidden; }
+        body.focus-mode.proc-wide .main-layout.ai-panel-visible .focus-action-panel > :not(.fap-rail) { display: none !important; }
+        .fap-rail { display: none; }
+        body.focus-mode.proc-wide .main-layout.ai-panel-visible .fap-rail { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; height: 100%; }
+        .fap-rail-btn { position: relative; width: 36px; height: 36px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 0; border: none; border-radius: 8px; background: transparent; color: var(--text-gray, #64748b); cursor: pointer; font-family: inherit; }
+        .fap-rail-btn:hover { background: rgba(37,99,235,0.08); color: var(--accent); }
+        .fap-rail-btn.primary { background: var(--accent); color: #fff; }
+        .fap-rail-btn.done { background: #10b981; color: #fff; }
+        .fap-rail-btn.danger:hover { background: rgba(220,38,38,0.08); color: #dc2626; }
+        .fap-rail-btn .fap-rail-dot { position: absolute; top: 5px; right: 5px; width: 7px; height: 7px; border-radius: 50%; background: #f59e0b; }
+        .fap-rail-pct { font-size: 0.72rem; font-weight: 700; color: var(--accent); margin: 2px 0 2px; font-variant-numeric: tabular-nums; cursor: default; }
+        .fap-rail-sep { width: 24px; flex-shrink: 0; border-top: 1px solid var(--border-subtle); margin: 6px 0; }
+        .fap-rail-spacer { flex: 1; }
+        /* 넓게 보기에서는 패널 글자를 한 단계(약 10%) 크게 — 스크롤 상자 자체가 아니라 안의 내용만 키워서 스크롤 위치 계산은 그대로 */
+        body.focus-mode.proc-wide .main-layout.ai-panel-visible #aiPanelOfflineDashboard > * { zoom: 1.1; }
+        body.focus-mode.proc-wide .main-layout.ai-panel-visible #aiPanelChatContainer { zoom: 1.1; }
+        /* 패널 머리 ⤢ 단추: 일하는 화면에서만 */
+        .ai-panel-wide-btn { display: none; }
+        body.focus-mode .ai-panel-wide-btn { display: flex; }
 
         @keyframes aiPanelIn {
             from { opacity: 0; transform: scale(0.88) translateY(10px); }
@@ -3289,7 +3310,7 @@
         }
         .ai-panel-title { font-size: 0.9rem; font-weight: 700; color: white; letter-spacing: -0.01em; line-height: 1.2; }
         .ai-panel-subtitle { font-size: 0.72rem; color: rgba(255,255,255,0.48); margin-top: 2px; }
-        .ai-panel-header-close {
+        .ai-panel-header-close, .ai-panel-wide-btn {
             width: 28px; height: 28px; border-radius: 7px; flex-shrink: 0;
             background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18);
             color: rgba(255,255,255,0.7); font-size: 1rem; cursor: pointer;
@@ -6284,15 +6305,13 @@
         </div>
 
         <div class="ai-panel" id="aiPanel">
-            <!-- 리사이즈 핸들 -->
-            <div class="ai-panel-resize-handle" id="aiPanelResizeHandle" title="크기 조절"></div>
             <!-- 기존 닫기 버튼 (CSS로 숨김, 호환성 유지) -->
             <button class="ai-panel-close-btn" onclick="app.toggleAiPanel()" title="패널 닫기">&times;</button>
 
             <!-- ── 패널 헤더 (절차/챗봇 전환 스위치를 헤더 줄에 통합 — 예전엔 제목·부제목·탭이 세 줄로
                  쌓여있어 380px 폭 패널에서 세로 공간을 많이 잡아먹었다. 부제목은 정보량이 적어 빼고,
                  탭은 아이콘만 남긴 작은 스위치로 줄여 한 줄에 합쳤다.) ── -->
-            <div class="ai-panel-header">
+            <div class="ai-panel-header" ondblclick="if(!event.target.closest('button,input,label,a'))app.toggleProcWide()">
                 <div class="ai-panel-title-row">
                     <div style="display:flex;align-items:center;gap:10px;min-width:0;">
                         <div class="ai-panel-id-badge" id="aiPanelIdBadge">AI</div>
@@ -6304,6 +6323,7 @@
                             <button class="ai-panel-view-tab" id="aiPanelTabProcedure" onclick="app.setAiPanelView('procedure')" title="업무 절차"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg></button>
                             <button class="ai-panel-view-tab" id="aiPanelTabChat" onclick="app.setAiPanelView('chat')" title="AI 업무파트너"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/></svg></button>
                         </div>
+                        <button type="button" class="ai-panel-wide-btn" id="aiPanelWideBtn" onclick="app.toggleProcWide()" title="넓게 보기 — 왼쪽을 접고 패널을 넓힘 (패널 머리 두 번 누르기)" aria-pressed="false"></button>
                         <button class="ai-panel-header-close" onclick="app.toggleAiPanel()" title="패널 닫기"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
                     </div>
                 </div>
@@ -7591,6 +7611,7 @@
                 '체크리스트 줄 오른쪽 클릭 메뉴 맨 위에 「체크 / 체크 취소」와 그 줄의 건너뛰기 버튼(⤼ 버튼 이름) — 마우스를 올리면 나오는 ⋯ 버튼도 같은 메뉴',
                 '완료한 업무 · 레퍼런스 업무에서도 오른쪽 클릭 메뉴가 나옴: 길잡이·처리결과·업무팁·서식은 그대로 보고, 고치는 명령은 회색 + 「[완료 취소] 후 고칠 수 있음」 안내',
                 '오른쪽 업무 절차 패널의 단계·할 일 줄도 오른쪽 클릭하면 체크리스트 줄과 같은 메뉴 · 접힌 건너뛰기 알약을 오른쪽 클릭하면 펼치기/접기 · 건너뛰기 취소(해당 없음은 모두 되살리기)',
+                '업무 절차 패널 넓게 보기 — 패널 머리 ⤢ 단추(또는 머리 두 번 누르기): 왼쪽 패널이 얇은 아이콘 줄로 접히고 그만큼 패널이 넓어짐(가운데 체크리스트 너비는 그대로), 패널 글자 약 10% 크게, 다시 누르면 원래대로 · 상태 기억',
                 '접힌 건너뛴 항목 알약에 까닭 표시: 「⤼ 버튼 이름 · n」(보라) / 「해당 없음 · n」(회색), 서로 다른 건너뛰기는 알약을 나눔 · 펼친 건너뛴 줄은 보라 테두리',
             ] },
             { version: '1.5.6', date: '2026-10-11', notes: [
@@ -8914,6 +8935,7 @@
                 this.primeAudioOnFirstInteraction();
                 this.updateVersionLabel();
                 this._syncAiOff();
+                { let w = false; try { w = localStorage.getItem('procWide') === '1'; } catch (e) {} this._applyProcWide(w); }  // 넓게 보기 기억
                 setTimeout(() => this.checkAppVersion(), 800);  // 새 버전 안내 / 예전 버전 파일 경고
                 setTimeout(async () => {
                     await this.ensureDeadlineNotifyDefaultOn();
@@ -10787,6 +10809,8 @@
                             <button class="fap-btn" data-ico="export" onclick="app.exportOrHandOver(${workflow.id})" title="업무 파일로 저장하거나 다른 사람에게 넘깁니다">내보내기</button>
                             ${!isPackage ? `<button class="fap-btn fap-btn-danger" data-ico="trash" onclick="app.deleteWorkflow(${workflow.id})">삭제</button>` : ''}
                         `;
+                        // 넓게 보기일 때 보이는 아이콘 줄 (평소에는 숨김)
+                        focusActionPanel.insertAdjacentHTML('afterbegin', this._fapRailHtml(workflow, { isEditMode, isPackage, isCompleted, progress, completedCount, totalCount }));
                     }
 
                     // 포커스 카드 렌더링 — 다시 그리기 전 위치(기준 항목)를 기억했다가 다시 그린 뒤 제자리로
@@ -36901,6 +36925,67 @@ ${aiPartnerCitationFirstRules}
                 }
             }
 
+            // ── 업무 절차 패널 넓게 보기 ──
+            // ⤢ 단추 · 패널 머리 두 번 누르기로 넓게 ↔ 보통. 일하는 화면에서만, 상태는 기억 (진행상황 출력 창 크기처럼)
+            toggleProcWide(on) {
+                if (!document.body.classList.contains('focus-mode')) return;
+                const next = typeof on === 'boolean' ? on : !document.body.classList.contains('proc-wide');
+                this._applyProcWide(next);
+                try { localStorage.setItem('procWide', next ? '1' : '0'); } catch (e) {}
+            }
+            _applyProcWide(on) {
+                document.body.classList.toggle('proc-wide', !!on);
+                const b = document.getElementById('aiPanelWideBtn');
+                if (!b) return;
+                b.innerHTML = on
+                    ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>'
+                    : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>';
+                b.title = on ? '보통 크기로 — 왼쪽 패널 다시 펼치기 (패널 머리 두 번 누르기)' : '넓게 보기 — 왼쪽을 접고 패널을 넓힘 (패널 머리 두 번 누르기)';
+                b.setAttribute('aria-pressed', on ? 'true' : 'false');
+            }
+            // 넓게 보기의 왼쪽 아이콘 줄 — 펼치기 · 진행률 · 자주 쓰는 명령 (마우스를 올리면 이름). 삭제처럼 드문 일은 펼쳐서
+            _fapRailHtml(workflow, o) {
+                const id = workflow.id;
+                const svg = (d) => `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+                const I = {
+                    open: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="m14 9 3 3-3 3"/>',
+                    edit: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+                    users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+                    print: '<path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
+                    export: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>',
+                    cal: '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+                    check: '<path d="M20 6 9 17l-5-5"/>',
+                    x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+                    mail: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/>',
+                    copy: '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+                };
+                const btn = (ico, title, js, cls = '', extra = '') => `<button type="button" class="fap-rail-btn ${cls}" onclick="${js}" title="${this.escapeHtml(title)}" aria-label="${this.escapeHtml(title)}">${svg(I[ico])}${extra}</button>`;
+                const items = [btn('open', '왼쪽 펼치기 (보통 크기로)', 'app.toggleProcWide(false)'),
+                    `<div class="fap-rail-pct" title="${o.progress}% 완료 · ${o.completedCount}/${o.totalCount} 단계">${o.progress}%</div>`, '<div class="fap-rail-sep"></div>'];
+                const c = workflow.collab;
+                if (o.isEditMode) {
+                    items.push(btn('check', '저장 (체크리스트 편집 끝내기)', 'app.exitFocusEditMode()', 'primary'), btn('x', '편집 취소', 'app.cancelFocusEditMode()'));
+                } else if (c && c.role === 'assignee') {
+                    const st = this._collabReplyState ? this._collabReplyState(workflow) : '';
+                    items.push(btn('mail', '관리자에게 회신', `app.openCollabReplyModal(${id})`, ['send', 'resend'].includes(st) ? 'primary' : ''),
+                        btn('users', '받은 업무 정보', `app.openCollabModal(${id})`),
+                        btn('cal', '일정 보기', `app.openSchedule(${id})`));
+                } else {
+                    if (!o.isPackage) items.push(btn('cal', '일정 보기', `app.openSchedule(${id})`));
+                    items.push(btn('edit', o.isPackage ? '편집 (레퍼런스 고치기)' : '체크리스트 편집', 'app.enterFocusEditMode()'));
+                    if (!o.isPackage) {
+                        const wait = c && c.role === 'owner' && c.steps ? Object.values(c.steps).filter(st => st && st.assignee && st.status !== 'replied').length : 0;
+                        items.push(btn('users', wait ? `업무 분담 · 회신 대기 ${wait}` : '업무 분담', `app.openCollabModal(${id})`, '', wait ? '<span class="fap-rail-dot"></span>' : ''));
+                    }
+                    items.push(btn('print', '진행상황 출력', `app.openProgressReport(${id})`));
+                    items.push('<div class="fap-rail-spacer"></div>');
+                    if (o.isPackage) items.push(btn('copy', '복사하여 시작', `app.duplicateWorkflow(${id})`, 'primary'));
+                    if (!o.isPackage && o.isCompleted && !workflow.completedProcessed) items.push(btn('check', '완료 처리', `app.markWorkflowDone(${id})`, 'done'));
+                    items.push(btn('export', '내보내기', `app.exportOrHandOver(${id})`));
+                }
+                return `<div class="fap-rail" role="toolbar" aria-label="업무 명령">${items.join('')}</div>`;
+            }
+
             // 항목을 마우스 오른쪽으로 누르면 나오는 작은 메뉴 — 체크리스트 줄 · ⋯ 버튼 · 업무 절차 패널 줄이 모두 이것 (같은 명령은 어디서나 같게)
             // 순서: 체크 · 건너뛰기 버튼 → 해당 없음 → 길잡이·처리결과·업무팁·서식·마감일 (마우스를 올린 줄의 버튼과 같은 순서)
             // 완료한 업무 · 레퍼런스도 메뉴를 띄운다: 보는 명령은 그대로, 고치는 명령은 회색 + 맨 아래 까닭 (탐색기처럼 숨기지 않음)
@@ -42211,50 +42296,6 @@ ${originalContent}`;
                         }, 100);
                     });
 
-                    // AI 패널 좌측 리사이즈 핸들 이벤트
-                    const aiPanel = document.getElementById('aiPanel');
-                    const resizeHandle = document.getElementById('aiPanelResizeHandle');
-                    if (aiPanel && resizeHandle && !resizeHandle.hasAttribute('data-resize-listener')) {
-                        resizeHandle.setAttribute('data-resize-listener', 'true');
-                        
-                        let isResizing = false;
-                        let startX = 0;
-                        let startWidth = 0;
-                        
-                        resizeHandle.addEventListener('mousedown', (e) => {
-                            isResizing = true;
-                            startX = e.clientX;
-                            startWidth = parseInt(getComputedStyle(aiPanel).width);
-                            document.body.style.cursor = 'ew-resize';
-                            document.body.style.userSelect = 'none';
-                            e.preventDefault();
-                        });
-                        
-                        document.addEventListener('mousemove', (e) => {
-                            if (!isResizing) return;
-                            
-                            const diff = startX - e.clientX; // 좌측으로 드래그하면 양수
-                            let newWidth = startWidth + diff;
-                            
-                            // 최소/최대 너비 제한
-                            newWidth = Math.max(300, Math.min(800, newWidth));
-                            
-                            aiPanel.style.width = `${newWidth}px`;
-                            this.updateAiPanelPosition();
-                        });
-                        
-                        document.addEventListener('mouseup', () => {
-                            if (isResizing) {
-                                isResizing = false;
-                                document.body.style.cursor = '';
-                                document.body.style.userSelect = '';
-                                
-                                // 너비 저장
-                                const currentWidth = parseInt(getComputedStyle(aiPanel).width);
-                                localStorage.setItem('aiPanelWidth', currentWidth.toString());
-                            }
-                        });
-                    }
                 }
             }
         }
