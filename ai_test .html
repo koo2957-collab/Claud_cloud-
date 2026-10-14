@@ -3479,6 +3479,35 @@
         .prefs-panel h3 { margin: 0 0 4px; font-size: 1.05rem; font-weight: 700; color: var(--text-dark); }
         .prefs-panel .prefs-desc { margin: 0 0 18px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
         .prefs-group { border: 1px solid var(--border-light); border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+        /* 내 정보 — 처음 켤 때 창 · 환경설정 · 작성자 창이 같은 칸 묶음 */
+        .me-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
+        .me-fields label { display: flex; flex-direction: column; gap: 4px; font-size: 0.78rem; font-weight: 600; color: var(--text-gray); }
+        .me-fields label b { color: #dc2626; font-weight: 700; }
+        .me-fields input { width: 100%; box-sizing: border-box; padding: 8px 10px; font-family: inherit; font-size: 0.88rem; color: var(--text-dark); background: var(--white); border: 1px solid var(--border-light); border-radius: 7px; }
+        .me-fields input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+        .me-fields input.me-err { border-color: #dc2626; }
+        .me-err-msg { grid-column: 1 / -1; font-size: 0.74rem; color: #dc2626; }
+        .me-card { display: flex; align-items: center; gap: 12px; padding: 4px 0; }
+        .me-card-txt { flex: 1; min-width: 0; font-size: 0.86rem; color: var(--text-dark); line-height: 1.5; }
+        .me-card-txt small { display: block; color: var(--text-muted); font-size: 0.76rem; }
+        .me-card-empty { color: var(--text-muted); }
+        .me-note { font-size: 0.74rem; color: var(--text-muted); margin: 0 0 10px; }
+        .me-btns { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+        /* 오른쪽 위 이름 첫 글자 동그라미 (Outlook·Teams처럼) */
+        .me-avatar { position: relative; width: 32px; height: 32px; padding: 0; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid rgba(255,255,255,0.35); background: #2563eb; color: #fff; font-family: inherit; font-size: 0.86rem; font-weight: 700; cursor: pointer; }
+        .me-avatar:hover { border-color: rgba(255,255,255,0.8); }
+        .me-avatar.empty { background: rgba(255,255,255,0.12); }
+        .me-avatar .me-dot { position: absolute; top: -2px; right: -2px; width: 9px; height: 9px; border-radius: 50%; background: #f59e0b; border: 2px solid var(--header-bg, #0f1b33); }
+        .me-avatar-wrap { display: inline-flex; align-items: center; margin-left: 6px; }
+        /* 처음 켤 때 창 */
+        .welcome-box { max-width: 480px !important; padding: 0 !important; overflow: hidden; }
+        .welcome-head { padding: 20px 24px 6px; }
+        .welcome-head h3 { margin: 0 0 4px; font-size: 1.05rem; }
+        .welcome-head p { margin: 0; font-size: 0.84rem; color: var(--text-muted); }
+        .welcome-body { padding: 14px 24px 6px; }
+        .welcome-empty { margin-top: 14px; padding: 10px 12px; border-radius: 8px; background: rgba(37,99,235,0.06); border: 1px solid rgba(37,99,235,0.18); font-size: 0.8rem; line-height: 1.55; color: var(--text-dark); }
+        .welcome-empty button { margin-top: 6px; }
+        .welcome-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 24px 18px; }
         .prefs-group-title { font-size: 0.84rem; font-weight: 700; color: var(--text-dark); margin-bottom: 10px; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
         .prefs-group-title small { font-size: 0.74rem; font-weight: 500; color: var(--text-muted); }
         .prefs-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 8px 0; }
@@ -6151,6 +6180,7 @@
                         <div id="notifyCenterList" class="nc-panel"></div>
                     </div>
                 </div>
+                <span class="me-avatar-wrap" id="meAvatarWrap"></span>
                 <div class="api-status-badge" id="apiStatusBadge" style="display:none;">
                     <span id="apiStatusIcon">●</span>
                     <span id="apiStatusText">미연결</span>
@@ -7610,6 +7640,8 @@
                 '업무 절차 패널 넓게 보기 — 패널 머리 ⤢ 단추(또는 머리 두 번 누르기): 왼쪽 패널이 얇은 아이콘 줄로 접히고 그만큼 패널이 넓어짐(가운데 체크리스트 너비는 그대로), 패널 글자 약 10% 크게, 다시 누르면 원래대로 · 상태 기억',
                 '업무 절차 패널·업무 길잡이 머리의 「자동읽기」 단추를 없앰 — 자동 읽기는 환경설정에서 켜고 끔 (듣기 버튼은 그대로)',
                 '업무팁 입력을 세 칸으로: ⚠ 놓치기 쉬운 것(빨간 테두리) · 업무 팁 · 근거 — 칸에 쓰면 업무 절차·길잡이에 지금처럼 맨 위 빨간 상자 / 가운데 / 맨 아래 근거로 보임. 놓치기 쉬운 것 칸은 한 줄에 하나(Enter로 다음 것). 저장 형식은 그대로라 예전 업무·내보낸 파일도 그대로',
+                '내 정보: 처음 켤 때 한 번 「내 정보」 창(이름만 꼭, [나중에] 가능 — 이 브라우저에 업무가 없으면 다른 브라우저·백업 안내도 함께) · 오른쪽 위 이름 첫 글자 동그라미를 누르면 바로 내 정보 고치기',
+                '환경설정 → 일반: 맨 위 내 정보([고치기] → [저장]·[취소]) → 음성안내 자동읽기 → 화면 → 주소록 순서 · 진행상황 출력의 작성자 창도 같은 칸',
                 '접힌 건너뛴 항목 알약에 까닭 표시: 「⤼ 버튼 이름 · n」(보라) / 「해당 없음 · n」(회색), 서로 다른 건너뛰기는 알약을 나눔 · 펼친 건너뛴 줄은 보라 테두리',
             ] },
             { version: '1.5.6', date: '2026-10-11', notes: [
@@ -8934,6 +8966,8 @@
                 this.updateVersionLabel();
                 this._syncAiOff();
                 { let w = false; try { w = localStorage.getItem('procWide') === '1'; } catch (e) {} this._applyProcWide(w); }  // 넓게 보기 기억
+                this.renderMeAvatar();
+                setTimeout(() => this.checkWelcome(), 600);   // 처음 켤 때 한 번 — 내 정보
                 setTimeout(() => this.checkAppVersion(), 800);  // 새 버전 안내 / 예전 버전 파일 경고
                 setTimeout(async () => {
                     await this.ensureDeadlineNotifyDefaultOn();
@@ -12790,6 +12824,7 @@
                 if ('rank' in info) set('collabMyRank', info.rank);
                 if ('phone' in info) set('collabMyPhone', info.phone);
                 set('authorInfoSet', '1');   // 진행상황 출력에서 다시 묻지 않게
+                this.renderMeAvatar?.();
             }
             _collabMeLabel() {
                 const m = this._collabMe();
@@ -40307,6 +40342,8 @@ ${originalContent}`;
                 if (!modal) return;
                 if (this._prefsTab && this._prefsTab !== tab) this._prefsLeaveTab();
                 this._prefsTab = tab;
+                this._prefsMeEdit = !!this._prefsMeEditNext;   // 오른쪽 위 동그라미로 열 때만 바로 고치는 상태로
+                this._prefsMeEditNext = false;
                 modal.querySelectorAll('.prefs-nav-btn').forEach(b => {
                     const on = b.dataset.prefsTab === tab;
                     b.classList.toggle('active', on);
@@ -40370,16 +40407,10 @@ ${originalContent}`;
                     `<button type="button" class="${v === current ? 'on' : ''}" aria-pressed="${v === current}" onclick="${onclickFn}('${v}')">${label}</button>`).join('')}</div>`;
             }
 
-            // ── 일반 ──
+            // ── 일반 ── (맨 위 내 정보 → 음성안내 자동읽기 → 화면 → 주소록)
             _prefsGeneralHtml() {
                 const dark = document.documentElement.classList.contains('dark-mode');
                 const tts = this.allData.ttsAuto || {};
-                const me = this._collabMe();
-                const meRow = (key, label, ph) => `
-                    <div class="prefs-row">
-                        <div class="prefs-row-label">${label}</div>
-                        <input class="cb-input" style="width:220px;" value="${this.escapeHtml(me[key] || '')}" placeholder="${ph}" onchange="app._prefsSetMe('${key}', this.value)">
-                    </div>`;
                 const ttsRow = (scope, label, hint) => `
                     <div class="prefs-row">
                         <div class="prefs-row-label">${label}<small>${hint}</small></div>
@@ -40387,13 +40418,10 @@ ${originalContent}`;
                     </div>`;
                 return `
                     <h3>일반</h3>
-                    <p class="prefs-desc">화면 모양, 음성안내, 내 정보를 정합니다.</p>
-                    <div class="prefs-group">
-                        <div class="prefs-group-title">화면</div>
-                        <div class="prefs-row">
-                            <div class="prefs-row-label">화면 테마<small>어두운 화면은 밤에 눈이 덜 피로합니다.</small></div>
-                            ${this._prefsChoice([['light', '밝게'], ['dark', '어둡게']], dark ? 'dark' : 'light', 'app._prefsSetTheme')}
-                        </div>
+                    <p class="prefs-desc">내 정보, 음성안내, 화면 모양을 정합니다.</p>
+                    <div class="prefs-group" id="prefsMeGroup">
+                        <div class="prefs-group-title">내 정보 <small>진행상황 출력(보고서·체크리스트)의 작성자와 업무 분담 파일·기록에 들어갑니다</small></div>
+                        ${this._prefsMeHtml()}
                     </div>
                     <div class="prefs-group">
                         <div class="prefs-group-title">음성안내 자동읽기 <small>꺼 두어도 각 화면의 듣기 버튼으로 들을 수 있습니다</small></div>
@@ -40402,24 +40430,154 @@ ${originalContent}`;
                         ${ttsRow('guide', 'AI 길잡이', '체크리스트 항목의 AI 길잡이를 열면 읽어 줍니다.')}
                     </div>
                     <div class="prefs-group">
-                        <div class="prefs-group-title">내 정보 <small>업무 분담 파일·기록과 진행상황 출력(보고서·체크리스트) 위쪽에 들어갑니다</small></div>
-                        ${meRow('dept', '소속', '예: 사하소방서 예방과')}
-                        ${meRow('rank', '계급(직위)', '예: 소방위')}
-                        ${meRow('name', '이름', '예: 홍길동')}
-                        ${meRow('phone', '연락처(내선)', '예: 4521')}
+                        <div class="prefs-group-title">화면</div>
                         <div class="prefs-row">
-                            <div class="prefs-row-label">주소록<small>업무 분담에서 고를 사람을 소속(조직도)별로 관리합니다</small></div>
+                            <div class="prefs-row-label">화면 테마<small>어두운 화면은 밤에 눈이 덜 피로합니다.</small></div>
+                            ${this._prefsChoice([['light', '밝게'], ['dark', '어둡게']], dark ? 'dark' : 'light', 'app._prefsSetTheme')}
+                        </div>
+                    </div>
+                    <div class="prefs-group">
+                        <div class="prefs-group-title">주소록</div>
+                        <div class="prefs-row">
+                            <div class="prefs-row-label">업무 분담 주소록<small>업무 분담에서 고를 사람을 소속(조직도)별로 관리합니다</small></div>
                             <button type="button" class="btn btn-secondary btn-small" onclick="app.openAddressBook()">주소록 관리</button>
                         </div>
                     </div>`;
             }
-            _prefsSetMe(key, value) {
-                if (key === 'name' && !String(value || '').trim()) { this.showToast('info', 'ℹ️', '이름은 비울 수 없습니다'); this._refreshPrefsIfOpen('general'); return; }
-                if (document.getElementById('progressReportModal')) setTimeout(() => this._prRender?.(this.allData.workflows.find(w => w.id === this._prWfId)), 0);
-                this._collabSetMe({ [key]: value });
-                this.showToast('success', '✅', '내 정보를 저장했습니다', 1500);
-                if (document.getElementById('collabModal')) this._renderCollabModal();
+
+            // ── 내 정보 칸 묶음 (처음 켤 때 창 · 환경설정 · 진행상황 출력 작성자 창 공통) ──
+            _meFieldsHtml(prefix, m = this._collabMe()) {
+                const esc = v => this.escapeHtml(String(v ?? ''));
+                const ranks = (typeof FIRE_RANKS !== 'undefined' ? [...FIRE_RANKS, '주무관'] : []).map(r => `<option value="${r}">`).join('');
+                const key = `onkeydown="app._meFieldKey(event,'${prefix}')"`;
+                return `<div class="me-fields" id="${prefix}Fields">
+                        <label><span>이름 <b>*</b></span><input id="${prefix}Name" value="${esc(m.name)}" placeholder="예: 홍길동" autocomplete="off" ${key}></label>
+                        <label>계급(직위)<input id="${prefix}Rank" list="${prefix}RankList" value="${esc(m.rank)}" placeholder="예: 소방위" autocomplete="off" ${key}></label>
+                        <datalist id="${prefix}RankList">${ranks}</datalist>
+                        <label>소속<input id="${prefix}Dept" value="${esc(m.dept)}" placeholder="예: 사하소방서 예방과" autocomplete="off" ${key}></label>
+                        <label>연락처(내선)<input id="${prefix}Phone" value="${esc(m.phone)}" placeholder="예: 4521" autocomplete="off" ${key}></label>
+                    </div>`;
             }
+            // 칸 읽기 — 이름이 비면 빨간 테두리 + 안내, null
+            _meFieldsRead(prefix) {
+                const v = k => (document.getElementById(prefix + k)?.value || '').trim();
+                const nameEl = document.getElementById(prefix + 'Name');
+                const box = document.getElementById(prefix + 'Fields');
+                box?.querySelector('.me-err-msg')?.remove();
+                nameEl?.classList.remove('me-err');
+                if (!v('Name')) {
+                    nameEl?.classList.add('me-err');
+                    box?.insertAdjacentHTML('beforeend', '<div class="me-err-msg">이름을 적어 주세요 (보고서 작성자로 들어갑니다)</div>');
+                    nameEl?.focus();
+                    return null;
+                }
+                return { name: v('Name'), rank: v('Rank'), dept: v('Dept'), phone: v('Phone') };
+            }
+            // Enter = 저장 단추, Esc = 취소 단추 (창 전체가 닫히지 않게)
+            _meFieldKey(e, prefix) {
+                if (e.isComposing || e.keyCode === 229) return;
+                if (e.key === 'Enter') { e.preventDefault(); document.getElementById(prefix + 'Save')?.click(); }
+                else if (e.key === 'Escape') { const c = document.getElementById(prefix + 'Cancel'); if (c) { e.preventDefault(); e.stopPropagation(); c.click(); } }
+            }
+            // 환경설정의 내 정보: 평소엔 한 줄 카드 + [고치기], 고치는 중엔 칸 + [취소] [저장] (이름 같은 공식 정보는 눌러야 바뀜)
+            _prefsMeHtml() {
+                const m = this._collabMe();
+                if (this._prefsMeEdit) return `
+                    <p class="me-note">[저장]을 눌러야 바뀝니다.</p>
+                    ${this._meFieldsHtml('prefsMe', m)}
+                    <div class="me-btns">
+                        <button type="button" class="btn btn-secondary btn-small" id="prefsMeCancel" onclick="app._prefsMeCancel()">취소</button>
+                        <button type="button" class="btn btn-primary btn-small" id="prefsMeSave" onclick="app._prefsMeSave()">저장</button>
+                    </div>`;
+                const line1 = [m.name, m.rank].filter(Boolean).join(' · ');
+                const line2 = [m.dept, m.phone ? `내선 ${m.phone}` : ''].filter(Boolean).join(' · ');
+                return `<div class="me-card">
+                        ${this._meAvatarInner(true)}
+                        <div class="me-card-txt">${line1 ? `${this.escapeHtml(line1)}${line2 ? `<small>${this.escapeHtml(line2)}</small>` : ''}` : '<span class="me-card-empty">아직 적지 않았습니다</span>'}</div>
+                        <button type="button" class="btn btn-secondary btn-small" onclick="app._prefsMeStartEdit()">고치기</button>
+                    </div>`;
+            }
+            _prefsMeStartEdit() {
+                this._prefsMeEdit = true;
+                this._refreshPrefsIfOpen('general');
+                setTimeout(() => { const el = document.getElementById('prefsMeName'); if (el) { el.focus(); el.select(); } }, 30);
+            }
+            _prefsMeCancel() { this._prefsMeEdit = false; this._refreshPrefsIfOpen('general'); }
+            _prefsMeSave() {
+                const v = this._meFieldsRead('prefsMe');
+                if (!v) return;
+                this._meSave(v);
+                this._prefsMeEdit = false;
+                this._refreshPrefsIfOpen('general');
+                this.showToast('success', '✅', '내 정보를 저장했습니다', 1800);
+            }
+            // 저장하고 내 정보가 보이는 곳(오른쪽 위 동그라미·진행상황 출력·업무 분담 창)을 새로 그림
+            _meSave(v) {
+                this._collabSetMe(v);
+                this.renderMeAvatar();
+                if (document.getElementById('progressReportModal')) setTimeout(() => this._prRender?.(this.allData.workflows.find(w => w.id === this._prWfId)), 0);
+                if (document.getElementById('collabModal')) this._renderCollabModal?.();
+            }
+            // 오른쪽 위 동그라미 — 이름 첫 글자, 이름이 없으면 사람 모양 + 주황 점
+            _meAvatarInner(big = false) {
+                const m = this._collabMe();
+                const ch = (m.name || '').trim().charAt(0);
+                const person = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+                const style = big ? ' style="width:40px;height:40px;font-size:1rem;cursor:default;border-color:transparent;' + (ch ? '' : 'background:var(--bg-light,#eef2f7);color:var(--text-muted);') + '"' : '';
+                return `<span class="me-avatar${ch ? '' : ' empty'}"${style} aria-hidden="true">${ch ? this.escapeHtml(ch) : person}</span>`;
+            }
+            renderMeAvatar() {
+                const wrap = document.getElementById('meAvatarWrap');
+                if (!wrap) return;
+                const m = this._collabMe();
+                const ch = (m.name || '').trim().charAt(0);
+                const tip = ch ? `${[m.name, m.rank].filter(Boolean).join(' ')}${m.dept ? ' · ' + m.dept : ''} — 눌러서 내 정보 고치기` : '내 정보를 아직 적지 않았습니다 — 눌러서 적기';
+                const person = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+                wrap.innerHTML = `<button type="button" class="me-avatar${ch ? '' : ' empty'}" id="meAvatarBtn" onclick="app.openMyInfo()" title="${this.escapeHtml(tip)}" aria-label="${this.escapeHtml(tip)}">${ch ? this.escapeHtml(ch) : person}${ch ? '' : '<span class="me-dot"></span>'}</button>`;
+            }
+            // 오른쪽 위 동그라미 → 환경설정 → 일반 맨 위 내 정보를 바로 고치는 상태로
+            openMyInfo() {
+                this._prefsMeEditNext = true;
+                this.openPreferences('general');
+                setTimeout(() => { const el = document.getElementById('prefsMeName'); if (el) { el.focus(); el.select(); } }, 60);
+            }
+
+            // ── 처음 켤 때 한 번: 내 정보 (이름만 꼭, [나중에] 가능) ──
+            // 이 브라우저에 업무가 하나도 없으면 「다른 브라우저에서 썼다면 그 브라우저로 / 백업 가져오기」도 함께 (업무가 사라졌다는 착각 막기)
+            checkWelcome() {
+                let shown = false; try { shown = !!localStorage.getItem('welcomeShown'); } catch (e) {}
+                if (shown || this._collabMe().name) return;
+                try { localStorage.setItem('welcomeShown', '1'); } catch (e) {}
+                document.getElementById('welcomeModal')?.remove();
+                const noWork = !(this.allData.workflows || []).some(w => !w.isDeleted);
+                const m = document.createElement('div');
+                m.className = 'modal show'; m.id = 'welcomeModal'; m.style.zIndex = '10003';
+                m.innerHTML = `<div class="modal-content welcome-box" role="dialog" aria-labelledby="welcomeTitle">
+                        <div class="welcome-head">
+                            <h3 id="welcomeTitle">업무 내비게이터에 오신 것을 환영합니다</h3>
+                            <p>진행상황 출력(보고서)과 업무 분담에 들어갈 내 정보를 적어 주세요. 나중에 오른쪽 위 동그라미나 환경설정 → 일반에서 고칠 수 있습니다.</p>
+                        </div>
+                        <div class="welcome-body">
+                            ${this._meFieldsHtml('welcome')}
+                            ${noWork ? `<div class="welcome-empty">이 브라우저에는 아직 업무가 없습니다.<br>다른 브라우저(Edge·크롬)나 다른 프로필에서 쓰셨다면 그 브라우저로 이 파일을 여세요. 업무는 브라우저마다 따로 저장됩니다.<br><button type="button" class="btn btn-secondary btn-small" onclick="app._welcomeRestore()">백업 파일 가져오기</button></div>` : ''}
+                        </div>
+                        <div class="welcome-foot">
+                            <button type="button" class="btn btn-secondary" id="welcomeCancel" onclick="app._welcomeClose()">나중에</button>
+                            <button type="button" class="btn btn-primary" id="welcomeSave" onclick="app._welcomeSave()">시작하기</button>
+                        </div>
+                    </div>`;
+                document.body.appendChild(m);
+                setTimeout(() => document.getElementById('welcomeName')?.focus(), 60);
+            }
+            _welcomeClose() { document.getElementById('welcomeModal')?.remove(); this.renderMeAvatar(); }
+            _welcomeSave() {
+                const v = this._meFieldsRead('welcome');
+                if (!v) return;
+                this._meSave(v);
+                this._welcomeClose();
+                this.showToast('success', '✅', `${v.name} 님, 내 정보를 저장했습니다`, 2500);
+            }
+            _welcomeRestore() { this._welcomeClose(); this.triggerFileRestore?.(); }
 
             _prefsSetTheme(v) {
                 const isDark = document.documentElement.classList.contains('dark-mode');
@@ -44339,20 +44497,18 @@ ${pdfContent.length > 100000 ? pdfContent.substring(0, 100000) + '\n\n[중략: �
             document.getElementById('authorInfoModal')?.remove();
             const m = document.createElement('div');
             m.className = 'modal show'; m.id = 'authorInfoModal'; m.style.zIndex = '10003';
-            const field = (id, label, ph, v) => `<div><label class="ai-lbl" for="${id}">${label}</label><input type="text" id="${id}" class="form-input" placeholder="${ph}" value="${esc(v)}"></div>`;
-            m.innerHTML = `<div class="modal-content" style="max-width:420px;padding:0;overflow:hidden;">
+            void esc;
+            m.innerHTML = `<div class="modal-content" style="max-width:460px;padding:0;overflow:hidden;">
                 <div style="padding:16px 22px 14px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;">
-                    <div style="font-size:0.95rem;font-weight:700;">${edit ? '작성자 정보 고치기' : '작성자 정보 (처음 한 번만)'}</div>
+                    <div style="font-size:0.95rem;font-weight:700;">${edit ? '내 정보 고치기 (작성자)' : '내 정보 (처음 한 번만)'}</div>
                     <button class="close-btn" data-x>&times;</button>
                 </div>
-                <div style="padding:18px 22px;display:flex;flex-direction:column;gap:12px;">
-                    ${field('authorDepartment', '소속', '예: 사하소방서 감사팀', a.dept)}
-                    ${field('authorRank', '직급(계급)', '예: 소방위', a.rank)}
-                    ${field('authorName', '이름', '예: 홍길동', a.name)}
-                    ${field('authorPhone', '연락처(내선)', '예: 4521', a.phone)}
-                    <div style="display:flex;gap:8px;justify-content:flex-end;padding-top:6px;border-top:1px solid var(--border-subtle);">
-                        <button class="btn btn-secondary" data-x>취소</button>
-                        <button class="btn btn-primary" data-ok>${edit ? '저장' : '저장하고 계속'}</button>
+                <div style="padding:16px 22px;">
+                    <p class="me-note">진행상황 출력의 작성자로 들어갑니다. 환경설정 → 일반의 「내 정보」와 같습니다.</p>
+                    ${this._meFieldsHtml('author', a)}
+                    <div class="me-btns" style="padding-top:12px;border-top:1px solid var(--border-subtle);">
+                        <button class="btn btn-secondary" id="authorCancel" data-x>취소</button>
+                        <button class="btn btn-primary" id="authorSave" data-ok>${edit ? '저장' : '저장하고 계속'}</button>
                     </div>
                 </div></div>`;
             document.body.appendChild(m);
@@ -44360,14 +44516,14 @@ ${pdfContent.length > 100000 ? pdfContent.substring(0, 100000) + '\n\n[중략: �
             m.querySelectorAll('[data-x]').forEach(b => b.onclick = close);
             m.addEventListener('click', e => { if (e.target === m) close(); });
             const ok = () => {
-                const v = k => m.querySelector('#author' + k).value.trim();
-                this._collabSetMe({ dept: v('Department'), rank: v('Rank'), name: v('Name') || this._collabMe().name, phone: v('Phone') });
+                const v = this._meFieldsRead('author');
+                if (!v) return;
+                this._meSave(v);
                 this._refreshPrefsIfOpen?.('general');
                 close(); onDone && onDone();
             };
             m.querySelector('[data-ok]').onclick = ok;
-            m.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); ok(); } else if (e.key === 'Escape') { e.stopPropagation(); close(); } });
-            setTimeout(() => m.querySelector('#authorDepartment')?.focus(), 50);
+            setTimeout(() => m.querySelector('#authorName')?.focus(), 50);
         };
         // 공통: 날짜 표기 「10. 6.(화)」
         WorkflowManager.prototype._prFmt = function(d, withYear) {

@@ -38,7 +38,7 @@ S.append({"clickpt": 1, "wait": 100})
 doc = "const doc=()=>[...document.querySelectorAll('#prPage .pr-doc')].map(d=>d.innerText).join(String.fromCharCode(10)).replace(/\\n+/g,' ¶ ');"
 step("④ 처음 누르면 작성자 정보 창부터", "await W(600);const m=document.getElementById('authorInfoModal');return '작성자 창='+!!m+' | 보고서 창='+!!document.getElementById('progressReportModal')")
 S.append({"shot": "rp_author.png"})
-step("④ 소속·직급·이름 적고 [저장하고 계속]", "const m=document.getElementById('authorInfoModal');m.querySelector('#authorDepartment').value='사하소방서 감사팀';m.querySelector('#authorRank').value='소방위';m.querySelector('#authorName').value='홍길동';m.querySelector('[data-ok]').click();await W(700);return '보고서 창='+!!document.getElementById('progressReportModal')+' | 저장='+localStorage.getItem('pdfAuthorInfo')")
+step("④ 소속·직급·이름 적고 [저장하고 계속]", "const m=document.getElementById('authorInfoModal');m.querySelector('#authorDept').value='사하소방서 감사팀';m.querySelector('#authorRank').value='소방위';m.querySelector('#authorName').value='홍길동';m.querySelector('[data-ok]').click();await W(700);return '보고서 창='+!!document.getElementById('progressReportModal')+' | 저장='+localStorage.getItem('pdfAuthorInfo')")
 step("④ 보고서 내용(단계는 한 번, 할 일은 아래 -)", doc + "document.querySelector('.pr-tabs [data-tab=report]')?.click();await W(700);return doc()")
 S.append({"shot": "rp_report.png"})
 pt("const t=document.querySelector('.pr-ed[data-k=title]').getBoundingClientRect();return JSON.stringify([t.right-60,t.top+t.height/2])")
