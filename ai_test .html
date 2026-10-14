@@ -4167,6 +4167,15 @@
         /* 건너뛰기 버튼(일할 때 누름)·규칙 표시(레퍼런스)·편집 화면 표시·해당 없음 */
         .branch-run-btn { display: inline-flex; align-items: center; padding: 3px 9px; font-size: 0.75rem; font-weight: 600; font-family: inherit; color: var(--text-gray); background: transparent; border: 1px solid var(--border-light); border-radius: 5px; cursor: pointer; white-space: nowrap; transition: background 0.15s, color 0.15s, border-color 0.15s; }
         .branch-run-btn:hover { color: var(--accent); border-color: var(--accent); background: rgba(37,99,235,0.05); }
+        /* 건너뛰기 버튼을 누른 줄 · 그 버튼으로 건너뛴 줄: 제목 앞 글자 없는 ⤼ 표시 — 누르면 [건너뛰기 취소] */
+        .cl-skip-mark { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; margin-right: 6px; padding: 0; vertical-align: middle; position: relative; top: -2px; color: #7c3aed; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.4); border-radius: 5px; cursor: pointer; font-family: inherit; }
+        .cl-skip-mark svg { margin: 0 !important; }
+        /* 작은 메뉴: 지금 못 쓰는 명령은 숨기지 않고 회색(탐색기처럼) · 맨 아래 까닭 안내 */
+        .ci-menu button.ci-dis { opacity: 0.42; cursor: default; }
+        .ci-menu button.ci-dis:hover { background: transparent !important; }
+        .ci-menu .ci-menu-note { padding: 6px 12px 4px; font-size: 0.72rem; line-height: 1.45; color: var(--text-muted); max-width: 240px; }
+        .cl-skip-mark:hover { background: rgba(139,92,246,0.2); border-color: #8b5cf6; }
+        :root.dark-mode .cl-skip-mark { color: #c4b5fd; background: rgba(139,92,246,0.2); border-color: rgba(167,139,250,0.5); }
         .branch-mini { display: inline-flex; align-items: center; gap: 1px; margin-left: 6px; padding: 0 5px; font-size: 0.7rem; font-weight: 600; line-height: 1.5; font-family: inherit; color: var(--text-muted); background: transparent; border: 1px solid var(--border-light); border-radius: 4px; cursor: pointer; vertical-align: 1px; white-space: nowrap; }
         .branch-mini:hover { color: var(--accent); border-color: var(--accent); }
         .branch-rule-chip { display: inline-flex; align-items: center; padding: 2px 8px; font-size: 0.72rem; font-weight: 600; color: var(--text-muted); background: var(--bg-light); border: 1px dashed var(--border-light); border-radius: 5px; white-space: nowrap; cursor: help; }
@@ -4229,6 +4238,13 @@
         :root.dark-mode .main-content .skip-run-pill { color: var(--text-muted); background: var(--bg-card); }
         :root.dark-mode .main-content .skip-run-pill:hover, :root.dark-mode .main-content .skip-run.open .skip-run-pill { color: #c4b5fd; }
         .skip-run-items { margin-bottom: 6px; }
+        /* 알약에 까닭: 건너뛰기 버튼은 보라 「⤼ 버튼 이름 · n」, 해당 없음은 회색 「해당 없음 · n」 */
+        .skip-run-pill .sr-n { margin-left: 4px; opacity: 0.7; font-weight: 600; }
+        .skip-run-pill.br { color: #7c3aed; border-color: rgba(139,92,246,0.4); }
+        .skip-run-pill.br:hover, .skip-run.open .skip-run-pill.br { border-color: #8b5cf6; }
+        :root.dark-mode .main-content .skip-run-pill.br { color: #c4b5fd; border-color: rgba(167,139,250,0.45); }
+        /* 펼친 건너뛴 줄: 건너뛰기 버튼으로 건너뛴 것은 보라 테두리 (해당 없음은 회색 그대로) */
+        .checklist-card.skipped.skip-br { border-left-color: #8b5cf6; box-shadow: inset 0 0 0 1px rgba(139,92,246,0.4); }
         :root.dark-mode .skip-group-toggle { background: rgba(255,255,255,0.05); border-color: var(--border-light); color: var(--text-muted); }
         :root.dark-mode .skip-group-toggle:hover { background: rgba(255,255,255,0.09); }
         /* 하위항목: 상위 카드보다 장식을 줄여(색띠·그림자 없음) "딸린 항목"으로 보이게 하고,
@@ -7566,9 +7582,17 @@
         // 새 버전을 배포할 때는 아래 세 가지(번호·배포일·바뀐 점)만 고친다.
         // 번호 규칙: 기능 추가는 가운데 숫자(1.1.0), 오류 수정만은 끝 숫자(1.0.1)를 올린다.
         // 업무 자료는 프로그램 파일이 아니라 브라우저 저장 공간에 있어, 파일만 바꿔도 그대로 남는다.
-        const APP_VERSION = '1.5.6';
-        const APP_RELEASE_DATE = '2026-10-11';
+        const APP_VERSION = '1.5.7';
+        const APP_RELEASE_DATE = '2026-10-14';
         const APP_RELEASE_NOTES = [
+            { version: '1.5.7', date: '2026-10-14', notes: [
+                '건너뛰기 버튼을 누른 줄과 그 버튼으로 건너뛴 줄은 제목 앞에 글자 없는 보라 ⤼ 표시 — 누르면 [건너뛰기 취소]만 나옴. 마우스를 올리면 나오는 버튼 줄에 가려지던 오른쪽 끝 [실행취소]·「분기」 표시는 없앰',
+                '건너뛰기 취소는 묻지 않고 바로 풀고 알림의 [되돌리기]로 다시 건너뜀 · 오른쪽 클릭·⋯ 메뉴 맨 위에도 「건너뛰기 취소」',
+                '체크리스트 줄 오른쪽 클릭 메뉴 맨 위에 「체크 / 체크 취소」와 그 줄의 건너뛰기 버튼(⤼ 버튼 이름) — 마우스를 올리면 나오는 ⋯ 버튼도 같은 메뉴',
+                '완료한 업무 · 레퍼런스 업무에서도 오른쪽 클릭 메뉴가 나옴: 길잡이·처리결과·업무팁·서식은 그대로 보고, 고치는 명령은 회색 + 「[완료 취소] 후 고칠 수 있음」 안내',
+                '오른쪽 업무 절차 패널의 단계·할 일 줄도 오른쪽 클릭하면 체크리스트 줄과 같은 메뉴 · 접힌 건너뛰기 알약을 오른쪽 클릭하면 펼치기/접기 · 건너뛰기 취소(해당 없음은 모두 되살리기)',
+                '접힌 건너뛴 항목 알약에 까닭 표시: 「⤼ 버튼 이름 · n」(보라) / 「해당 없음 · n」(회색), 서로 다른 건너뛰기는 알약을 나눔 · 펼친 건너뛴 줄은 보라 테두리',
+            ] },
             { version: '1.5.6', date: '2026-10-11', notes: [
                 '연습 업무 넣기 — 새 업무 만들기 ▾ → 「연습 업무 넣기」로 설명서를 따라 해 볼 예시 업무 2개(소모품 구매 계약 · 월간 실적 보고, 가상 자료)를 넣음. 업무팁·근거 조문·건너뛰기 버튼·서식·참고 자료가 갖춰져 있고 마감일은 넣는 날 기준',
                 '외부 통신 잠금 — 배포판은 화면만 막는 것이 아니라 외부 AI·법제처로 나가는 통신 자체를 막음 (이 PC 안 파일은 그대로)',
@@ -28067,7 +28091,7 @@ ${docScope === 'internal' ? `[내부결재 — 보고·검토·승인용]
                                        </div>`;
                 const skipLine = '<div style="width:0;flex:1;min-height:10px;border-left:2px dashed var(--border-light,#dde3ee);margin-top:2px;"></div>';
                 const skipRowHtml = (item, idx, isLast, inRun = false) => `
-                        <div data-step-idx="${idx}" class="proc-step-row proc-skip-row${inRun ? ' in-run' : ''}" style="display:flex;gap:9px;cursor:pointer;" onclick="app.scrollToMainChecklistItem(${workflowId},${idx})" title="${esc(item.skipReason || '건너뜀')}">
+                        <div data-step-idx="${idx}" class="proc-step-row proc-skip-row${inRun ? ' in-run' : ''}" style="display:flex;gap:9px;cursor:pointer;" oncontextmenu="app.openChecklistItemMenu(event,${workflowId},${idx})" onclick="app.scrollToMainChecklistItem(${workflowId},${idx})" title="${esc(item.skipReason || '건너뜀')}">
                             <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
                                 <div class="proc-skip-ico"></div>
                                 ${isLast ? pinHtml : skipLine}
@@ -28132,11 +28156,11 @@ ${docScope === 'internal' ? `[내부결재 — 보고·검토·승인용]
                         <div style="margin-top:5px;padding-left:2px;display:flex;flex-direction:column;gap:3px;">
                             ${subItems.map(({ index: subIdx, item: subItem }) => {
                                 const subDone = this.normalizeCompleted(subItem);
-                                if (isSkippedIt(subItem)) return `<div class="proc-sub-row proc-skip-sub" style="display:flex;align-items:center;gap:6px;cursor:pointer;" onclick="event.stopPropagation();app.scrollToMainChecklistItem(${workflowId},${subIdx})" title="${esc(subItem.skipReason || '건너뜀')}">
+                                if (isSkippedIt(subItem)) return `<div class="proc-sub-row proc-skip-sub" style="display:flex;align-items:center;gap:6px;cursor:pointer;" oncontextmenu="app.openChecklistItemMenu(event,${workflowId},${subIdx})" onclick="event.stopPropagation();app.scrollToMainChecklistItem(${workflowId},${subIdx})" title="${esc(subItem.skipReason || '건너뜀')}">
                                     <span class="proc-skip-dot"></span><span class="proc-skip-subtext"><s>${esc(subItem.text || '')}</s>${skipPill(subItem)}</span></div>`;
                                 const subSt = procSteps[subItem.itemId];
                                 const subWait = !subDone && subSt && subSt.assignee && subSt.status === 'sent' ? this._collabWaitTagHtml(subSt) : '';
-                                return `<div class="proc-sub-row${pickStage >= 0 && subIdx === pickIdx ? ' is-picked' : ''}" style="display:flex;align-items:center;gap:6px;cursor:pointer;" onclick="event.stopPropagation();app.scrollToMainChecklistItem(${workflowId},${subIdx})">
+                                return `<div class="proc-sub-row${pickStage >= 0 && subIdx === pickIdx ? ' is-picked' : ''}" style="display:flex;align-items:center;gap:6px;cursor:pointer;" oncontextmenu="app.openChecklistItemMenu(event,${workflowId},${subIdx})" onclick="event.stopPropagation();app.scrollToMainChecklistItem(${workflowId},${subIdx})">
                                     <span style="width:11px;height:11px;border-radius:50%;flex-shrink:0;${subDone ? 'background:#10b981;' : 'border:1.5px solid var(--border-light,#dde3ee);'}"></span>
                                     <span style="font-size:0.79rem;line-height:1.5;color:${subDone ? 'var(--text-muted,#8899aa)' : 'var(--text-dark,#1e2d47)'};${subDone ? 'text-decoration:line-through;text-decoration-color:var(--border-light,#dde3ee);' : ''}">${esc(subItem.text || '')}</span>${subWait}
                                 </div>`;
@@ -28144,7 +28168,7 @@ ${docScope === 'internal' ? `[내부결재 — 보고·검토·승인용]
                         </div>` : '';
 
                     return `
-                        <div data-step-idx="${idx}" class="proc-step-row${procOther ? ' cb-proc-other' : ''}${isCurrent ? ' is-current' : ''}${idx === pickStage ? ' is-picked' : ''}" style="display:flex;gap:9px;cursor:pointer;" onclick="app.scrollToMainChecklistItem(${workflowId},${idx})">
+                        <div data-step-idx="${idx}" class="proc-step-row${procOther ? ' cb-proc-other' : ''}${isCurrent ? ' is-current' : ''}${idx === pickStage ? ' is-picked' : ''}" style="display:flex;gap:9px;cursor:pointer;" oncontextmenu="app.openChecklistItemMenu(event,${workflowId},${idx})" onclick="app.scrollToMainChecklistItem(${workflowId},${idx})">
                             <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;">
                                 ${iconHtml}
                                 ${isLast
@@ -35800,12 +35824,14 @@ ${aiPartnerCitationFirstRules}
                 // 건너뛴 항목은 한곳에 몰지 않고 "원래 자리"마다 얇은 점선 + 작은 「⤼ n」으로 (GitHub의 숨긴 항목·Gmail의 접힌 대화처럼)
                 // — 평소엔 거의 눈에 안 띄고, 마우스를 올리면 무엇을 왜 건너뛰었는지, 누르면 그 자리에 펼친다
                 const runs = [];
+                // 까닭이 다른 건너뛰기(다른 버튼 · 해당 없음)는 이어져 있어도 알약을 나눈다
+                const whyKey = (item) => item.skipManual ? 'na' : 'b:' + (item.skipActionId || String(item.skipReason || '').replace(/\s*\(.*\)\s*$/, ''));
                 cl.forEach((item, idx) => {
                     if (item.skipped !== true) return;
                     if (!visible(idx)) return;
                     const last = runs[runs.length - 1];
-                    if (last && last.end === idx - 1) { last.end = idx; last.items.push({ item, idx }); }
-                    else runs.push({ start: idx, end: idx, items: [{ item, idx }] });
+                    if (last && last.end === idx - 1 && last.why === whyKey(item)) { last.end = idx; last.items.push({ item, idx }); }
+                    else runs.push({ start: idx, end: idx, why: whyKey(item), items: [{ item, idx }] });
                 });
                 const runAt = new Map(runs.map(r => [r.start, r]));
                 const openMap = (this._skipRunOpen && this._skipRunOpen[workflow.id]) || {};
@@ -35822,7 +35848,16 @@ ${aiPartnerCitationFirstRules}
                     const reasons = [...new Set(r.items.map(({ item }) => reasonOf(item)))];
                     const tip = `건너뜀 ${r.items.length}개: ${names.join(', ')}\n${reasons.join(' · ')}\n${open ? '눌러서 접기' : '눌러서 펼치기'}`;
                     return `<div class="skip-run${open ? ' open' : ''}">
-                            <button type="button" class="skip-run-pill" onclick="app.toggleSkipRun(${workflow.id},'${key}')" title="${this.escapeHtml(tip)}" aria-expanded="${open}">${this._skipIco(11)}${r.items.length}</button>
+                            ${(() => {
+                                // 알약에 까닭: 「⤼ 버튼 이름 · n」(보라) / 「해당 없음 · n」(회색) — 업무 절차 패널의 알약과 같은 말
+                                const first = r.items[0].item;
+                                const n = `<span class="sr-n">· ${r.items.length}</span>`;
+                                const ctx = `oncontextmenu="app.openSkipRunMenu(event,${workflow.id},'${key}',${r.items[0].idx})"`;
+                                if (first.skipManual) return `<button type="button" class="skip-run-pill na" ${ctx} onclick="app.toggleSkipRun(${workflow.id},'${key}')" title="${this.escapeHtml(tip)}" aria-expanded="${open}">해당 없음${n}</button>`;
+                                const o = cl.find(c => c.branchActionTaken && first.skipActionId && c.branchActionTaken.actionId === first.skipActionId);
+                                const lab = (o ? o.branchActionTaken.label : String(first.skipReason || '').replace(/\s*\(.*\)\s*$/, '')) || '건너뛰기';
+                                return `<button type="button" class="skip-run-pill br" ${ctx} onclick="app.toggleSkipRun(${workflow.id},'${key}')" title="${this.escapeHtml(tip)}" aria-expanded="${open}">${this._skipIco(11)}${this.escapeHtml(this._shortLabel(lab))}${n}</button>`;
+                            })()}
                         </div>${open ? `<div class="skip-run-items">${r.items.map(({ item, idx }) => this.renderChecklistItem(workflow, item, idx)).join('')}</div>` : ''}`;
                 };
 
@@ -36225,6 +36260,15 @@ ${aiPartnerCitationFirstRules}
                     }
                 }
 
+                // 건너뛰기 버튼을 누른 줄 · 그 버튼으로 건너뛴 줄: 제목 앞에 글자 없는 ⤼ 표시 (누르면 [건너뛰기 취소])
+                // — 예전 오른쪽 끝 [실행취소]는 마우스를 올릴 때 나오는 버튼 줄에 가려져 누를 수 없었음
+                let skipMark = '';
+                if (!asTemplate && (item.branchActionTaken || (isSkipped && !item.skipManual && item.skipActionId))) {
+                    const o = item.branchActionTaken ? item : cl.find(c => c.branchActionTaken && c.branchActionTaken.actionId === item.skipActionId);
+                    const lab = (o ? o.branchActionTaken.label : String(item.skipReason || '').replace(/\s*\(.*\)\s*$/, '')) || '건너뛰기';
+                    skipMark = this._branchTakenBtnHtml(workflow.id, index, lab, !item.branchActionTaken);
+                }
+
                 // 단계의 할 일 진행 배지 ("할 일 1/3" + 작은 막대). 접을 수 있는 목록에서는 눌러서 펼치기/접기
                 let stageBadge = '';
                 if (!isSub && !isSkipped) {
@@ -36251,7 +36295,7 @@ ${aiPartnerCitationFirstRules}
 
                 // 건너뛰기 스타일 및 클래스 설정
                 const cardClass = isSkipped
-                    ? 'checklist-card skipped'
+                    ? `checklist-card skipped${item.skipManual ? '' : ' skip-br'}`
                     : `checklist-card ${isExpanded ? 'expanded' : ''} ${isCompleted ? 'completed' : ''} ${isSub ? 'sub-item' : ''} ${stageState}${collabLockMsg ? ' collab-locked' : ''}${collabLockMsg && workflow.collab && workflow.collab.role === 'assignee' ? ' cb-others' : ''}`;
                 const headerClass = isSkipped ? 'checklist-card-header skipped' : `checklist-card-header ${isExpanded ? 'expanded' : ''} ${isCompleted ? 'completed' : ''}`;
                 const textStyle = isSkipped
@@ -36284,7 +36328,7 @@ ${aiPartnerCitationFirstRules}
                 const dotTip = [hasTip ? `업무팁${tipN ? `(예시 ${tipN})` : ''}` : '', hasFormats ? `서식 ${fmN}개` : ''].filter(Boolean).join(' · ');
                 // 마우스를 올린 줄: 오른쪽 날짜 자리에 ✨길잡이 · 💡업무팁 · 📄서식 · 📅마감일 · ⋯ (Gmail처럼 — 제목 끝을 가려도 됨)
                 // 순서는 오른쪽 클릭 메뉴와 같게. 내용이 있는 버튼만 색, 없는 버튼은 흐리게
-                const canMenu = !workflow.isReference && !workflow.completedProcessed;
+                const canMenu = true;  // 완료·레퍼런스도 메뉴(보는 명령 · 회색 고치는 명령)
                 const hb = (cls, onclick, title, html) => `<button type="button" class="cl-hb ${cls}" onclick="event.stopPropagation();${onclick}" title="${title}">${html}</button>`;
                 const hoverBar = [
                     !isSkipped ? hb('cl-hb-guide', `app.showChecklistHelp(${workflow.id},${index})`, '이 항목의 업무팁·서식·법령을 한 화면에 모아 보기', `${this._clIco('guide', 13)}${this.isAIAvailable() ? 'AI 길잡이' : '길잡이'}`) : '',
@@ -36308,7 +36352,7 @@ ${aiPartnerCitationFirstRules}
                             ${subItemIcon}
                             <div class="cl-main">
                                 <span class="item-title-text" style="${textStyle}" title="${this.escapeHtml(item.text)}">
-                                    ${this.escapeHtml(item.text)}${hasDot ? `<span class="cl-has-dot" title="${this.escapeHtml(dotTip)}">•</span>` : ''}${isNow ? '<span class="cl-now">· 지금 할 일</span>' : ''}${item.collabFrom && !isSkipped ? `<span class="cl-from-tag" title="회수하기 전에 받은 처리결과입니다">${this.escapeHtml(item.collabFrom)}</span>` : ''}${item.collabNew && !isSkipped ? `<span class="cl-new-dot" title="새 회신 — ${this.escapeHtml(item.collabNew.from || '')} 님 (${this.escapeHtml(fmtDateTime(item.collabNew.at, { short: true }))}) · 열어 보면 사라집니다"></span>` : ''}
+                                    ${skipMark}${this.escapeHtml(item.text)}${hasDot ? `<span class="cl-has-dot" title="${this.escapeHtml(dotTip)}">•</span>` : ''}${isNow ? '<span class="cl-now">· 지금 할 일</span>' : ''}${item.collabFrom && !isSkipped ? `<span class="cl-from-tag" title="회수하기 전에 받은 처리결과입니다">${this.escapeHtml(item.collabFrom)}</span>` : ''}${item.collabNew && !isSkipped ? `<span class="cl-new-dot" title="새 회신 — ${this.escapeHtml(item.collabNew.from || '')} 님 (${this.escapeHtml(fmtDateTime(item.collabNew.at, { short: true }))}) · 열어 보면 사라집니다"></span>` : ''}
                                     ${item.skipReason ? (item.skipManual
                                         ? `<span style="font-size:0.78rem;color:var(--text-muted);margin-left:8px;font-weight:500;">(${this.escapeHtml(item.skipReason)})</span>`
                                         : `<span style="font-size:0.78rem;color:#ef4444;margin-left:8px;font-weight:500;">(사유: ${item.skipReason})</span>`) : ''}
@@ -36317,11 +36361,7 @@ ${aiPartnerCitationFirstRules}
                                 ${(() => { const meta = [branchButtons].filter(Boolean).join(''); return meta ? `<span class="cl-meta">${meta}</span>` : ''; })()}
                             </div>
                             <div class="cl-right">
-                                ${isCompleted && item.branchOnly && !isSkipped ? `<span style="font-size:0.68rem;font-weight:700;color:#8b5cf6;background:rgba(139,92,246,0.1);padding:1px 6px;border-radius:4px;flex-shrink:0;" title="분기 처리로 완료됨 (실제 작업 내용 아님)">${this._skipIco(11)}분기</span>` : ''}
-                                ${isSkipped && item.branchActionTaken ? `<button onclick="event.stopPropagation();app.undoBranchOption(${workflow.id},${index})" style="flex-shrink:0;padding:2px 7px;font-size:0.73rem;background:transparent;color:#6b7280;border:1px solid rgba(107,114,128,0.25);border-radius:5px;cursor:pointer;font-family:inherit;">실행취소</button>` : ''}
-                                ${isSkipped && !item.branchActionTaken && item.skipActionId ? `<button onclick="event.stopPropagation();app.undoBranchOptionFromSkippedItem(${workflow.id},${index})" title="이 항목을 건너뛰게 한 분기 처리를 취소합니다" style="flex-shrink:0;padding:2px 7px;font-size:0.73rem;background:transparent;color:#6b7280;border:1px solid rgba(107,114,128,0.25);border-radius:5px;cursor:pointer;font-family:inherit;">실행취소</button>` : ''}
                                 ${isSkipped && item.skipManual && !asTemplate ? `<button class="na-restore-btn" onclick="event.stopPropagation();app.restoreNotApplicable(${workflow.id},${index})" title="해당 없음을 풀고 다시 할 항목으로 되돌립니다">되살리기</button>` : ''}
-                                ${isCompleted && item.branchActionTaken && !isSkipped ? `<button onclick="event.stopPropagation();app.undoBranchOption(${workflow.id},${index})" style="flex-shrink:0;padding:2px 7px;font-size:0.73rem;background:transparent;color:#6b7280;border:1px solid rgba(107,114,128,0.25);border-radius:5px;cursor:pointer;font-family:inherit;">실행취소</button>` : ''}
                                 ${(() => {
                                     // 담당 이름표 (마우스를 올리면 버튼 줄이 이 자리까지 덮음)
                                     const tag = this._collabChipHtml(workflow, item, index);
@@ -36517,9 +36557,8 @@ ${aiPartnerCitationFirstRules}
                 this.saveData();
                 // 건너뛴 항목은 업무 절차 패널 타임라인에서 제외되므로, 분기 처리 직후 패널을 새로 그려서 반영
                 this.refreshAIPanelDashboardIfNeeded();
-                this.showToast('success', '🔀', `${label} 처리되었습니다.`, 3000, {
-                    actionLabel: '↩️ 되돌리기',
-                    onAction: () => this.undoBranchOption(workflowId, index, { skipConfirm: true })
+                this.showToast('success', '🔀', `「${label}」(으)로 ${skippedItemIds.length}개 항목을 건너뛰었습니다.`, 8000, {
+                    actions: [{ label: '되돌리기', onAction: () => this.undoBranchOption(workflowId, index, { skipConfirm: true }) }]
                 });
 
                 // 진행률 업데이트
@@ -36645,7 +36684,7 @@ ${aiPartnerCitationFirstRules}
 
                 this.saveData();
                 this.refreshAIPanelDashboardIfNeeded();
-                this.showToast('success', '↩️', '분기 처리가 취소되었습니다.');
+                if (!options.quiet) this.showToast('success', '↩️', '건너뛰기를 취소했습니다.');
 
                 if (this.selectedWorkflowId === workflowId) {
                     this.showProjectDetail(workflowId);
@@ -36658,6 +36697,76 @@ ${aiPartnerCitationFirstRules}
                 this.updateStats();
             }
 
+            // 제목 앞 ⤼ 표시 — 누르면 [건너뛰기 취소]만 (target: 다른 줄의 버튼으로 건너뛴 줄)
+            _branchTakenBtnHtml(workflowId, index, label, target = false) {
+                const lab = this.escapeHtml(label || '건너뛰기');
+                const tip = target ? `「${lab}」 버튼으로 건너뛴 항목 — 눌러서 건너뛰기 취소` : `「${lab}」 버튼으로 건너뛰기를 했습니다 — 눌러서 건너뛰기 취소`;
+                return `<button type="button" class="cl-skip-mark" onclick="event.stopPropagation();app.openBranchTakenMenu(event,${workflowId},${index})" ondblclick="event.stopPropagation()" title="${tip}" aria-label="건너뛰기 취소 메뉴">${this._skipIco(12)}</button>`;
+            }
+            // 그 줄을 건너뛰게 한 버튼이 있는 줄 (자기가 버튼 줄이면 자기), 없으면 -1
+            _branchOriginIndex(workflow, index) {
+                const cl = workflow.checklist || [];
+                const it = cl[index];
+                if (!it) return -1;
+                if (it.branchActionTaken) return index;
+                if (!it.skipActionId) return -1;
+                return cl.findIndex(c => c.branchActionTaken && c.branchActionTaken.actionId === it.skipActionId);
+            }
+            openBranchTakenMenu(e, workflowId, index) {
+                e.preventDefault();
+                e.stopPropagation();
+                const wf = this.allData.workflows.find(w => w.id === workflowId);
+                if (!wf || !wf.checklist) return;
+                const oi = this._branchOriginIndex(wf, index);
+                const btn = e.currentTarget && e.currentTarget.getBoundingClientRect ? e.currentTarget.getBoundingClientRect() : null;
+                const x = btn ? btn.left : e.clientX, y = btn ? btn.bottom + 4 : e.clientY;
+                if (oi < 0) {  // 버튼 줄이 지워진 예전 자료: 이 줄만 풀기
+                    this._openCiMenu(x, y, [['건너뛰기 취소 (이 항목만)', () => this.undoBranchOptionFromSkippedItem(workflowId, index), this._skipIco(13)]]);
+                    return;
+                }
+                this._openCiMenu(x, y, [{ label: '건너뛰기 취소', ico: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>', title: '건너뛴 항목을 다시 할 항목으로 되돌립니다 (알림의 [되돌리기]로 다시 건너뜀)', onClick: () => this.cancelBranchSkip(workflowId, oi) }]);
+            }
+            // 건너뛰기 취소 — 묻지 않고 바로 풀고, 알림의 [되돌리기]로 다시 건너뛴 상태로 (되돌릴 수 있는 일은 묻지 않는다)
+            cancelBranchSkip(workflowId, originIndex) {
+                const wf = this.allData.workflows.find(w => w.id === workflowId);
+                const o = wf?.checklist?.[originIndex];
+                if (!o || !o.branchActionTaken) return;
+                if (this.guardReferenceLock && this.guardReferenceLock(workflowId, '건너뛰기 취소')) return;
+                const F = ['skipped', 'skipReason', 'skipActionId', 'completed', 'completedAt', 'branchOnly', 'branchActionTaken'];
+                const bat = o.branchActionTaken;
+                const ids = new Set(bat.skippedItemIds || []);
+                const snap = wf.checklist
+                    .filter(c => c === o || (bat.actionId && c.skipActionId === bat.actionId) || ids.has(c.itemId))
+                    .map(c => ({ id: this.ensureChecklistItemId(c), v: JSON.parse(JSON.stringify(Object.fromEntries(F.filter(k => k in c).map(k => [k, c[k]])))) }));
+                const label = bat.label || '건너뛰기';
+                this.undoBranchOption(workflowId, originIndex, { skipConfirm: true, quiet: true });
+                this.showToast('success', '↩', `「${label}」 건너뛰기를 취소했습니다.`, 8000, {
+                    actions: [{ label: '되돌리기', onAction: () => {
+                        const w = this.allData.workflows.find(x => x.id === workflowId);
+                        if (!w) return;
+                        snap.forEach(({ id, v }) => {
+                            const c = w.checklist.find(x => x.itemId === id);
+                            if (!c) return;
+                            F.forEach(k => delete c[k]);
+                            Object.assign(c, v);
+                        });
+                        this.syncAllParentsFromSubItems(w);
+                        this.saveData();
+                        this.refreshAIPanelDashboardIfNeeded();
+                        this.updateStats();
+                        this._rerenderChecklist(w);
+                        this.showToast('info', '↩', `다시 「${label}」(으)로 건너뛰었습니다.`);
+                    } }]
+                });
+            }
+            // 오른쪽 클릭·⋯ 메뉴의 「건너뛰기 취소」
+            _cancelBranchFromItem(workflowId, index) {
+                const wf = this.allData.workflows.find(w => w.id === workflowId);
+                if (!wf) return;
+                const oi = this._branchOriginIndex(wf, index);
+                if (oi < 0) this.undoBranchOptionFromSkippedItem(workflowId, index);
+                else this.cancelBranchSkip(workflowId, oi);
+            }
             // 다른 항목의 분기 처리로 건너뛰어진 항목 자체에서 되돌리기 — 원본(분기 버튼을 눌렀던) 항목을 찾아 되돌림.
             // 건너뛰어진 항목까지 스크롤을 되돌아가지 않고도 그 자리에서 바로 취소할 수 있도록 함.
             undoBranchOptionFromSkippedItem(workflowId, skippedIndex) {
@@ -36792,41 +36901,111 @@ ${aiPartnerCitationFirstRules}
                 }
             }
 
-            // 항목을 마우스 오른쪽으로 누르면 나오는 작은 메뉴 (해당 없음·되살리기·여러 항목 고르기)
+            // 항목을 마우스 오른쪽으로 누르면 나오는 작은 메뉴 — 체크리스트 줄 · ⋯ 버튼 · 업무 절차 패널 줄이 모두 이것 (같은 명령은 어디서나 같게)
+            // 순서: 체크 · 건너뛰기 버튼 → 해당 없음 → 길잡이·처리결과·업무팁·서식·마감일 (마우스를 올린 줄의 버튼과 같은 순서)
+            // 완료한 업무 · 레퍼런스도 메뉴를 띄운다: 보는 명령은 그대로, 고치는 명령은 회색 + 맨 아래 까닭 (탐색기처럼 숨기지 않음)
             openChecklistItemMenu(e, workflowId, index) {
                 const workflow = this.allData.workflows.find(w => w.id === workflowId);
                 const item = workflow?.checklist?.[index];
-                if (!item || workflow.isReference || workflow.completedProcessed || this._branchEditingNow(workflowId)) return;  // 브라우저 기본 메뉴
+                if (!item || this._branchEditingNow(workflowId)) return;  // 건너뛸 항목 고르는 중: 브라우저 기본 메뉴
                 e.preventDefault();
                 e.stopPropagation();
                 this._closeChecklistItemMenu();
                 const cl = workflow.checklist;
                 const isSkipped = item.skipped === true;
                 const done = this.normalizeCompleted(item);
+                const ro = workflow.isReference ? 'ref' : workflow.completedProcessed ? 'done' : '';
+                const roTip = ro === 'ref' ? '레퍼런스(본보기)는 고칠 수 없습니다' : '완료한 업무입니다 — [완료 취소] 후 고칠 수 있습니다';
+                const lockMsg = !ro && this._collabLock ? this._collabLock(workflow, index) : '';
+                // 고치는 명령: 읽기 전용이면 회색, 아니면 그대로
+                const edit = (label, fn, ico, extraDisabled = '') => [label, fn, ico, (ro || extraDisabled) ? { disabled: true, title: ro ? roTip : extraDisabled } : undefined];
                 const entries = [];
-                if (isSkipped && item.skipManual) entries.push(['되살리기', () => this.restoreNotApplicable(workflowId, index)]);
+                // ① 체크 · 건너뛰기 버튼 (가장 자주 하는 일 — Outlook·To Do의 「완료로 표시」처럼 맨 위)
+                if (!isSkipped && !item.branchActionTaken) {
+                    const ck = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/>' + (done ? '' : '<path d="m8 12 3 3 5-6"/>') + '</svg>';
+                    entries.push(edit(done ? '체크 취소' : '체크 (완료)', () => this.toggleChecklistItem(workflowId, index), ck, lockMsg));
+                }
+                if (!isSkipped && !done && !item.branchActionTaken && item.branchOptions && !ro) {  // 끝난 업무에서는 의미가 없으니 회색으로도 늘어놓지 않음
+                    item.branchOptions.forEach((opt, oi) => {
+                        if (!this.isBranchOptionConfigured(opt)) return;
+                        entries.push(edit(opt.label || '건너뛰기', () => this.handleBranchOption(workflowId, index, oi), this._skipIco(13), lockMsg));
+                    });
+                }
+                // 건너뛰기 버튼을 누른 줄 · 그 버튼으로 건너뛴 줄: 「건너뛰기 취소」 / 해당 없음으로 뺀 줄: 「되살리기」
+                if (item.branchActionTaken || (isSkipped && !item.skipManual && item.skipActionId)) entries.push(edit('건너뛰기 취소', () => this._cancelBranchFromItem(workflowId, index), this._skipIco(13)));
+                if (isSkipped && item.skipManual) entries.push(edit('되살리기', () => this.restoreNotApplicable(workflowId, index)));
+                // ② 해당 없음
+                if (entries.length) entries.push('-');
                 if (!isSkipped && !done) {
                     const hasSubs = this.findSubItems(cl, index).some(s => s.item.skipped !== true && !this.normalizeCompleted(s.item));
-                    entries.push([hasSubs ? '해당 없음으로 빼기 (할 일 포함)' : '해당 없음으로 빼기', () => this.markNotApplicable(workflowId, [index])]);
+                    entries.push(edit(hasSubs ? '해당 없음으로 빼기 (할 일 포함)' : '해당 없음으로 빼기', () => this.markNotApplicable(workflowId, [index])));
                 }
-                entries.push(['여러 항목 해당 없음…', () => this.openNotApplicablePicker(workflowId, (!isSkipped && !done) ? [index] : [])]);
-                // 펼친 칸에 있던 버튼들 — 줄을 두 줄로 늘리지 않고 여기서
-                // 순서는 마우스를 올린 줄의 버튼(✨ · 💡 · 📄 · 📅)과 같게
-                const tail = ['-'];
-                if (!isSkipped) tail.push([this.isAIAvailable() ? 'AI 길잡이' : '업무 길잡이', () => this.showChecklistHelp(workflowId, index), this._clIco('guide', 15, '#8b5cf6')]);
-                tail.push(
+                entries.push(edit('여러 항목 해당 없음…', () => this.openNotApplicablePicker(workflowId, (!isSkipped && !done) ? [index] : [])));
+                // ③ 보기 · 마감일 — 마우스를 올린 줄의 버튼(✨ · 💡 · 📄 · 📅)과 같은 순서. 보는 명령은 읽기 전용이어도 그대로
+                entries.push('-');
+                if (!isSkipped) entries.push([this.isAIAvailable() ? 'AI 길잡이' : '업무 길잡이', () => this.showChecklistHelp(workflowId, index), this._clIco('guide', 15, '#8b5cf6')]);
+                entries.push(
                     ['처리결과', () => this.showChecklistItemModal(workflowId, index, 'result'), this._clIco('result', 15, '#8b5cf6')],
                     ['업무팁', () => this.showChecklistItemModal(workflowId, index, 'tip'), this._clIco('tip', 15, '#f59e0b')],
                     ['서식', () => this.showChecklistItemModal(workflowId, index, 'formats'), this._clIco('formats', 15, '#10b981')],
                 );
-                if (!isSkipped) tail.push(['마감일 정하기', () => this.showChecklistItemDeadlinePicker(workflowId, index), this._clIco('deadline', 15, '#2563eb')]);
-                entries.push(...tail);
+                if (!isSkipped && !workflow.isReference) entries.push(edit('마감일 정하기', () => this.showChecklistItemDeadlinePicker(workflowId, index), this._clIco('deadline', 15, '#2563eb')));
+                if (ro) entries.push('-', { note: ro === 'ref' ? '레퍼런스(본보기) — [복사하여 시작]한 업무에서 고칠 수 있습니다' : '완료한 업무 — [완료 취소] 후 고칠 수 있습니다' });
+                // ⋯ 버튼에서 열면 버튼 아래에, 오른쪽 클릭이면 마우스 자리에
+                const btn = e.type === 'click' && e.currentTarget && e.currentTarget.getBoundingClientRect ? e.currentTarget.getBoundingClientRect() : null;
+                if (btn) this._openCiMenu(btn.right, btn.bottom + 4, entries, { alignRight: true });
+                else this._openCiMenu(e.clientX, e.clientY, entries);
+            }
+
+            // 접힌 건너뛴 항목 알약 오른쪽 클릭 — 펼치기/접기 · 건너뛰기 취소(건너뛰기 버튼) / 모두 되살리기(해당 없음)
+            openSkipRunMenu(e, workflowId, key, firstIdx) {
+                e.preventDefault();
+                e.stopPropagation();
+                const wf = this.allData.workflows.find(w => w.id === workflowId);
+                const cl = wf?.checklist;
+                const first = cl?.[firstIdx];
+                if (!first || first.skipped !== true) return;
+                // 같은 까닭으로 이어진 건너뛴 줄들
+                const why = (it) => it.skipManual ? 'na' : 'b:' + (it.skipActionId || '');
+                const idx = [];
+                for (let i = firstIdx; i < cl.length && cl[i].skipped === true && why(cl[i]) === why(first); i++) idx.push(i);
+                const open = !!(this._skipRunOpen && this._skipRunOpen[workflowId] && this._skipRunOpen[workflowId][key]);
+                const ro = wf.isReference || wf.completedProcessed;
+                const dis = ro ? { disabled: true, title: wf.isReference ? '레퍼런스(본보기)는 고칠 수 없습니다' : '완료한 업무입니다 — [완료 취소] 후 고칠 수 있습니다' } : undefined;
+                const entries = [[open ? `접기 (${idx.length}개)` : `펼치기 (${idx.length}개)`, () => this.toggleSkipRun(workflowId, key)], '-'];
+                if (first.skipManual) entries.push(['모두 되살리기', () => this._restoreNotApplicableMany(workflowId, idx), '', dis]);
+                else entries.push(['건너뛰기 취소', () => this._cancelBranchFromItem(workflowId, firstIdx), this._skipIco(13), dis]);
                 this._openCiMenu(e.clientX, e.clientY, entries);
+            }
+            // 해당 없음 여러 줄을 한 번에 되살리기 — [되돌리기]로 다시 해당 없음
+            _restoreNotApplicableMany(workflowId, indices) {
+                if (this.guardReferenceLock(workflowId, '되살리기')) return;
+                if (this._collabGuardAny(workflowId, indices, '되살리기')) return;
+                const wf = this.allData.workflows.find(w => w.id === workflowId);
+                if (!wf?.checklist) return;
+                const snap = indices.map(i => wf.checklist[i]).filter(it => it && it.skipped === true && it.skipManual)
+                    .map(it => ({ id: this.ensureChecklistItemId(it), skipManual: it.skipManual, skipReason: it.skipReason }));
+                if (!snap.length) return;
+                this._clearNotApplicable(wf, indices.filter(i => wf.checklist[i] && wf.checklist[i].skipManual));
+                this.showToast('success', '↩', snap.length === 1 ? '되살렸습니다.' : `${snap.length}개 항목을 되살렸습니다.`, 8000, {
+                    actions: [{ label: '되돌리기', onAction: () => {
+                        const w = this.allData.workflows.find(x => x.id === workflowId);
+                        if (!w) return;
+                        snap.forEach(({ id, skipManual, skipReason }) => {
+                            const it = w.checklist.find(x => x.itemId === id);
+                            if (!it || this.normalizeCompleted(it)) return;
+                            it.skipped = true; it.skipManual = skipManual; it.skipReason = skipReason;
+                        });
+                        this.syncAllParentsFromSubItems(w);
+                        this._refreshAfterSkipChange(w);
+                    } }]
+                });
             }
 
             // 작은 메뉴 띄우기 — 밖을 누르거나 Esc·스크롤이면 닫힘
             // entries: [이름, 동작, 아이콘HTML] 배열(예전 방식) 또는
-            //   '-' (구분선) · { header: '제목' } (묶음 제목) ·
+            //   (배열 4번째 칸 { disabled, title }: 회색 명령 — 숨기지 않고 보여 주되 눌리지 않음)
+            //   '-' (구분선) · { header: '제목' } (묶음 제목) · { note: '안내 글' } (흐린 안내 줄) ·
             //   { label, onClick, ico, right(오른쪽 흐린 글·숫자 HTML), danger, actions: [{ ico, title, onClick, danger }] (줄 안 작은 버튼, 마우스를 올릴 때 보임) }
             // opts.alignRight: x를 메뉴의 오른쪽 끝으로 (오른쪽 끝 버튼에서 왼쪽으로 펼칠 때)
             _openCiMenu(x, y, entries, opts = {}) {
@@ -36837,8 +37016,9 @@ ${aiPartnerCitationFirstRules}
                 const acts = [];  // 줄 안 작은 버튼의 동작
                 menu.innerHTML = entries.map((en, i) => {
                     if (en === '-') return '<div class="ci-menu-sep" role="separator"></div>';
-                    if (Array.isArray(en)) return `<button type="button" data-i="${i}">${en[2] ? `<span class="ci-menu-ico">${en[2]}</span>` : ''}${this.escapeHtml(en[0])}</button>`;
+                    if (Array.isArray(en)) { const o = en[3] || {}; return `<button type="button" data-i="${i}"${o.disabled ? ' class="ci-dis" aria-disabled="true"' : ''}${o.title ? ` title="${this.escapeHtml(o.title)}"` : ''}>${en[2] ? `<span class="ci-menu-ico">${en[2]}</span>` : ''}${this.escapeHtml(en[0])}</button>`; }
                     if (en.header) return `<div class="ci-menu-head">${this.escapeHtml(en.header)}</div>`;
+                    if (en.note) return `<div class="ci-menu-note">${this.escapeHtml(en.note)}</div>`;
                     const btns = (en.actions || []).map(a => { acts.push(a.onClick); return `<span role="button" tabindex="-1" class="ci-row-act${a.danger ? ' danger' : ''}" data-a="${acts.length - 1}" title="${this.escapeHtml(a.title || '')}">${a.ico}</span>`; }).join('');
                     return `<button type="button" class="ci-row${en.danger ? ' danger' : ''}" data-i="${i}"${en.title ? ` title="${this.escapeHtml(en.title)}"` : ''}><span class="ci-menu-ico">${en.ico || ''}</span><span class="ci-row-label">${this.escapeHtml(en.label)}</span>${en.right ? `<span class="ci-row-right">${en.right}</span>` : ''}${btns ? `<span class="ci-row-acts">${btns}</span>` : ''}</button>`;
                 }).join('');
@@ -36851,7 +37031,7 @@ ${aiPartnerCitationFirstRules}
                     const a = ev.target.closest('[data-a]');
                     if (a) { ev.stopPropagation(); this._closeChecklistItemMenu(); acts[+a.dataset.a](); return; }
                     const b = ev.target.closest('button[data-i]');
-                    if (!b) return;
+                    if (!b || b.classList.contains('ci-dis')) return;  // 회색 명령은 눌러도 메뉴 그대로
                     this._closeChecklistItemMenu();
                     const en = entries[+b.dataset.i];
                     (Array.isArray(en) ? en[1] : en.onClick)();

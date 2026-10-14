@@ -142,7 +142,9 @@ scene("40_practice_skip", "const w=app.allData.workflows.find(x=>x.id===window._
  "for(const t of ['구매 요청 받기 — 품목·수량·규격 확인','추정가격 정하기','거래실례가격 조사 (2곳 이상)']){app.toggleChecklistItem(w.id,ix(t));" + W(1300) + "}"
  "app.markNotApplicable(w.id,[ix('예정가격 작성')],'1인 견적 소액 수의계약');" + W(1500) +
  "const bi=ix('금액 기준 확인 — 갈림길');app.handleBranchOption(w.id,bi,w.checklist[bi].branchOptions.findIndex(o=>o.label==='1인 견적'));" + W(600), "'#branchPreviewConfirmBtn'")
-scene("41_practice_print", "document.getElementById('branchPreviewConfirmBtn').click();" + W(1500) + "app._collabSetMe({dept:'사하소방서 행정과',rank:'소방위',name:'홍길동',phone:'4521'});"
+# 누른 건너뛰기 버튼은 제자리에 눌린 모양으로 남음 → 누르면 건너뛴 항목·건너뛰기 취소 메뉴
+scene("40b_skip_taken", "document.getElementById('branchPreviewConfirmBtn').click();" + W(1500) + "const w=app.allData.workflows.find(x=>x.id===window.__pw);const bi=w.checklist.findIndex(i=>i.text==='금액 기준 확인 — 갈림길');const b=document.querySelector('#focus-checklist-scroll-'+w.id+' .checklist-card[data-index=\"'+bi+'\"] .branch-run-btn.taken');b.scrollIntoView({block:'nearest'});" + W(400) + "b.click();" + W(500), "'#checklistItemMenu'")
+scene("41_practice_print", "app._closeChecklistItemMenu();" + W(300) + "app._collabSetMe({dept:'사하소방서 행정과',rank:'소방위',name:'홍길동',phone:'4521'});"
  "localStorage.setItem('progressReportOpts',JSON.stringify({...JSON.parse(localStorage.getItem('progressReportOpts')||'{}'),clResult:true,clSkipped:true}));app._prTab='checklist';app.openProgressReport(window.__pw);" + W(1300) +
  "const tr=[...document.querySelectorAll('#prPage tr')].find(r=>r.textContent.includes('나라장터'));const sc=document.querySelector('#progressReportModal .pr-body, #progressReportModal .pr-scroll')||tr&&tr.closest('[style*=overflow]');if(tr)tr.scrollIntoView({block:'center'});" + W(500), "[...document.querySelectorAll('#prPage tr')].find(r=>r.textContent.includes('나라장터'))")
 json.dump(S, open('steps.json', 'w', encoding='utf-8'), ensure_ascii=False)
