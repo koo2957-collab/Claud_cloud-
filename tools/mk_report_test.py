@@ -1,5 +1,5 @@
 import json
-# 예시 순서 · 처리결과 이름 · AI 버튼 흐리게 · 진행상황 출력(보고서) 시험 → steps3.json
+# 예시 순서 · 처리결과 이름 · AI 없으면 AI 버튼 숨김 · 진행상황 출력(보고서) 시험 → steps3.json
 P = "(async()=>{try{const W=ms=>new Promise(r=>setTimeout(r,ms));const wf=()=>app.allData.workflows.find(w=>w.id===8901);"
 E = "}catch(e){return 'ERR '+e.message+' '+(e.stack||'').split('\\n')[1]}})()"
 S = []
@@ -25,7 +25,7 @@ step("① 오른쪽 클릭 「↓ 아래로」", tf + "const r=document.querySel
 step("① 미리보기 넘기는 순서도 같음", "await app.previewTipFile(8901,3,0);await W(800);const m=[...document.querySelectorAll('.modal.show')].reverse().find(x=>x.querySelector('.pv-nav'));const a=m.querySelector('h2').textContent;await app._tfNav(1);await W(500);const b=m.querySelector('h2').textContent;m.querySelector('.close-preview-modal').click();await W(400);return '1번='+a+' → 2번='+b")
 step("② 「처리결과」 이름", "await app.showChecklistItemModal(8901,3,'result');await W(700);const tabs=[...document.querySelectorAll('#cimOverlay .cim-tab')].map(t=>t.textContent.trim()).join(',');const h=[...document.querySelectorAll('#cimOverlay .mat-title')].map(t=>t.textContent.trim().slice(0,8)).join(',');app.closeChecklistItemModal();await W(300);return '탭='+tabs+' | 제목='+h+' | 화면에 남은 「조치결과」='+(document.body.innerText.match(/조치결과/g)||[]).length")
 # ③ AI
-step("③ AI 버튼 흐리게", "const b=document.querySelector('.fap-btn.ai-only');const cs=getComputedStyle(b);return 'ai-off='+document.body.classList.contains('ai-off')+' | AI 기안 흐림='+cs.opacity+' 커서='+cs.cursor")
+step("③ AI 없으면 왼쪽 [AI 기안]·[AI로 다시 정리] 숨김", "const bs=[...document.querySelectorAll('.fap-btn.ai-only')];return 'ai-off='+document.body.classList.contains('ai-off')+' | '+bs.map(b=>b.textContent.trim()+'='+(b.offsetParent===null?'숨김':'보임')).join(', ')")
 pt("const b=document.querySelector('.fap-btn.ai-only').getBoundingClientRect();return JSON.stringify([b.left+b.width/2,b.top+b.height/2])")
 S.append({"hoverpt": True, "clickpt": 1, "wait": 100})
 step("③ AI 기안 실제로 누름 → 아무것도 안 열림", "await W(700);const b=document.querySelector('.fap-btn.ai-only');return '열린 창='+[...document.querySelectorAll('.modal.show')].map(m=>m.id).join(',')+' | 알림='+([...document.querySelectorAll('.toast')].map(t=>t.textContent.trim().slice(0,30)).pop()||'없음')+' | 말풍선='+b.getAttribute('title')")
