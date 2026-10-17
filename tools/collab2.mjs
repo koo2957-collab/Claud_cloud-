@@ -13,7 +13,7 @@ async function launch(name, port) {
   fs.rmSync(prof, { recursive: true, force: true });
   const proc = spawn(chrome, ['--headless=new', `--remote-debugging-port=${port}`, `--user-data-dir=${prof}`, '--window-size=1460,900', '--allow-file-access-from-files', '--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4', ...(process.getuid?.() === 0 ? ['--no-sandbox'] : []), 'about:blank'], { stdio: 'ignore' });  // 리눅스 root에서는 --no-sandbox
   let url;
-  for (let i = 0; i < 40 && !url; i++) { try { const j = await (await fetch(`http://127.0.0.1:${port}/json`)).json(); url = j.find(x => x.type === 'page')?.webSocketDebuggerUrl; } catch (e) {} if (!url) await sleep(250); }
+  for (let i = 0; i < 200 && !url; i++) { try { const j = await (await fetch(`http://127.0.0.1:${port}/json`)).json(); url = j.find(x => x.type === 'page')?.webSocketDebuggerUrl; } catch (e) {} if (!url) await sleep(250); }
   const ws = new WebSocket(url); await new Promise(r => ws.onopen = r);
   const b = { name, proc, ws, id: 0, pend: new Map(), logs: [] };
   ws.onmessage = m => { const d = JSON.parse(m.data); if (d.id && b.pend.has(d.id)) { b.pend.get(d.id)(d); b.pend.delete(d.id); } if (d.method === 'Runtime.exceptionThrown') b.logs.push('EXC ' + d.params.exceptionDetails.exception?.description?.slice(0, 200)); if (d.method === 'Runtime.consoleAPICalled' && d.params.type === 'error') b.logs.push('ERR ' + d.params.args.map(a => a.value || a.description).join(' ').slice(0, 200));
@@ -27,7 +27,7 @@ async function launch(name, port) {
   // 저장 창 가로채기 (실제 앱 코드는 그대로 실행)
   await b.send('Page.addScriptToEvaluateOnNewDocument', { source: `window.__saved=[];window.showSaveFilePicker=async(o)=>({createWritable:async()=>{const parts=[];return{write:async(x)=>{parts.push(x)},close:async()=>{const blob=new Blob(parts);window.__saved.push({name:o&&o.suggestedName,text:await blob.text()})}}}});` });
   await b.send('Page.navigate', { url: 'file:///' + appFile.replace(/\\\\/g, '/') });
-  await sleep(4000);
+  await sleep(1500); for (let k = 0; k < 60; k++) { if (await b.ev("typeof app!=='undefined'&&!!app&&app._dataLoaded===true") === true) break; await sleep(500); }  // 바쁠 때도 다 켜질 때까지
   B[name] = b;
 }
 try {

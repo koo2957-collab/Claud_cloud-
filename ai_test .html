@@ -7840,6 +7840,18 @@
         const APP_RELEASE_DATE = '2026-10-14';
         const APP_RELEASE_NOTES = [
             { version: '1.5.7', date: '2026-10-14', notes: [
+                '체크리스트 편집 중에 업무 관리·일정·사이드바에서 다른 업무를 열면 「변경 내용을 저장할까요?」를 먼저 물음 — 예전엔 편집이 남은 채 넘어가, 그 업무에 그 뒤 한 체크·처리결과가 다시 켜면 사라질 수 있었다',
+                '단계와 할 일이 늘 맞게: 단계 체크를 풀 때 「단계만 풀기」를 빼고(할 일은 다 끝났는데 단계만 진행 중인 상태가 됐음), 예전 자료·연습 업무처럼 표시 없이 끝난 단계도 할 일을 풀면 다시 진행 중 · 처리완료한 업무는 어떤 길로도 체크가 바뀌지 않음',
+                '편집 중에 한 동작(줄 삭제 등)이 편집을 마친 뒤 Ctrl+Z로 되돌려지던 것 고침 · Ctrl+Z로 되돌리면 오른쪽 업무 절차도 바로 바뀜',
+                '환경설정 → 정보 「오류 기록 · 문제 보고」: 프로그램 안에서 난 오류를 이 PC에만 적어 두고(최근 100건), [문제 보고 파일 만들기]로 담당자에게 보낼 파일을 만듦 — 업무 제목·내용·첨부는 넣지 않고 오류·개수·설정·자료 점검 결과만',
+                '일하는 화면에서 Esc·✕를 아주 빠르게 두 번 누르거나 열린 업무를 지우면 「뒤로 가기」가 두 번 되어 프로그램 밖(이전 페이지)으로 나가던 것 고침',
+                '체크리스트 편집에서 단계를 더하거나 빼고 [저장]해도 오른쪽 업무 절차의 진행률·단계 목록이 예전 모양으로 남던 것 고침',
+                '일하는 화면에서 업무 관리를 열어 지금 열린 업무를 지우면 지운 업무가 화면에 남던 것 → 목록으로 나옴 · 일하는 화면에서도 Ctrl+Z가 마지막 동작([실행 취소]·[되돌리기]와 같은 것)을 되돌림',
+                '업무 파일을 「복사하여 시작」으로 가져오면 처리결과 글은 비는데 처리결과 첨부 파일만 남던 것 → 첨부도 비움 (레퍼런스 [복사하여 시작]과 같게)',
+                '업무 삭제는 어디서 하든 같은 방식: 묻지 않고 휴지통으로 옮기고 알림의 [실행 취소]·Ctrl+Z로 되살림 (일하는 화면 [삭제]는 예전엔 묻기만 하고 되돌리기가 없었음). 묻는 것은 휴지통의 영구 삭제뿐',
+                '법령·매뉴얼 · 서식·문서함 오른쪽 클릭 「⤴ 새 판으로 바꾸기…」: 파일 이름이 달라도(예: 시행일이 바뀐 법령) 그 자료 자리에 새 판을 넣어, 연결한 모든 업무·할 일이 새 판을 봄 — 쓰는 곳 수를 보여 주고 묻고, 바꾼 뒤 [되돌리기]·Ctrl+Z로 예전 판',
+                '서식·문서함 같은 이름 교체 창을 법령·매뉴얼 창과 같게: 「바꾸면 이 서식을 쓰는 할 일 n곳에도 함께 반영됩니다」 · [최신 파일로 바꾸기] · [둘 다 보관] · [이 파일은 건너뛰기]',
+                '새 업무 [초기화]는 묻지 않고 비우고 알림의 [되돌리기]로 적던 이름·절차·붙인 업무팁·서식을 되살림 (15초 뒤 정리, 창을 닫았어도 되돌리면 다시 열림)',
                 'Esc 정리(전체 기능 시험에서 찾은 것): 길잡이 창이 Esc로 닫히지 않던 것 · 건너뛰기 「실행 확인」 창에서 Esc를 누르면 창은 남고 뒤의 업무 화면이 닫히던 것 · 오른쪽 클릭 메뉴(업무 관리·법령·서식·휴지통)·「가가」 메뉴에서 Esc를 누르면 메뉴는 남고 뒤 창이 닫히던 것 · 일정 달력·알림센터·[복사하여 시작] 창이 Esc로 닫히지 않던 것 · 새 업무 이름칸처럼 입력칸에 커서가 있으면 Esc가 듣지 않던 것 · 검색칸 Esc는 검색어부터 지움 · 항목 창은 글을 쓰던 칸에서 Esc를 눌러도 저장하고 닫음',
                 '연습 업무 넣기·업무 가져오기·백업을 한 번 하고 나면 Delete·F2·Ctrl+C/V·화살표가 새로 고칠 때까지 모든 목록(체크리스트 편집·업무 관리·법령·서식·휴지통)에서 듣지 않던 것 고침 (숨긴 진행 표시를 열린 창으로 잘못 봄)',
                 '서식·문서함에 이름은 같고 내용이 다른 새 판을 올리면 묻지 않고 같은 이름 파일이 하나 더 생기던 것 → 법령·매뉴얼처럼 [교체 / 번호 붙여 추가 / 취소]를 묻고, 교체하면 이 서식을 연결한 모든 할 일이 새 판을 엶',
@@ -9185,6 +9197,7 @@
                 this.updateAIStatsDisplay();
                 
                 // 키보드 단축키 초기화
+                this._installErrorLog?.();  // 오류 기록 (환경설정 → 정보 → 문제 보고 파일)
                 this.initKeyboardShortcuts();
                 console.log('✅ 키보드 단축키 활성화');
                 
@@ -9281,6 +9294,16 @@
                         return;
                     }
                     
+                    // Ctrl+Z: 마지막 동작 되돌리기 — 목록·편집 화면은 목록 키 처리가 먼저 받고, 여기는 일하는 화면 등 나머지 화면
+                    // (예전엔 일하는 화면에서 Ctrl+Z가 듣지 않았다. 알림의 [되돌리기]와 같은 동작)
+                    if ((e.ctrlKey || e.metaKey) && !e.shiftKey && (e.code === 'KeyZ' || (e.key || '').toLowerCase() === 'z') && !isInputFocused && this._undoLast
+                        && !document.querySelector('.modal.show, #cimOverlay')) {
+                        e.preventDefault();
+                        const f = this._undoLast; this._undoLast = null; f();
+                        setTimeout(() => this.refreshAIPanelDashboardIfNeeded?.(), 300);  // 되돌린 것이 오른쪽 업무 절차에도
+                        return;
+                    }
+
                     // Ctrl+S: 저장
                     if (e.ctrlKey && e.key === 's' && !isInputFocused) {
                         e.preventDefault();
@@ -15903,6 +15926,13 @@
 
             // 심플 리스트: 포커스 모드 진입
             focusWorkflow(workflowId, editMode = false) {
+                // 체크리스트 편집 중에 (업무 관리·일정·사이드바 등에서) 다른 업무를 열면 먼저 편집을 마무리한다 —
+                // 예전엔 편집이 남은 채 넘어가, 편집 중이던 업무는 그 뒤에 한 체크·처리결과까지 저장되지 않고 다시 켜면 사라졌다
+                if (this._focusEditDraft) {
+                    if (this._focusEditDraft.workflowId === workflowId && this.focusEditMode && this.focusedWorkflowId === workflowId) return;
+                    this._confirmLeaveFocusEdit(() => this.focusWorkflow(workflowId, editMode));
+                    return;
+                }
                 if (this._afterExitShow && this._afterExitShow.id !== workflowId) this._afterExitShow = null;
                 this.acknowledgeUrgentSection();
                 this._layoutFade(() => {
@@ -16021,6 +16051,7 @@
                 }
                 this._focusEditDraft = null;
                 this.focusEditMode = false;
+                this._undoLast = null;  // 편집 중 동작의 되돌리기는 편집 안에서만 (끝난 뒤 Ctrl+Z가 편집 동작을 되돌리지 않게)
                 this.hasUnsavedChanges = true;
                 this.saveData();
             }
@@ -16030,6 +16061,7 @@
                 const d = this._focusEditDraft;
                 this._focusEditDraft = null;
                 this.focusEditMode = false;
+                this._undoLast = null;
                 if (!d) return;
                 const wf = this.allData.workflows.find(w => w.id === d.workflowId);
                 if (wf) wf.checklist = JSON.parse(JSON.stringify(d.original));
@@ -16112,6 +16144,7 @@
                 const changed = this._focusEditHasChanges();
                 this._commitFocusEdit();
                 this.displayWorkflows();
+                this.refreshAIPanelDashboardIfNeeded?.();  // 단계를 더하거나 뺀 것이 오른쪽 업무 절차(진행률·단계 목록)에도 바로 (예전엔 예전 모양이 남았다)
                 this._restorePreEditScroll();
                 this.showToast('success', '✅', changed ? '저장되었습니다.' : '바뀐 내용 없이 편집을 마쳤습니다.');
                 this._afterFocusEditDone();
@@ -16121,6 +16154,7 @@
             cancelFocusEditMode() {
                 this._confirmLeaveFocusEdit(() => {
                     this.displayWorkflows();
+                    this.refreshAIPanelDashboardIfNeeded?.();
                     this._restorePreEditScroll();
                     this._afterFocusEditDone();
                 });
@@ -16153,11 +16187,13 @@
                 // 저장하지 않은 체크리스트 편집이 남아 있으면 편집 전으로 (저장은 [저장]을 눌러야 반영)
                 if (this._focusEditDraft) this._discardFocusEdit();
                 // 닫고 나오면 보여 줄 새 업무 (복사하여 시작한 새 업무, 이 화면에서 만든 레퍼런스 등)
-                const reveal = this._afterExitShow;
+                // (닫는 중에 또 불리면 앞 호출이 받아 둔 값도 이어받음 — 마지막 호출만 실제로 닫으므로)
+                const reveal = this._afterExitShow || this._exitCarry?.reveal || null;
                 this._afterExitShow = null;
                 this.ttsStop?.();  // 업무 화면을 닫으면 업무절차·답변 읽기도 함께 정지
-                const returnToWFM = this._returnToWFMOnExit;
+                const returnToWFM = this._returnToWFMOnExit || !!this._exitCarry?.wfm;
                 this._returnToWFMOnExit = false;
+                this._exitCarry = { reveal, wfm: returnToWFM };
 
                 // 체크박스 토글·항목 편집은 이미 매번 자동저장되지만 저장 버튼이 없어 확인할 길이 없다는
                 // 피드백이 있어서, 매번 저장할 때마다 알리는 대신 "업무 카드를 닫는 시점" 한 번으로 모아
@@ -16172,7 +16208,12 @@
                     && this._snapshotForFocusCompare(closedWorkflow) !== this._focusEntrySnapshot;
                 this._focusEntrySnapshot = null;
 
+                // 화면이 사라지는 0.16초 사이에 또 불려도(예: 지우기 → 목록으로) 마지막 한 번만 닫는다 —
+                // 예전엔 두 번 닫으며 「뒤로 가기」도 두 번 해서 프로그램 밖(이전 페이지)으로 나가 버렸다
+                const exitTok = this._exitTok = (this._exitTok || 0) + 1;
                 this._layoutFade(() => {
+                    if (exitTok !== this._exitTok) return;
+                    this._exitCarry = null;
                     // 포커스 액션 패널 초기화
                     const focusActionPanel = document.getElementById('focusActionPanel');
                     if (focusActionPanel) focusActionPanel.innerHTML = '';
@@ -17258,6 +17299,8 @@
                     return;
                 }
                 if (this.guardReferenceLock(workflowId, '체크 변경')) return;
+                // 처리완료한 업무는 체크를 바꾸지 않는다 (화면·메뉴에서 막는 것과 같게 — 다른 길로 불려도 할 일만 풀리고 단계는 끝난 채 남지 않게)
+                if (workflow.completedProcessed) { this.showToast('info', '', '완료한 업무입니다 — [완료 취소] 후 고칠 수 있습니다'); return; }
                 if (this._collabCheckGate(workflowId, itemIndex, () => this.toggleChecklistItem(workflowId, itemIndex, opts))) return;
                 this._lastCheckAt = Date.now();
                 // 체크 전 진행중 단계 — 이 체크로 단계가 끝나 다음으로 넘어가는지 판단용.
@@ -17291,8 +17334,8 @@
                             `"${name}" 단계의 끝난 할 일 ${doneSubs.length}개도 함께 체크를 풀까요?\n` +
                             doneSubs.slice(0, 5).map(s => '· ' + ((s.item.text || '').trim() || '(제목 없음)')).join('\n') +
                             (doneSubs.length > 5 ? `\n· 외 ${doneSubs.length - 5}개` : ''),
-                            [{ label: `할 일 ${doneSubs.length}개까지 모두 풀기`, primary: true, onClick: uncheckAll },
-                             { label: '단계만 풀기', onClick: () => this.toggleChecklistItem(workflowId, itemIndex, { confirmed: true }) }],
+                            // 「단계만 풀기」는 뺐다 — 단계 완료는 「할 일이 모두 끝남」이라 단계만 풀면 할 일은 다 끝났는데 단계는 진행 중인 어긋난 상태가 됨
+                            [{ label: `할 일 ${doneSubs.length}개까지 모두 풀기`, primary: true, onClick: uncheckAll }],
                             recheck);
                         return;
                     }
@@ -17567,9 +17610,32 @@
                 this._manualDragSrcEl = null;
             }
 
+            // [초기화]: 묻지 않고 비우고 알림의 [되돌리기]로 되살림 (Gmail 임시보관함 삭제처럼) — 지운 작성 중 업무는
+            // 15초 동안 숨겨 두었다가(nwDiscarded) 되돌리지 않으면 붙여 둔 업무팁·서식과 함께 지운다
             async _resetManualModal() {
-                if (this._nwHasInput() && !confirm('작성 중인 내용을 모두 지우고 처음부터 다시 쓸까요?\n붙여 둔 업무팁·서식도 함께 지워집니다.')) return;
-                await this._nwDiscard();
+                let held = null;
+                if (this._nwHasInput()) {
+                    if (!this._nw) this._nw = { step: 1, wfId: null };
+                    const wf = this._nwSync();
+                    wf.nwDiscarded = true;
+                    held = { wf, step: this._nw.step || 2 };
+                    this._nw.wfId = null;
+                    this.saveData();
+                } else {
+                    await this._nwDiscard();
+                }
+                if (held) {
+                    const purge = () => { if (held.wf.nwDiscarded && this.allData.workflows.some(w => w.id === held.wf.id)) this.permanentDeleteWorkflow(held.wf.id); };
+                    setTimeout(purge, 15000);
+                    this.showToast('info', '↺', '처음부터 다시 씁니다', 15000, { actions: [{ label: '되돌리기', onAction: async () => {
+                        if (!held.wf.nwDiscarded) return;
+                        if (this._nw && this._nw.wfId) await this._nwDiscard();  // 그사이 새로 적은 것은 버림
+                        delete held.wf.nwDiscarded;
+                        const go = () => { this.allData.nwDraft = { wf: held.wf, step: held.step, savedAt: new Date().toISOString() }; this._nwResume(); };
+                        if (document.getElementById('manualModal')?.classList.contains('show')) go();
+                        else { this.openModal('manualModal'); setTimeout(go, 250); }  // 창을 다시 열어 그대로 이어 쓰기 (묻는 창 없이)
+                    } }] });
+                }
                 this._nwClearForm();
                 this._nw = { step: 1, wfId: null };
                 this._nwShow(1);
@@ -18095,7 +18161,7 @@ ${st.wantBranch ? `4. 조건에 따라 어떤 항목을 하지 않아도 되는 
                 if (this._aiRs && this._aiRs.mode === 'keep') return this._aiRsApplyKeep();
                 const st = this._aiRs;
                 const wf = st && this.allData.workflows.find(w => w.id === st.wfId);
-                if (!st || !wf || (!st.sel.size && !st.keepOld.size)) return;
+                if (!st || !wf || (!st.sel?.size && !st.keepOld?.size)) return;  // AI 답을 못 읽었으면(고른 것 없음) 아무것도 안 함
                 const draft = this._focusEditDraft;
                 const before = JSON.parse(JSON.stringify(wf.checklist));
                 const moves0 = draft && draft.aiTipMoves ? draft.aiTipMoves.length : 0;
@@ -18966,7 +19032,9 @@ ${head}${written}${doc}
             }
             // 프로그램을 열 때: 창이 열린 채 꺼져 업무 목록에 남은 작성 중 업무를 다시 임시 보관으로
             _nwRecoverDraft() {
-                const stray = (this.allData.workflows || []).filter(w => w.isDraft);
+                // [초기화]로 버렸는데 15초가 되기 전에 꺼진 것은 마저 지운다
+                (this.allData.workflows || []).filter(w => w.isDraft && w.nwDiscarded).forEach(w => this.permanentDeleteWorkflow(w.id));
+                const stray = (this.allData.workflows || []).filter(w => w.isDraft && !w.nwDiscarded);
                 if (!stray.length) return;
                 this.allData.workflows = this.allData.workflows.filter(w => !w.isDraft);
                 if (!this.allData.nwDraft) this.allData.nwDraft = { wf: stray[0], step: 2, savedAt: new Date().toISOString() };
@@ -20622,7 +20690,9 @@ ${GOVERNMENT_DOCUMENT_GUIDELINES}
                         if (parent.expanded) parent.expanded = false;
                         setTimeout(() => this._onChecklistItemCompleted(workflow.id), 500);
                     }
-                } else if (parent.completedViaSubItems) {
+                } else if (parent.completedViaSubItems || this.normalizeCompleted(parent)) {
+                    // 할 일이 하나라도 안 끝났으면 단계도 진행 중 — 예전 자료·연습 업무처럼 「할 일 덕에 끝남」 표시 없이 끝난 단계도
+                    // (예전엔 그런 단계는 할 일을 풀어도 끝난 채 남아, 진행률·출력·패널이 어긋났다)
                     parent.completed = false;
                     parent.completedAt = null;
                     delete parent.completedViaSubItems;
@@ -20653,6 +20723,12 @@ ${GOVERNMENT_DOCUMENT_GUIDELINES}
 
                 if (this.guardReferenceLock(id, '삭제')) return;
 
+                // 어디서 지우든 같은 길: 묻지 않고 휴지통으로 + [실행 취소]·Ctrl+Z (업무 관리 Delete와 같게)
+                if (!workflow.isTemplate) {
+                    if (this.focusMode && this.focusedWorkflowId === id) this.exitFocusMode();
+                    this._wfmDeleteItems([id], []);
+                    return;
+                }
                 // 업무유형(isTemplate)인 경우 휴지통으로 삭제
                 if (workflow.isTemplate) {
                     if (!confirm(`"${workflow.title}" 업무를 삭제하시겠습니까?\n\n휴지통으로 이동됩니다.`)) return;
@@ -24775,10 +24851,12 @@ ${item.result.text}
                 const del = all.filter(w => !this.isWorkLocked(w));
                 if (!del.length && !folders.length) { if (locked.length) this.showToast('error', '🔒', '레퍼런스(본보기)는 지울 수 없습니다. 먼저 레퍼런스를 해제하세요.'); return; }
                 const parts = [folders.length && `폴더 ${folders.length}개`, direct.length && `업무 ${direct.filter(w => !this.isWorkLocked(w)).length}개`].filter(Boolean).join('와 ');
-                const extra = inside.length ? `\n폴더 안의 업무 ${inside.length}개도 함께 휴지통으로 옮겨집니다.` : '';
-                if (!confirm(`${parts}를 휴지통으로 옮길까요?${extra}\n\n휴지통에서 30일 안에 되돌릴 수 있습니다.`)) return;
+                // 휴지통으로 옮기기는 되돌릴 수 있으므로 묻지 않고 [실행 취소]·Ctrl+Z (Gmail·윈도우 탐색기처럼) — 묻는 것은 휴지통의 영구 삭제뿐
+                const extra = inside.length ? ` (폴더 안 업무 ${inside.length}개 포함)` : '';
                 const restore = this._wfmSnapshot();
                 const now = new Date().toISOString();
+                // 지금 열어 둔 업무를 (업무 관리 등에서) 지우면 일하는 화면에서 나온다 — 예전엔 지운 업무가 화면에 그대로 남았다
+                if (this.focusMode && del.some(w => w.id === this.focusedWorkflowId)) { if (this._focusEditDraft) this._discardFocusEdit(); this.exitFocusMode(); }
                 del.forEach(w => { w.isDeleted = true; w.deletedAt = now; });
                 this.allData.folders = (this.allData.folders || []).filter(p => !folders.some(f => p === f || p.startsWith(f + '/')));
                 const cur = this.wfmSelectedFolder;
@@ -24787,7 +24865,7 @@ ${item.result.text}
                 this._wfmAfterChange();
                 const undo = () => { restore(); this._wfmAfterChange(); this.showToast('info', '↩', '되돌렸습니다.'); };
                 this._undoLast = undo;
-                this.showToast('success', '🗑', `${parts}를 휴지통으로 옮겼습니다.`, 8000, { actions: [{ label: '실행 취소', onAction: () => { this._undoLast = null; undo(); } }] });
+                this.showToast('success', '🗑', `${parts}를 휴지통으로 옮겼습니다${extra}.`, 8000, { actions: [{ label: '실행 취소', onAction: () => { this._undoLast = null; undo(); } }] });
             }
             // ── 잘라내기 · 복사 · 붙여넣기 (프로그램 안에서만 — 글자 입력칸에서는 원래대로) ──
             _clipRefresh(kind) { if (kind === 'wfm') this.renderWorkflowTree(); else this._fbRender(kind); }
@@ -25037,6 +25115,65 @@ ${item.result.text}
                 await cfg.afterChange();
                 await this._fbRender(kind);
                 this._undoLast = () => this._fbRenameDoc(kind, id, old);
+            }
+            // 새 판으로 바꾸기 (SharePoint·드라이브 「새 버전 업로드」처럼): 파일 이름이 달라도 이 자료 자리에 새 판을 넣는다.
+            // 고유번호가 그대로라 이 자료를 연결한 모든 업무·할 일이 새 판을 보고, 알림의 [되돌리기]로 예전 판으로 돌아간다.
+            // (예: 「…(2026.6.3. 시행).pdf」 → 「…(2026.12.1. 시행).pdf」 — 같은 이름으로 올릴 때만 교체되던 것을 보완)
+            _fbReplaceVersion(kind, id) {
+                const input = document.createElement('input');
+                input.type = 'file';
+                if (kind === 'law') input.accept = '.pdf,.txt,.md,.docx';
+                input.onchange = () => { const f = input.files && input.files[0]; if (f) this._fbReplaceVersionWith(kind, id, f); };
+                input.click();
+            }
+            _fbUsageOf(kind, id) {
+                if (kind === 'law') {
+                    const n = this.allData.workflows.filter(w => !w.isDeleted && (this.checklistDetails[`project-${w.id}`]?.linkedLibraryDocs || []).includes(id)).length;
+                    return { n, text: `이 자료를 쓰는 업무 ${n}개` };
+                }
+                let n = 0;
+                this.allData.workflows.filter(w => !w.isDeleted).forEach(w => (w.checklist || []).forEach(it => { if ((it.linkedDocs || []).includes(id)) n++; }));
+                return { n, text: `이 서식을 쓰는 할 일 ${n}곳` };
+            }
+            async _fbReplaceVersionWith(kind, id, file) {
+                const cfg = this._fbCfg(kind);
+                const store = kind === 'law' ? 'lawLibrary' : 'repoDocuments';
+                const docs = await cfg.getDocs();
+                const d = docs.find(x => x.id === id);
+                if (!d) return;
+                if (!this._validateFile(file)) return;
+                if (kind !== 'law') { const chk = await this._checkHangulFormFile(file); if (!chk.ok) { this._showHwpBlocked([{ name: file.name, kind: chk.kind }]); return; } }
+                if (docs.some(x => x.id !== id && x.name === file.name)) { this.showToast('warning', '⚠️', `「${file.name}」은(는) 이미 다른 자료의 이름입니다 — 그 자료를 바꾸려면 그 줄에서 고르세요`, 5000); return; }
+                const u = this._fbUsageOf(kind, id);
+                const msg = [`「${d.name}」 (${this._formatFileSize(d.size || 0)})`, `→ 「${file.name}」 (${this._formatFileSize(file.size)})`, '',
+                    u.n ? `바꾸면 ${u.text}에도 함께 반영됩니다.` : '아직 이 자료를 쓰는 곳은 없습니다.',
+                    '예전 판은 바꾼 뒤 알림의 [되돌리기]로 되살릴 수 있습니다.'].join('\n');
+                const ok = await new Promise(res => this._showChoiceDialog('새 판으로 바꿀까요?', msg,
+                    [{ label: '새 판으로 바꾸기', primary: true, onClick: () => res(true) }], () => res(false)));
+                if (!ok) return;
+                const old = await this.dbManager.getFile(store, id);
+                if (!old) return;
+                const now = new Date().toISOString();
+                const rec = { ...old, name: file.name, type: file.type || old.type, size: file.size, blob: file, updatedAt: now };
+                if (kind === 'law') { rec.fileModifiedAt = file.lastModified || null; rec.lawName = file.name.replace(/\.(pdf|txt|md|docx)$/i, '').trim(); }
+                else { rec.contentHash = await this.computeFileHash(file); rec.aiSummary = null; rec.recommendedFor = null; }
+                const apply = async (r, prevName) => {
+                    await this.dbManager.saveFile(store, r);
+                    if (kind === 'law') {
+                        this._invalidateLibraryFileCache(id);
+                        for (const nm of new Set([prevName, r.name])) { try { await this._purgeLawLibraryPdfCache(nm); } catch (e) {} }
+                    } else await this._loadRepoDocMetaCache();
+                    await cfg.afterChange();
+                    await this._fbRender(kind);
+                    if (this.focusMode) this.displayWorkflows();
+                };
+                await apply(rec, old.name);
+                // Gemini 키가 있으면 의미 검색용 분석도 새 판으로 (올리기와 같게)
+                if (kind === 'law' && this.allData.geminiApiKey) { try { await this._generateAndStoreLibraryEmbeddings(id, this.allData.geminiApiKey, () => {}); } catch (e) {} }
+                const undo = async () => { await apply(old, rec.name); this.showToast('info', '↩', `예전 판 「${old.name}」으로 되돌렸습니다`); };
+                this._undoLast = () => { undo(); };
+                this.showToast('success', '⤴', `「${file.name}」 새 판으로 바꿨습니다${u.n ? ` — ${u.text}에 반영` : ''}`, 9000,
+                    { actions: [{ label: '되돌리기', onAction: () => { this._undoLast = null; undo(); } }] });
             }
             async _fbDeleteSelection(kind) {
                 const st = this._fbState(kind), cfg = this._fbCfg(kind);
@@ -26735,6 +26872,7 @@ ${item.result.text}
                 const workflow = this.allData.workflows.find(w => w.id === id);
                 if (!workflow) return;
                 if (this.guardReferenceLock(id, '삭제')) return;
+                if (!workflow.isTemplate) { this._wfmDeleteItems([id], []); return; }
                 this._pendingDeleteId = id;
                 document.getElementById('deleteConfirmWorkflowName').textContent = workflow.title;
                 this.openModal('deleteConfirmModal');
@@ -28951,8 +29089,10 @@ ${docScope === 'internal' ? `[내부결재 — 보고·검토·승인용]
                         restoredFormsMap = await this._importFormsData(formsData, checklistDetails, idRemap);
                     }
                     // 첨부자료 복원
-                    if (Object.keys(attachmentsData).length > 0) {
-                        await this._importAttachmentsData(attachmentsData, checklistDetails, idRemap, null,
+                    // 복사하여 시작: 처리결과처럼 처리결과 첨부(…-r-…)도 가져오지 않는다 (레퍼런스 [복사하여 시작]과 같게 — 예전엔 글은 비고 첨부만 남았다)
+                    const attData = startFresh ? Object.fromEntries(Object.entries(attachmentsData).filter(([k]) => !/-r-/.test(k))) : attachmentsData;
+                    if (Object.keys(attData).length > 0) {
+                        await this._importAttachmentsData(attData, checklistDetails, idRemap, null,
                             { oldId: wf.id, newId, summaries: (imported.docSummaries || {})[wf.id] || {} });
                     }
 
@@ -32176,6 +32316,7 @@ ${docScope === 'internal' ? `[내부결재 — 보고·검토·승인용]
                     it('✂ 잘라내기 <span class="ctx-kbd">Ctrl+X</span>', `app._clipSet('${kind}','cut')`),
                     it('⧉ 복사 <span class="ctx-kbd">Ctrl+C</span>', `app._clipSet('${kind}','copy')`),
                     it('✏ 이름 바꾸기 <span class="ctx-kbd">F2</span>', `app._fbRenameDocInPane('${kind}',${id})`),
+                    it('⤴ 새 판으로 바꾸기…', `app._fbReplaceVersion('${kind}',${id})`),
                     st.sort === 'manual' ? '<div class="wfm-ctx-divider"></div>' + it('↑ 위로', `app._fbCfg('${kind}').shiftFile(${id},'up')`) + it('↓ 아래로', `app._fbCfg('${kind}').shiftFile(${id},'down')`) : '',
                     u.n && u.click ? '<div class="wfm-ctx-divider"></div>' + it(`🔗 쓰는 곳 보기 (${u.text})`, u.click) : '',
                     ai ? '<div class="wfm-ctx-divider"></div>' + it('⚡ 의미 검색용으로 다시 분석', `app.reEmbedSingleLibraryFile(${id})`) : '',
@@ -34032,15 +34173,22 @@ ${docScope === 'internal' ? `[내부결재 — 보고·검토·승인용]
                 const close = (cb) => { unbindEsc(); this.removeModalAndRestoreScroll(modal); cb?.(); };
                 modal.innerHTML = `
                     <div class="modal-content" style="max-width:420px;">
-                        <h2 style="margin:0 0 12px;font-size:1.05rem;">같은 이름의 파일이 있습니다</h2>
-                        <p style="font-size:0.85rem;color:var(--text-muted);margin:0 0 18px;line-height:1.6;">"${this.escapeHtml(fileName)}"이(가) 서식·문서함에 이미 등록되어 있습니다.<br>어떻게 처리할까요?</p>
+                        <h2 style="margin:0 0 12px;font-size:1.05rem;">「${this.escapeHtml(fileName)}」이(가) 이미 있습니다</h2>
+                        <p style="font-size:0.85rem;color:var(--text-gray);margin:0 0 18px;line-height:1.6;">서식·문서함에 같은 이름의 서식이 이미 있습니다.<br><span id="owUsage"></span></p>
                         <div style="display:flex;flex-direction:column;gap:8px;">
-                            <button class="btn btn-primary" id="owOverwriteBtn">교체 — 기존 파일을 새 파일로 덮어쓰기</button>
-                            <button class="btn btn-secondary" id="owNumberedBtn">번호 붙여 추가 — <span style="font-family:monospace;">${this.escapeHtml(nextName)}</span> 로 새로 저장</button>
-                            <button class="btn btn-plain" id="owCancelBtn">취소<kbd class="kbd-hint">Esc</kbd></button>
+                            <button class="btn btn-primary" id="owOverwriteBtn" style="justify-content:center;">최신 파일로 바꾸기</button>
+                            <button class="btn btn-secondary" id="owNumberedBtn" style="justify-content:center;">둘 다 보관 (올린 파일은 「${this.escapeHtml(nextName)}」으로)</button>
+                            <button class="btn btn-plain" id="owCancelBtn">이 파일은 건너뛰기<kbd class="kbd-hint">Esc</kbd></button>
                         </div>
                     </div>`;
                 document.body.appendChild(modal);
+                // 법령·매뉴얼 창과 같게: 바꾸면 몇 곳에 반영되는지 (이름으로 찾은 서식의 쓰는 곳)
+                this._findRepoDocByName(fileName).then(d => {
+                    const el = modal.querySelector('#owUsage');
+                    if (!d || !el) return;
+                    const u = this._fbUsageOf('repo', d.id);
+                    el.textContent = u.n ? `바꾸면 ${u.text}에도 함께 반영됩니다.` : '아직 이 서식을 쓰는 할 일은 없습니다.';
+                }).catch(() => {});
                 modal.querySelector('#owOverwriteBtn').onclick  = () => close(onOverwrite);
                 modal.querySelector('#owNumberedBtn').onclick   = () => close(onAddNumbered);
                 modal.querySelector('#owCancelBtn').onclick     = () => close(onCancel);
@@ -42053,9 +42201,76 @@ ${originalContent}`;
                         </div>
                     </div>
                     <div class="prefs-group">
+                        <div class="prefs-group-title">오류 기록 · 문제 보고</div>
+                        <div class="prefs-row">
+                            <div class="prefs-row-label">${(() => { const L = this._errLogGet(); return L.length ? `프로그램 안에서 난 오류 ${L.length}건 <small>마지막: ${esc(fmtDateTime(L[L.length - 1].t))} — ${esc(String(L[L.length - 1].m).slice(0, 60))}</small>` : '기록된 오류가 없습니다 <small>프로그램 안에서 오류가 나면 이 PC에만 적어 둡니다</small>'; })()}<small>[문제 보고 파일 만들기]로 받은 파일을 담당자에게 보내 주세요. 업무 제목·내용·첨부는 들어가지 않고 오류·개수·설정만 들어갑니다.</small></div>
+                            <div style="display:flex;gap:6px;flex-shrink:0;">
+                                <button class="btn btn-primary btn-small" type="button" onclick="app.exportProblemReport()">문제 보고 파일 만들기</button>
+                                ${this._errLogGet().length ? `<button class="btn btn-secondary btn-small" type="button" onclick="app._errLogClear()">기록 지우기</button>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="prefs-group">
                         <div class="prefs-group-title">바뀐 점</div>
                         ${notes}
                     </div>`;
+            }
+
+            // ── 오류 기록 (시범 사용·배포 뒤 문제를 찾기 위해 — 이 PC의 localStorage에만, 최근 100건) ──
+            _errLogGet() { try { return JSON.parse(localStorage.getItem('appErrorLog') || '[]'); } catch (e) { return []; } }
+            _errLogAdd(kind, msg, stack) {
+                try {
+                    const m = String(msg || '').slice(0, 300);
+                    if (!m || /ResizeObserver loop|Script error\.?$/.test(m)) return;
+                    const L = this._errLogGet();
+                    const last = L[L.length - 1];
+                    if (last && last.m === m && Date.now() - new Date(last.t).getTime() < 3000) { last.n = (last.n || 1) + 1; }
+                    else L.push({ t: new Date().toISOString(), k: kind, m, s: String(stack || '').split('\n').slice(0, 3).join(' | ').slice(0, 400),
+                        at: [this.focusMode ? (this.focusEditMode ? '체크리스트 편집' : '일하는 화면') : '목록', ...[...document.querySelectorAll('.modal.show[id]')].map(x => x.id)].join(' · '), v: APP_VERSION });
+                    localStorage.setItem('appErrorLog', JSON.stringify(L.slice(-100)));
+                } catch (e) {}
+            }
+            _errLogClear() { try { localStorage.removeItem('appErrorLog'); } catch (e) {} this._refreshPrefsIfOpen?.('about'); this.showToast('info', '', '오류 기록을 지웠습니다'); }
+            _installErrorLog() {
+                if (this._errLogOn) return;
+                this._errLogOn = true;
+                window.addEventListener('error', e => this._errLogAdd('오류', e.message, e.error && e.error.stack));
+                window.addEventListener('unhandledrejection', e => this._errLogAdd('처리 안 된 오류', e.reason && (e.reason.message || e.reason), e.reason && e.reason.stack));
+                const ce = console.error.bind(console);
+                console.error = (...a) => { try { this._errLogAdd('기록', a.map(x => x && x.message ? x.message : typeof x === 'string' ? x : (() => { try { return JSON.stringify(x); } catch (e) { return String(x); } })()).join(' '), a.find(x => x && x.stack)?.stack); } catch (e) {} ce(...a); };
+            }
+            // 문제 보고 파일: 업무 제목·내용·첨부는 넣지 않는다 (개수·설정·환경·오류·자료가 서로 맞는지 점검 결과만)
+            async exportProblemReport() {
+                const live = this.allData.workflows.filter(w => !w.isDeleted && !w.isDraft);
+                const libN = this.dbReady ? (await this.dbManager.getAllFileKeys('lawLibrary').catch(() => [])).length : null;
+                const repoN = this.dbReady ? (await this.dbManager.getAllFileKeys('repoDocuments').catch(() => [])).length : null;
+                // 자료가 서로 맞는지 간단 점검 (단계 완료 ↔ 할 일, 끊긴 연결) — 업무는 번호로만
+                const issues = [];
+                const libIds = new Set(this.dbReady ? await this.dbManager.getAllFileKeys('lawLibrary').catch(() => []) : []);
+                const repoIds = new Set(this.dbReady ? await this.dbManager.getAllFileKeys('repoDocuments').catch(() => []) : []);
+                live.forEach((w, n) => {
+                    const cl = w.checklist || [];
+                    cl.forEach((it, i) => {
+                        if (this._isSubEntry(it) || it.skipped === true) return;
+                        const subs = []; for (let k = i + 1; k < cl.length && this._isSubEntry(cl[k]); k++) subs.push(cl[k]);
+                        const open = subs.filter(s => s.skipped !== true && !this.normalizeCompleted(s));
+                        if (subs.length && this.normalizeCompleted(it) && open.length && !w.isReference) issues.push(`업무#${n + 1} 단계 ${i}: 끝났는데 안 끝난 할 일 ${open.length}`);
+                        (it.linkedDocs || []).forEach(id => { if (this.dbReady && !repoIds.has(id)) issues.push(`업무#${n + 1} 줄 ${i}: 서식 연결 끊김`); });
+                    });
+                    (this.checklistDetails[`project-${w.id}`]?.linkedLibraryDocs || []).forEach(id => { if (this.dbReady && !libIds.has(id)) issues.push(`업무#${n + 1}: 참고 자료 연결 끊김`); });
+                });
+                const rep = {
+                    type: 'problem_report', appVersion: APP_VERSION, made: new Date().toISOString(),
+                    browser: navigator.userAgent, screen: `${screen.width}x${screen.height}`, window: `${innerWidth}x${innerHeight}`, zoom: devicePixelRatio,
+                    storage: await (navigator.storage?.estimate?.().then(e => ({ usedMB: Math.round(e.usage / 1048576), quotaMB: Math.round(e.quota / 1048576) })).catch(() => null) || null),
+                    counts: { workflows: live.length, deleted: this.allData.workflows.filter(w => w.isDeleted).length, references: live.filter(w => w.isReference).length, done: live.filter(w => w.completedProcessed).length,
+                        collab: live.filter(w => w.collab).length, maxLines: Math.max(0, ...live.map(w => (w.checklist || []).length)), lines: live.reduce((s, w) => s + (w.checklist || []).length, 0), law: libN, repo: repoN },
+                    settings: { dark: document.documentElement.classList.contains('dark-mode'), readScale: this._readScale?.(), procWide: localStorage.getItem('procWide'), notify: localStorage.getItem('deadlineNotifyMode'), ai: this.isAIAvailable?.() || false, netLocked: typeof NET_LOCKED !== 'undefined' ? !!NET_LOCKED : null },
+                    issues: issues.slice(0, 50), errors: this._errLogGet(),
+                };
+                this._downloadJsonFile(rep, `문제보고_${localDateStr()}_v${APP_VERSION}.json`);
+                this.showToast('success', '📨', `문제 보고 파일을 만들었습니다 — 오류 ${rep.errors.length}건 · 점검 ${issues.length ? `걸린 것 ${issues.length}건` : '이상 없음'} (업무 내용은 들어가지 않음)`, 6000);
+                return rep;
             }
 
             // 업무 하나에 딸린 체크리스트 세부정보·첨부파일·서식 파일을 IndexedDB에서 모두 정리한다.

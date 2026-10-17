@@ -12,7 +12,7 @@ step("seed", "localStorage.setItem('startupPromptShown','1');localStorage.setIte
      "const cl=[['접수',0],['사건 배당',1],['조사',0],['문답서 작성',1],['종결',0]].map(([t,i])=>({text:t,indent:i,completed:false}));"
      "app.allData.workflows.unshift({id:8961,type:'manual',title:'감찰조사',checklist:cl,date:'2026. 10. 11.',createdAt:new Date().toISOString(),folderPath:''});wf().checklist.forEach(it=>app.ensureChecklistItemId(it));"
      "app.saveData();app.displayWorkflows();await W(400);app.focusWorkflow(8961);await W(1200);return 'ok'")
-pt("const b=document.querySelector('[onclick^=\"app.openProgressReport(8961\"]');const r=b.getBoundingClientRect();return JSON.stringify([r.left+r.width/2,r.top+r.height/2])")
+pt("const b=[...document.querySelectorAll('[onclick^=\"app.openProgressReport(8961\"]')].find(x=>x.getClientRects().length&&x.getBoundingClientRect().width);const r=b.getBoundingClientRect();return JSON.stringify([r.left+r.width/2,r.top+r.height/2])")
 S.append({"clickpt": 1})
 step("A 처음 열면 체크리스트 탭이 먼저", "await W(900);const tabs=[...M().querySelectorAll('.pr-tabs [data-tab]')];return '탭 순서='+tabs.map(b=>b.textContent).join(',')+' | 열린 탭='+tabs.find(b=>b.classList.contains('on'))?.textContent+' | 제목='+T()?.textContent")
 S.append({"shot": "clt_a.png"})
