@@ -1,7 +1,7 @@
 import json, os, re, shutil, sys, html
 here = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, here)
-from manual_data2 import CHAPTERS, KEYS
+from manual_data2 import CHAPTERS, KEYS, FAQ
 # 설명서 버전 = 앱 버전 (index.html의 APP_VERSION을 읽음 — 손으로 적으면 뒤처짐)
 _m = re.search(r"const APP_VERSION = '([^']+)'", open(os.path.join(here, '..', 'index.html'), encoding='utf-8').read())
 APP_VER = _m.group(1) if _m else ''
@@ -37,6 +37,7 @@ for ci, (title, intro, scenes) in enumerate(CHAPTERS):
 </figure>''')
     sec.append('</section>')
     body.append('\n'.join(sec))
+faq = ''.join(f'<details class="faq"><summary>{html.escape(q)}</summary><p>{a}</p></details>' for q, a in FAQ)
 keys = ''.join(f'<h3>{html.escape(t)}</h3><table class="keys">' + ''.join(f'<tr><th>{html.escape(k)}</th><td>{html.escape(v)}</td></tr>' for k, v in rows) + '</table>' for t, rows in KEYS)
 page = f'''<!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -62,18 +63,20 @@ main {{ padding:36px 44px 80px; min-width:0; }}
 .hl {{ position:absolute; border:3px solid var(--hl); border-radius:8px; box-shadow:0 0 0 4px rgba(245,158,11,.25); pointer-events:none; }}
 .how {{ margin:0; padding:14px 22px 16px 38px; font-size:.92rem; }} .how li {{ margin:4px 0; }}
 kbd {{ display:inline-block; padding:0 6px; border:1px solid #cbd5e1; border-bottom-width:2px; border-radius:5px; background:#f8fafc; font-family:inherit; font-size:.8rem; line-height:1.5; }}
+.faq {{ background:var(--white); border:1px solid var(--line); border-radius:10px; padding:10px 16px; margin:0 0 10px; }} .faq summary {{ font-weight:700; cursor:pointer; }} .faq p {{ margin:8px 0 2px; }}
 .keys {{ border-collapse:collapse; width:100%; background:var(--white); margin:6px 0 18px; font-size:.9rem; }}
 .keys th, .keys td {{ border:1px solid var(--line); padding:7px 12px; text-align:left; vertical-align:top; }} .keys th {{ width:38%; background:#f8fafc; font-weight:600; }}
 @media (max-width:900px) {{ .wrap {{ grid-template-columns:1fr; }} nav {{ position:static; height:auto; border-right:none; border-bottom:1px solid var(--line); }} main {{ padding:20px 16px 60px; }} }}
 @media print {{ nav {{ display:none; }} .wrap {{ display:block; }} .scene {{ break-inside:avoid; }} body {{ background:#fff; }} }}
 </style></head><body><div class="wrap">
-<nav><h1>업무 내비게이터</h1><div class="ver">사용 설명서 · v{APP_VER}</div><ul>{''.join(toc)}<li><a href="#keys">부록 · 마우스와 단축키</a></li></ul></nav>
+<nav><h1>업무 내비게이터</h1><div class="ver">사용 설명서 · v{APP_VER}</div><ul>{''.join(toc)}<li><a href="#faq">부록 · 자주 묻는 질문</a></li><li><a href="#keys">부록 · 마우스와 단축키</a></li></ul></nav>
 <main>
 <div class="cover"><h1>업무 내비게이터 사용 설명서</h1>
-<p>예시 업무(징계처분 · 물품 구매 계약 · 감찰조사)로, 업무를 만들고 → 일하고 → 나누어 맡기고 → 공유하고 → 레퍼런스로 남기고 → 보관하는 흐름 순서로 설명합니다.</p>
+<p>프로그램 안에 들어 있는 <b>연습 업무</b>(소모품 구매 계약 · 월간 업무 실적 보고)로, 처음 켜기 → 업무를 만들고 → 일하고 → 나누어 맡기고 → 공유하고 → 레퍼런스로 남기고 → 보관하는 흐름 순서로 설명합니다. [새 업무 만들기 ▾ → 연습 업무 넣기]로 똑같이 따라 해 볼 수 있습니다.</p>
 <p>사진의 <b style="color:#d97706">주황 테두리</b>가 그 단계에서 누르거나 볼 곳입니다. (AI 기능은 이 설명서에서 다루지 않습니다.)</p>
-<div class="flow"><span>마감 임박 알림</span><span>새 업무 만들기</span><span>일하기</span><span>체크리스트 편집</span><span>일정</span><span>업무 분담·회신 대기</span><span>공유</span><span>처리완료</span><span>레퍼런스</span><span>보관</span><span>조직 자료</span><span>백업</span></div></div>
+<div class="flow"><span>처음 켜기·내 정보</span><span>연습 업무</span><span>마감 임박 알림</span><span>새 업무 만들기</span><span>일하기</span><span>체크리스트 편집</span><span>일정</span><span>업무 분담·회신 대기</span><span>공유</span><span>처리완료</span><span>레퍼런스</span><span>보관</span><span>조직 자료</span><span>백업</span></div></div>
 {''.join(body)}
+<section class="ch" id="faq"><h2>부록 · 자주 묻는 질문</h2>{faq}</section>
 <section class="ch" id="keys"><h2>부록 · 마우스와 단축키</h2>{keys}</section>
 </main></div></body></html>'''
 open(os.path.join(out_dir, '업무내비게이터_사용설명서.html'), 'w', encoding='utf-8').write(page)
