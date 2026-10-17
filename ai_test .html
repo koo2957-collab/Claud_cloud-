@@ -47616,7 +47616,7 @@ ${this._lawHitsText(R.hits)}
                 currentItemInfo += `📋 첨부서식: ${formatNames}\n`;
                 console.log('✅ AI 길잡이 - 현재 항목에 서식 발견 및 파싱 완료:', {
                     formatNames: formatNames,
-                    formatsCount: currentItem.formats.length,
+                    formatsCount: (currentItem.formats || []).length,
                     formatsArray: currentItem.formats
                 });
             } else {
