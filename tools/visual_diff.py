@@ -1,16 +1,22 @@
-# 화면 비교: 설명서 촬영(mkman2 → cdp2)으로 새로 찍은 tools/man2/*.png 를 기준 사진(사용설명서/img/*.png)과 비교
+# 화면 비교: 설명서 촬영(mkman2 → cdp2)으로 새로 찍은 tools/man2/*.png 를 기준 사진(tools/man2_base/*.png)과 비교
+# 설명서 사진(사용설명서/img)은 잘라 낸 JPG라 기준으로 쓰지 않음. 기준은 이 PC에만 있음(저장소 제외):
+#   기준이 없으면 지금 사진을 기준으로 삼고 끝냄 · 바뀐 화면이 맞으면 --accept 로 기준을 새로 바꿈
 # 바뀐 칸의 비율(%)을 재고, 기준을 넘는 장면은 「기준 | 지금 | 다른 곳(빨강)」 사진을 tools/_vd/에 만들어 visual_diff.html로 보여 줌
 # 날짜(D-n)·시각처럼 날마다 바뀌는 글 때문에 1% 안팎은 늘 다를 수 있음 → 기본 기준 2%
-# 실행: (tools 폴더에서) python visual_diff.py [기준%=2]
-import os, sys, io, html
+# 실행: (tools 폴더에서) python visual_diff.py [기준%=2] [--accept]
+import os, sys, io, html, shutil
 from PIL import Image, ImageChops
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 here = os.path.dirname(os.path.abspath(__file__))
-base_dir = os.path.join(here, '..', '사용설명서', 'img')
+base_dir = os.path.join(here, 'man2_base')
 new_dir = os.path.join(here, 'man2')
+args = [a for a in sys.argv[1:] if a != '--accept']
+if '--accept' in sys.argv or not os.path.isdir(base_dir):
+    shutil.rmtree(base_dir, ignore_errors=True); shutil.copytree(new_dir, base_dir)
+    print(f'VISUAL 기준 사진을 지금 촬영으로 정함 ({len(os.listdir(base_dir))}장) — 바뀐 장면=0'); sys.exit(0)
 out_dir = os.path.join(here, '_vd')
 os.makedirs(out_dir, exist_ok=True)
-TH = float(sys.argv[1]) if len(sys.argv) > 1 else 2.0
+TH = float(args[0]) if args else 2.0
 rows, changed = [], 0
 for name in sorted(os.listdir(base_dir)):
     if not name.endswith('.png'): continue

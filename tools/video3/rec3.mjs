@@ -151,25 +151,101 @@ const ACT = {
     await sleep(2200);
     await js("app.closeProgressReport();return 1"); await sleep(400);
   },
-  async handover() {  // 끝낸 업무 → 레퍼런스로 등록 → 내보내기(파일 하나)
+  async collab() {    // 관리자: [업무 분담] → 04 납품·검사 김민수 · 05 대가 지급 이수진(회신 기한) → [요청 파일 만들기] → 회신 현황 → ⏳ 회신 대기 줄
+    const D = n => new Date(Date.now() + n * 864e5).toLocaleDateString('sv-SE');   // 이 PC 시간대 기준 날짜
+    await js("const c=app._collabEnsureOwner(PW());c.team=['김민수','이수진'];app.saveData();app._saveFileWithPicker=async()=>true;return 1");
+    await click("[...document.querySelectorAll('.fap-btn')].find(b=>b.offsetParent&&b.textContent.trim()==='업무 분담')");
+    await sleep(1300); await snap('open');
+    const ROW = t => `[...document.querySelectorAll('#collabModal tr.cb-stagerow')].find(r=>r.querySelector('.cb-step-name')?.textContent.includes(${JSON.stringify(t)}))`;
+    for (const [t, who, d] of [['납품·검사', '김민수', 14], ['대가 지급', '이수진', 20]]) {
+      const [x, y] = await at(`${ROW(t)}?.querySelector('select')`);
+      await move(x, y, 480); await ev('__v.ripple()'); await sleep(300);   // 고르는 목록은 화면에 안 찍히므로 값만 바꿈
+      await js(`const s=${ROW(t)}.querySelector('select');s.value=${JSON.stringify(who)};s.dispatchEvent(new Event('change',{bubbles:true}));await W(250);app.collabSetStep(PW().id,PW().checklist[ix(${JSON.stringify(t)})].itemId,'deadline',${JSON.stringify(D(d))});return 1`);
+      await sleep(600);
+    }
+    await hl(ROW('납품·검사'), 4); await snap('assigned');
+    await until(5.2);
+    const SEND = "[...document.querySelectorAll('#collabModal button')].find(b=>b.textContent.includes('요청 파일 만들기'))";
+    await hl(`${SEND}.closest('.cb-foot')||${SEND}`, 4);
+    await until(7.6); await hlOff();
+    await click(SEND);
+    await sleep(1600); await snap('status');
+    await until(12.0);
+    await js("app.closeCollabModal(true);app.restoreBodyScroll&&app.restoreBodyScroll();document.querySelectorAll('.toast').forEach(t=>t.classList.remove('show'));return 1");
+    await sleep(600);
+    await at("document.querySelector('.cb-run')");   // 화면 밖이면 가운데로
+    await hl("document.querySelector('.cb-run')", 5); await snap('waiting');
+    await until(15.5); await hlOff();
+  },
+  async merge() {     // 관리자: 김민수의 회신 파일을 [회신 가져오기]로 열기 → 「바뀐 곳」 → [바뀐 곳 보기] → 04 납품·검사가 ✓
+    // 담당자 PC에서 만든 것과 같은 형식(collab_reply)의 회신 파일을 만듦 — 합치는 것은 앱의 실제 기능(collabImportReplyFile)
+    await js(`const w=PW(),c=w.collab,cl=w.checklist,sid=cl[ix('납품·검사')].itemId,st=c.steps[sid];
+      const R={'납품 완료 통지 받기 (서면)':'○○상사 납품 완료 통지서 접수','납품 검사 (업체 참관)':'의자 20개·책상 10개 — 수량·규격 이상 없음 (업체 참관)','검사조서 작성':'검사조서 작성 — 검사자 김민수','검사 결과 서면 통지':'검사 합격 서면 통지 완료'};
+      const now=new Date().toISOString();
+      const items=app._collabStepIndices(cl,sid,c.steps).map(i=>({itemId:app.ensureChecklistItemId(cl[i]),stepId:sid,text:cl[i].text,completed:true,completedAt:now,completedViaSubItems:false,skipped:false,skipReason:'',skipManual:false,skipActionId:null,branchActionTaken:null,branchOnly:false,result:{text:R[cl[i].text]||'',summary:''}}));
+      const cv=document.createElement('canvas');cv.width=900;cv.height=600;const g=cv.getContext('2d');g.fillStyle='#eef2f7';g.fillRect(0,0,900,600);g.fillStyle='#94a3b8';for(let k=0;k<5;k++){g.fillRect(90+k*150,250,110,190);g.fillRect(80+k*150,230,130,26);}
+      g.fillStyle='#1e3a8a';g.font='bold 44px sans-serif';g.fillText('납품 검사 — 사무용 의자',90,120);g.fillStyle='#334155';g.font='28px sans-serif';g.fillText('수량 20개 · 규격 확인 · 업체 참관',90,180);g.fillText('검사자 김민수',90,520);
+      const it=items.find(x=>x.text.startsWith('납품 검사'));const files={};
+      if(it)files[it.itemId]=[{name:'납품검사_사진.jpg',type:'image/jpeg',size:60000,uploadDate:now,base64Data:cv.toDataURL('image/jpeg',0.85)}];
+      window.__reply={type:'collab_reply',version:1,appVersion:APP_VERSION,uid:c.uid,sendId:st.sendId,from:'김민수',owner:c.owner,title:w.title,round:1,kind:'final',repliedAt:now,steps:[sid],items,files,comment:'검사 이상 없습니다. 검사 사진 첨부합니다.'};return 1`);
+    const link = "document.querySelector('.fap-link-sub')";
+    await hover(link, 600); await ev('__v.ripple()'); await sleep(250);   // 파일 고르는 창은 화면에 안 찍히므로 회신 파일을 바로 넣음
+    await js("app.collabImportReplyFile(PW().id,new File([JSON.stringify(window.__reply)],'[회신] 소모품 구매_김민수.json',{type:'application/json'}));return 1");
+    await sleep(1500);
+    await hl("document.querySelector('#cbMergeDlg .modal-content')", 4); await snap('merged');
+    await until(4.0); await hlOff();
+    await click("document.querySelector('#cbMergeDlg [data-go]')");
+    await sleep(1400);
+    await hl("row('납품 검사 (업체 참관)')||row('납품·검사')", 5); await snap('reveal');
+    await until(7.4); await hlOff();
+  },
+  async handover() {  // 진행 중인 월간 보고를 [내보내기] → 「후임자 PC」 → 그대로 가져오기 → 같은 자리에서 이어서
+    const PM = "app.allData.workflows.find(w=>w.isPractice&&!w.isDeleted&&w.title.includes('월간'))";
+    await js("document.getElementById('cbMergeDlg')?.remove();if(app.focusMode)app.exitFocusMode();await W(500);window.scrollTo(0,0);return 1");
+    await sleep(500);
+    await click(`document.getElementById('workflow-'+${PM}.id)`, { count: 2 });
+    await sleep(1400);
+    if (!(await js('return !!app.focusMode'))) { await js(`app.focusWorkflow(${PM}.id);return 1`); await sleep(1200); }
+    await hl("document.querySelector('#procProg')||document.querySelector('#procHead')", 6);
+    // 저장 창 대신 파일을 잡아 둠 · 내보내기 알림은 숨김
+    await js("app._saveFileWithPicker=async(b,n)=>{window.__hb=b;return true};return 1");
+    await until(3.0); await hlOff();
+    await click("[...document.querySelectorAll('button,[onclick]')].filter(e=>e.offsetParent&&e.textContent.trim()==='내보내기').pop()");
+    await sleep(900); await snap('export');
+    await js("document.querySelectorAll('.toast').forEach(t=>t.classList.remove('show'));return 1");
+    await until(5.6);
+    // 후임자 PC: 이 PC의 업무는 지우고(후임자에겐 없음) 받은 파일만 가져옴
+    await ev("__v.label('후임자 PC · 받은 파일 그대로 가져오기')");
+    await js(`const w=${PM};app.exitFocusMode&&app.exitFocusMode();w.isDeleted=true;w.deletedAt=new Date().toISOString();app.saveData();app.displayWorkflows();await W(500);window.scrollTo(0,0);app._showPackageImportChoice(JSON.parse(await window.__hb.text()));return 1`);
+    await sleep(900);
+    await hl("[...document.querySelectorAll('#packageImportChoiceModal label')].find(l=>l.textContent.includes('그대로 가져오기'))", 4); await snap('choice');
+    await sleep(1400); await hlOff();
+    await click("document.querySelector('#packageImportChoiceModal .btn-primary')");
+    await sleep(1600);
+    await js(`document.querySelectorAll('.toast').forEach(t=>t.classList.remove('show'));const w=app.allData.workflows.filter(x=>!x.isDeleted&&x.title.includes('월간 업무 실적')).sort((a,b)=>b.id-a.id)[0];app.focusWorkflow(w.id);return 1`);
+    await sleep(1500);
+    await hl("document.querySelector('#procProg')||document.querySelector('#procHead')", 6); await snap('continued');
+    await sleep(1500);
+    await hl("document.querySelector('#aiPanelOfflineDashboard .tip-sec')||document.querySelector('#aiPanelOfflineDashboard')", 5);
+    await until(14.5); await hlOff();
+  },
+  async reference() { // 끝난 업무(5월 소모품 구매) → 레퍼런스로 등록 → 레퍼런스 탭
     await js("if(app.focusMode)app.exitFocusMode();await W(500);app.openWorkflowManager();await W(700);app.wfmSetTab('done');return 1");
-    await sleep(1000);
-    const tr = "document.querySelector('#wfmTableBody tr[data-sel-key=\"8100\"]')";
+    await sleep(900);
+    // 예시 자료의 5월 처리완료본(소모품 구매 토너·복사용지)을 레퍼런스로
+    const oldId = await js("return app.allData.workflows.find(w=>w.completedProcessed&&!w.isDeleted&&w.title.includes('토너'))?.id");
+    const tr = `document.querySelector('#wfmTableBody tr[data-sel-key="${oldId}"]')`;
     const [x, y] = await at(tr);
     await clickXY(x - 120, y, { button: 'right' });
-    await sleep(900);
+    await sleep(800);
     try { await click("[...document.querySelectorAll('#wfmCtxMenu *')].find(e=>e.children.length<3&&/레퍼런스/.test(e.textContent)&&e.offsetParent)"); } catch (e) {}
-    await sleep(1300);
+    await sleep(1100);
     await click("[...document.querySelectorAll('button')].find(b=>b.offsetParent&&b.textContent.trim()==='만들기')");
-    await sleep(1500); await snap('ref');
-    await js("app._saveFileWithPicker=async()=>true;return 1");
-    await click("document.querySelector('#wfmModal .modal-close, #wfmModal [onclick*=closeWorkflowManager]')||[...document.querySelectorAll('button')].filter(b=>b.offsetParent&&b.textContent.trim()==='×').pop()").catch(() => {});
-    await js("if(document.querySelector('#wfmModal.show')||document.querySelector('.wfm-modal.show'))app.closeWorkflowManager&&app.closeWorkflowManager();app.focusWorkflow(PW().id);return 1");
-    await sleep(1300);
-    await click("[...document.querySelectorAll('button,[onclick]')].filter(e=>e.offsetParent&&e.textContent.trim()==='내보내기').pop()");
-    await sleep(1300);
-    if (DRY) console.log('  알림:', await js("return [...document.querySelectorAll('.toast')].map(t=>t.textContent.replace(/\s+/g,' ').trim()).join(' / ')"));
-    await snap('export'); await sleep(1500);
+    await sleep(1200);
+    await js("document.querySelectorAll('.toast').forEach(t=>t.classList.remove('show'));app.wfmSetTab('reference');return 1");
+    await sleep(900);
+    await hl("document.querySelector('#wfmTableBody tr')", 4); await snap('ref');
+    await sleep(2600); await hlOff();
   },
 };
 
@@ -221,7 +297,8 @@ try {
   await send('Page.navigate', { url }); await sleep(3500);
   // 처음 안내 창들 끄기 → 예시 자료(설명서와 같은 업무들) → 연습 업무 넣기 → 다시 열기
   await ev(`(async()=>{localStorage.setItem('authorInfoSet','1');app._collabSetMe&&app._collabSetMe({dept:'사하소방서 청문감사담당관',rank:'소방위',name:'홍길동',phone:'4521'});return await ${SEED.trim()};})()`);
-  await js("window.confirm=()=>true;await app.insertPracticeWorkflows();await W(3000);app.allData.workflows.filter(w=>w.id===8101||w.id===8102).forEach(w=>{});app.saveData();return 1");
+  // 예시 자료(설명서와 같음)는 연습 업무를 넣고 01 단계를 끝내 두므로, 영상에서는 처음 상태로 되돌려 직접 체크하며 보여 줌
+  await js("window.confirm=()=>true;const w=PW();w.checklist.forEach(it=>{it.completed=false;delete it.completedAt;delete it.result;if(it.skipManual){it.skipped=false;delete it.skipManual;delete it.skipReason;}});app.saveData();await W(800);return 1");
   await sleep(1500);
   await send('Page.reload'); await sleep(4000);
   await js("window.confirm=()=>true;document.querySelectorAll('.modal.show').forEach(m=>m.classList.remove('show'));document.querySelectorAll('.toast').forEach(t=>t.classList.remove('show'));const t=document.querySelector('.filter-tab[data-mode=\"inProgress\"]');t&&t.click();window.scrollTo(0,0);return 1");

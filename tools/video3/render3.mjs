@@ -18,7 +18,7 @@ try {
   if (ws.readyState !== 1) await new Promise(r => ws.onopen = r);
   ws.onmessage = m => { const d = JSON.parse(m.data); if (d.id && pend.has(d.id)) { pend.get(d.id)(d); pend.delete(d.id); } };
   await send('Page.enable'); await send('Page.navigate', { url: 'file:///' + path.resolve(page).replace(/\\/g, '/') });
-  for (let i = 0; i < 600; i++) { await sleep(500); if (await ev('!!window.__done')) break; }
+  const T0 = Date.now(); for (let i = 0; i < 2400; i++) { await sleep(500); if (await ev("!!window.__done")) break; } console.log("합성", ((Date.now() - T0) / 1000).toFixed(0) + "초");
   const err = await ev('window.__err||""'); if (err) throw new Error(err);
   const len = await ev('window.__b64.length'); const parts = [];
   for (let off = 0; off < len; off += 2000000) parts.push(await ev(`window.__b64.slice(${off},${off + 2000000})`));

@@ -14,5 +14,7 @@ json.dump(out, open(os.path.join(work, 'seg.json'), 'w', encoding='utf-8'), ensu
 cwd = os.getcwd(); os.chdir(os.path.join(here, '..'))
 import mkman2   # steps.json도 새로 쓰지만 해 없음
 os.chdir(cwd)
-open(os.path.join(work, 'seed.js'), 'w', encoding='utf-8').write(mkman2.S[0]['js'])
+# 예시 자료 단계는 이름으로 찾음(설명서 대본 맨 앞에 환영 장면 00a_welcome이 생겨 S[0]이 예시 자료가 아님)
+seed = next(s for s in mkman2.S if s.get('label') == '00_seed')
+open(os.path.join(work, 'seed.js'), 'w', encoding='utf-8').write(seed['js'])
 print('seg', len(out), '· 음성 합계', round(sum(x['dur'] for x in out), 1), '초')

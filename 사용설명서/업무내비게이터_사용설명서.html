@@ -2,349 +2,322 @@
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>업무 내비게이터 사용 설명서</title>
 <style>
-:root { --accent:#2563eb; --text:#1e2d47; --muted:#64748b; --line:#e2e8f0; --bg:#f6f8fb; --white:#fff; --hl:#f59e0b; }
-* { box-sizing: border-box; }
-body { margin:0; font-family:'Pretendard','Malgun Gothic',-apple-system,sans-serif; color:var(--text); background:var(--bg); line-height:1.65; }
-.wrap { display:grid; grid-template-columns:260px 1fr; max-width:1280px; margin:0 auto; }
-nav { position:sticky; top:0; align-self:start; height:100vh; overflow:auto; padding:28px 18px; border-right:1px solid var(--line); background:var(--white); }
-nav h1 { font-size:1.05rem; margin:0 0 4px; } nav .ver { font-size:.78rem; color:var(--muted); margin-bottom:18px; }
-nav ul { list-style:none; padding-left:0; margin:0; font-size:.88rem; } nav li { margin:6px 0; } nav a { color:var(--text); text-decoration:none; } nav a:hover { color:var(--accent); }
-main { padding:36px 44px 80px; min-width:0; }
-.cover { background:var(--white); border:1px solid var(--line); border-radius:14px; padding:28px 32px; margin-bottom:28px; }
-.cover h1 { margin:0 0 6px; font-size:1.6rem; } .cover p { margin:6px 0; color:var(--muted); }
-.flow { display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; font-size:.82rem; } .flow span { background:#eef4ff; color:var(--accent); border-radius:999px; padding:3px 10px; font-weight:600; }
-.ch { margin:44px 0; } .ch h2 { font-size:1.3rem; border-left:4px solid var(--accent); padding-left:10px; margin:0 0 8px; }
-.intro { color:var(--muted); margin:0 0 18px; }
-.scene { margin:0 0 30px; background:var(--white); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
-.scene figcaption { padding:12px 18px; font-weight:700; border-bottom:1px solid var(--line); }
-.no { display:inline-flex; align-items:center; justify-content:center; min-width:24px; height:24px; margin-right:8px; border-radius:6px; background:var(--accent); color:#fff; font-size:.75rem; }
-.shot { position:relative; line-height:0; background:#0f172a; } .shot img { width:100%; height:auto; display:block; }
-.hl { position:absolute; border:3px solid var(--hl); border-radius:8px; box-shadow:0 0 0 4px rgba(245,158,11,.25); pointer-events:none; }
-.how { margin:0; padding:14px 22px 16px 38px; font-size:.92rem; } .how li { margin:4px 0; }
-kbd { display:inline-block; padding:0 6px; border:1px solid #cbd5e1; border-bottom-width:2px; border-radius:5px; background:#f8fafc; font-family:inherit; font-size:.8rem; line-height:1.5; }
-.faq { background:var(--white); border:1px solid var(--line); border-radius:10px; padding:10px 16px; margin:0 0 10px; } .faq summary { font-weight:700; cursor:pointer; } .faq p { margin:8px 0 2px; }
-.keys { border-collapse:collapse; width:100%; background:var(--white); margin:6px 0 18px; font-size:.9rem; }
-.keys th, .keys td { border:1px solid var(--line); padding:7px 12px; text-align:left; vertical-align:top; } .keys th { width:38%; background:#f8fafc; font-weight:600; }
-@media (max-width:900px) { .wrap { grid-template-columns:1fr; } nav { position:static; height:auto; border-right:none; border-bottom:1px solid var(--line); } main { padding:20px 16px 60px; } }
-@media print { nav { display:none; } .wrap { display:block; } .scene { break-inside:avoid; } body { background:#fff; } }
-</style></head><body><div class="wrap">
-<nav><h1>업무 내비게이터</h1><div class="ver">사용 설명서 · v1.5.7</div><ul><li><a href="#ch0">시작하기 — 처음 켤 때와 하루의 시작</a></li><li><a href="#ch1">1. 새 업무 만들기 (4단계)</a></li><li><a href="#ch2">2. 일하는 화면</a></li><li><a href="#ch3">3. 체크리스트 편집</a></li><li><a href="#ch4">4. 일정과 마감</a></li><li><a href="#ch5">5. 업무 분담과 회신 대기</a></li><li><a href="#ch6">6. 업무 공유</a></li><li><a href="#ch7">7. 마무리 — 처리완료 · 레퍼런스 · 보관</a></li><li><a href="#ch8">8. 조직의 자료로 남기기</a></li><li><a href="#ch9">9. 안전하게 지키기 · 설정</a></li><li><a href="#faq">부록 · 자주 묻는 질문</a></li><li><a href="#keys">부록 · 마우스와 단축키</a></li></ul></nav>
-<main>
-<div class="cover"><h1>업무 내비게이터 사용 설명서</h1>
-<p>프로그램 안에 들어 있는 <b>연습 업무</b>(소모품 구매 계약 · 월간 업무 실적 보고)로, 처음 켜기 → 업무를 만들고 → 일하고 → 나누어 맡기고 → 공유하고 → 레퍼런스로 남기고 → 보관하는 흐름 순서로 설명합니다. [새 업무 만들기 ▾ → 연습 업무 넣기]로 똑같이 따라 해 볼 수 있습니다.</p>
-<p>사진의 <b style="color:#d97706">주황 테두리</b>가 그 단계에서 누르거나 볼 곳입니다. (AI 기능은 이 설명서에서 다루지 않습니다.)</p>
-<div class="flow"><span>처음 켜기·내 정보</span><span>연습 업무</span><span>마감 임박 알림</span><span>새 업무 만들기</span><span>일하기</span><span>체크리스트 편집</span><span>일정</span><span>업무 분담·회신 대기</span><span>공유</span><span>처리완료</span><span>레퍼런스</span><span>보관</span><span>조직 자료</span><span>백업</span></div></div>
-<section class="ch" id="ch0"><h2>시작하기 — 처음 켤 때와 하루의 시작</h2><p class="intro">업무 내비게이터는 업무를 「단계 → 할 일」 체크리스트로 만들고, 일하면서 처리결과·업무팁·서식·참고 자료를 쌓아 다음 담당자에게 남기는 프로그램입니다. 이 설명서의 사진은 모두 프로그램 안에 들어 있는 <b>연습 업무</b>(소모품 구매 계약 · 월간 업무 실적 보고, 가상 자료)로 찍었습니다. 직접 따라 해 보려면 아래 「연습 업무 넣기」부터 하세요.</p>
-<figure class="scene" id="s-00a_welcome">
-  <figcaption><span class="no">1</span>처음 켤 때 — 내 정보</figcaption>
-  <div class="shot"><img src="img/00a_welcome.png" alt="처음 켤 때 — 내 정보 화면" loading="lazy"><span class="hl" style="left:33.33%;top:13.58%;width:33.33%;height:56.17%"></span></div>
-  <ul class="how"><li>처음 켜면 한 번 <b>「업무 내비게이터에 오신 것을 환영합니다」</b> 창이 뜹니다. 이름(꼭)·계급·소속·연락처를 적고 <b>[시작하기]</b>(또는 <kbd>Enter</kbd>)를 누릅니다. 이 내 정보는 진행상황 출력의 작성자와 업무 분담의 보내는 사람으로 쓰입니다.</li><li>지금 적기 어렵다면 <b>[나중에]</b>(<kbd>Esc</kbd>). 오른쪽 위 <b>이름 첫 글자 동그라미</b>(이름이 없으면 사람 아이콘 + 주황 점)를 누르면 언제든 환경설정 → 일반 → 내 정보에서 고칩니다.</li><li>이 브라우저에 업무가 하나도 없으면 「다른 브라우저(엣지·크롬)에서 쓰셨다면 그 브라우저로 여세요 · [백업 파일 가져오기]」 안내가 함께 나옵니다 — 업무는 <b>브라우저마다 따로</b> 저장되기 때문입니다.</li></ul>
-</figure>
-<figure class="scene" id="s-01_main">
-  <figcaption><span class="no">2</span>첫 화면과 왼쪽 사이드바</figcaption>
-  <div class="shot"><img src="img/01_main.png" alt="첫 화면과 왼쪽 사이드바 화면" loading="lazy"><span class="hl" style="left:2.78%;top:8.15%;width:18.06%;height:89.38%"></span></div>
-  <ul class="how"><li>왼쪽 위 <b>[새 업무 만들기]</b>를 누르면 바로 만들기 창이 열립니다(옆 <b>▾</b>는 업무 가져오기·연습 업무 넣기). 가운데에는 업무 카드가 놓이고, 위쪽 탭으로 <b>진행중 · 레퍼런스 · 처리완료 · 전체</b>를 골라 봅니다.</li><li>맨 왼쪽 위 <b>「✦ 업무 내비게이터」</b> 로고를 누르면(또는 초점을 두고 <kbd>Enter</kbd>) 언제든 처음 화면(업무 목록 맨 위)으로 돌아옵니다 — 열린 창을 닫고 일하는 화면에서 나오며, 검색어는 지우고 정렬은 그대로 둡니다. 체크리스트를 고치던 중이면 「변경 내용을 저장할까요?」를 먼저 묻습니다.</li><li>업무는 기본으로 <b>최근 진행순</b> — 최근에 체크한 업무와 방금 만들거나 복사·가져온 업무가 맨 위에 옵니다. 정렬을 바꾸면 다음에 켤 때도 그대로입니다. 오른쪽 기간 단추(기본 최근 3개월)로 보이는 범위를 고릅니다 — 오래된 업무가 안 보이면 「전체 기간」. <b>목록형</b>(오른쪽 ☰)에서는 제목 줄을 눌러 정렬합니다.</li><li><b>마감 임박</b>: 기한이 지났거나 곧 다가오는 업무가 급한 순서로 모입니다. 업무 전체 마감뿐 아니라 <b>항목(할 일) 마감</b>도 함께 올라오고, 누르면 그 업무가 바로 열립니다.</li><li><b>업무 분담 현황 — 회신 기다리는 중</b>: 동료에게 맡기고 아직 회신을 받지 못한 단계가 「담당자 · 단계 · 회신 기한」으로 보입니다. 담당자로 받은 업무는 「내가 회신할 일」에 모입니다.</li></ul>
-</figure>
-<figure class="scene" id="s-02_banner">
-  <figcaption><span class="no">3</span>마감 임박 알림</figcaption>
-  <div class="shot"><img src="img/02_banner.png" alt="마감 임박 알림 화면" loading="lazy"><span class="hl" style="left:34.72%;top:40.00%;width:30.56%;height:20.00%"></span></div>
-  <ul class="how"><li>프로그램을 켜면 하루 한 번 <b>화면 가운데</b>에 <b>마감 임박 알림</b>이 뜹니다. 「기한 지남 · 오늘 마감」처럼 요약하고 급한 업무부터 5건까지 보여 줍니다(넘으면 「외 n건」). <b>[닫기]</b>·바깥 누르기·<kbd>Esc</kbd>로 닫습니다.</li><li>업무 이름을 누르면 그 업무가 열리고, <b>[마감 임박 목록 보기 →]</b>를 누르면 왼쪽 「마감 임박」 목록으로 가서 깜박여 알려 줍니다. 알림 횟수(하루 한 번 · 열 때마다 · 끄기)는 환경설정 → 알림에서 정합니다.</li></ul>
-</figure>
-<figure class="scene" id="s-03_notify">
-  <figcaption><span class="no">4</span>알림센터</figcaption>
-  <div class="shot"><img src="img/03_notify.png" alt="알림센터 화면" loading="lazy"><span class="hl" style="left:68.61%;top:5.19%;width:26.39%;height:46.17%"></span></div>
-  <ul class="how"><li>맨 위 오른쪽 🔔를 누르면 <b>알림센터</b>가 열립니다. 지나간 마감 알림과 시스템 알림을 다시 볼 수 있습니다. 전체 · 안 읽음 · 업무·마감 · 시스템으로 나누어 보고, <b>모두 읽음</b>으로 빨간 숫자를 지웁니다. <kbd>Esc</kbd>나 바깥을 누르면 닫힙니다.</li></ul>
-</figure>
-<figure class="scene" id="s-04_newmenu">
-  <figcaption><span class="no">5</span>새 업무 만들기 메뉴</figcaption>
-  <div class="shot"><img src="img/04_newmenu.png" alt="새 업무 만들기 메뉴 화면" loading="lazy"><span class="hl" style="left:4.79%;top:17.78%;width:14.03%;height:19.75%"></span></div>
-  <ul class="how"><li><b>체크리스트 생성</b>: 단계와 할 일을 직접 적어 시작합니다(왼쪽 [새 업무 만들기]와 같음).</li><li><b>업무 가져오기</b>: 동료에게 받은 업무 파일(.json)을 엽니다. <b>그대로 가져오기</b>(체크·처리결과 그대로 — 인수인계) 또는 <b>복사하여 시작</b>(체크를 비우고 오늘 날짜로 새로, 마감일도 정할 수 있음)을 고릅니다. [취소]·<kbd>Esc</kbd>로 아무것도 가져오지 않고 닫습니다.</li><li><b>연습 업무 넣기</b>: 아래 장면을 보세요.</li></ul>
-</figure>
-<figure class="scene" id="s-39_practice">
-  <figcaption><span class="no">6</span>연습 업무 넣기 — 이 설명서를 따라 해 보기</figcaption>
-  <div class="shot"><img src="img/39_practice.png" alt="연습 업무 넣기 — 이 설명서를 따라 해 보기 화면" loading="lazy"><span class="hl" style="left:4.86%;top:33.33%;width:13.89%;height:4.20%"></span></div>
-  <ul class="how"><li><b>▾ → 연습 업무 넣기</b>를 누르면 업무 2개가 들어옵니다: <b>[연습] 소모품 구매 — 계약부터 대가 지급까지</b>(6단계 · 할 일 25개) · <b>[연습] 월간 업무 실적 보고 (매달 5일)</b>. 업체·금액은 모두 가상입니다.</li><li>소모품 구매에는 줄마다 업무팁(⚠ 놓치기 쉬운 것 · 근거 조문), 건너뛰기 버튼 5개(1인 견적 · 2인 이상 견적 · 견적 생략 · 5천만원 이하/초과), 빈 양식 2개(각서 · 수의계약 공개내역서), 참고 자료(지방계약법 시행령·시행규칙)가 들어 있습니다. 근거는 2026. 7. 1. 기준이라 실제 업무 전에는 최신 법령을 확인하세요.</li><li>마감일은 넣는 날을 기준으로 정해져 바로 「마감 임박」·일정에 나옵니다. 한 번 더 넣으면 「(2)」가 붙은 새 연습 업무가 들어오고, 다 해 본 뒤에는 휴지통으로 지우면 됩니다. 같은 업무는 <b>사용설명서/연습업무.json</b>을 [업무 가져오기]로 열어도 됩니다.</li><li>따라 하는 순서: 2장(체크·처리결과·길잡이) → 2장 끝(갈림길에서 [1인 견적]) → 5장(04 납품·검사를 검사 담당에게) → 진행상황 출력 → 7장(완료 처리 → 레퍼런스).</li></ul>
-</figure>
-</section><section class="ch" id="ch1"><h2>1. 새 업무 만들기 (4단계)</h2><p class="intro">예시: <b>사무용 의자 구매 (2026. 11.)</b> — 연습 업무를 본보기 삼아 내 업무를 만듭니다. 이름 → 절차 → 업무팁·서식 → 참고 자료 순서이고, ③·④는 건너뛰고 [바로 시작]해도 됩니다. 쓰는 중에 창을 닫으면(✕·<kbd>Esc</kbd>) [임시 저장하고 닫기 / 버리기 / 계속 작성]을 묻고, 임시 저장하면 다음에 열 때 「작성하던 업무가 있습니다 — 이어서 쓰기 / 버리고 새로 시작」을 묻습니다. 위 [초기화]는 처음부터 다시 씁니다.</p>
-<figure class="scene" id="s-05_step1">
-  <figcaption><span class="no">7</span>① 업무 이름</figcaption>
-  <div class="shot"><img src="img/05_step1.png" alt="① 업무 이름 화면" loading="lazy"><span class="hl" style="left:29.24%;top:26.67%;width:41.53%;height:5.93%"></span></div>
-  <ul class="how"><li>업무 이름만 적으면 바로 시작할 수 있습니다. 마감일·폴더는 일하면서 정해도 됩니다.</li><li><kbd>Enter</kbd>를 누르면 다음 단계로 넘어갑니다. 이름 없이 [다음]을 누르면 「업무 이름을 먼저 적어 주세요」.</li></ul>
-</figure>
-<figure class="scene" id="s-06_step2">
-  <figcaption><span class="no">8</span>② 절차 (단계와 할 일)</figcaption>
-  <div class="shot"><img src="img/06_step2.png" alt="② 절차 (단계와 할 일) 화면" loading="lazy"><span class="hl" style="left:29.24%;top:32.47%;width:41.18%;height:47.78%"></span></div>
-  <ul class="how"><li><b>단계</b>(번호 네모 01·02…)를 적고, 그 단계에서 할 일(동그라미)은 아래 줄에서 <kbd>Tab</kbd>을 눌러 넣습니다. 일하는 화면과 같은 모양입니다.</li><li>예: 01 구매 준비 → 02 계약 → 03 납품·검사 → 04 대가 지급. 할 일은 <b>따로 끝내고 따로 체크할 수 있는 일 하나</b>씩 나누면(단계마다 2~8개) 무엇을 했는지 분명해집니다.</li><li><kbd>Enter</kbd> 다음 항목 · <kbd>Tab</kbd> 할 일로 ⇄ <kbd>Shift</kbd>+<kbd>Tab</kbd> 단계로 · <kbd>Backspace</kbd> 빈 줄 지우기 · ⠿ 끌어서 순서 변경. [이전]으로 돌아가도 적은 것은 그대로입니다.</li></ul>
-</figure>
-<figure class="scene" id="s-07_step3">
-  <figcaption><span class="no">9</span>③ 업무팁·서식 (선택)</figcaption>
-  <div class="shot"><img src="img/07_step3.png" alt="③ 업무팁·서식 (선택) 화면" loading="lazy"><span class="hl" style="left:29.24%;top:22.84%;width:41.53%;height:51.85%"></span></div>
-  <ul class="how"><li>필요한 항목에만 줄의 <b><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#f59e0b" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg> 업무팁 +</b>·<b><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#10b981" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg> 서식 +</b>를 눌러 붙입니다. 누르면 항목 창이 그 탭으로 열리고, 닫으면(<kbd>Esc</kbd>) 이 창으로 돌아옵니다.</li><li>서식 파일은 항목 줄에 <b>끌어다 놓아도</b> 그 항목의 서식으로 연결됩니다 (서식·문서함에도 저장).</li></ul>
-</figure>
-<figure class="scene" id="s-08_tip">
-  <figcaption><span class="no">10</span>업무팁 쓰기 — 세 칸</figcaption>
-  <div class="shot"><img src="img/08_tip.png" alt="업무팁 쓰기 — 세 칸 화면" loading="lazy"><span class="hl" style="left:25.00%;top:12.96%;width:50.00%;height:74.07%"></span></div>
-  <ul class="how"><li>항목 창의 <b><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#f59e0b" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg> 업무팁</b> 탭은 세 칸입니다: <b style="color:#dc2626">⚠ 놓치기 쉬운 것</b>(빨간 테두리, 한 줄에 하나 — 틀리면 문제가 되는 기한·요건·자주 하는 실수) · <b>업무 팁</b>(하는 방법·순서, 위 기호 단추 □ ○ - 로 단계 나누기) · <b>근거</b>(법령 조문·지침, 한 줄에 하나).</li><li>예: 놓치기 쉬운 것 「추정가격 2천만원 초과면 1인 견적 불가 — 2인 이상 견적」 · 근거 「시행령 제30조제1항제2호」 — 다음 담당자는 이 항목에서 조문을 바로 보고 일합니다.</li><li>저장 버튼이 없습니다 — 칸을 벗어나거나 창을 닫으면(<kbd>Esc</kbd> 포함) 바로 저장되고 「변경 사항이 저장되었습니다」가 뜹니다. 세 칸은 저장할 때 글 하나(「⚠ …」·「근거: …」 줄)로 합쳐지므로 예전 판·내보낸 파일과 그대로 맞습니다. [정리]는 가운데 칸만 다듬습니다.</li><li><b>어디에 적느냐</b>: 할 일 모두에 같이 필요한 것은 <b>단계</b>에 한 번 적으면 그 단계 할 일 모두에 「단계 공통」으로 보이고, 한 할 일에만 필요한 것은 그 <b>할 일</b>에 적습니다. 같은 내용을 또 적었으면 [여기 같은 내용 지우기]가 나옵니다.</li></ul>
-</figure>
-<figure class="scene" id="s-08b_tipfiles">
-  <figcaption><span class="no">11</span>업무팁 예시·사진</figcaption>
-  <div class="shot"><img src="img/08b_tipfiles.png" alt="업무팁 예시·사진 화면" loading="lazy"><span class="hl" style="left:26.32%;top:72.84%;width:47.01%;height:9.88%"></span></div>
-  <ul class="how"><li>업무팁 탭 아래 <b><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#f59e0b" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg> 예시·사진</b>에 작성례·현장 사진·시스템 화면 캡처를 넣습니다. <b>[⬆ 내 PC에서 올리기]</b> · 끌어다 놓기 · 화면 캡처는 <kbd>Ctrl</kbd>+<kbd>V</kbd>. 누르면 미리보기가 열리고 <kbd>←</kbd> <kbd>→</kbd>로 넘겨 봅니다.</li><li><b>구분</b>: 채워서 쓰는 <b>빈 양식</b>은 [서식] 탭(서식·문서함에서 연결) · 「이렇게 쓰면 된다」는 <b>작성례·사진</b>은 업무팁. 예시에는 이름·주민번호 등을 가린 사본만 넣으세요.</li><li>예시·사진은 노하우라서 공유·내보내기·레퍼런스 사본에도 함께 갑니다 (처리결과 첨부는 레퍼런스에 복사되지 않음).</li></ul>
-</figure>
-<figure class="scene" id="s-09_fmpick">
-  <figcaption><span class="no">12</span>서식 고르기 (서식·문서함 고르기 모드)</figcaption>
-  <div class="shot"><img src="img/09_fmpick.png" alt="서식 고르기 (서식·문서함 고르기 모드) 화면" loading="lazy"><span class="hl" style="left:11.18%;top:11.23%;width:77.64%;height:5.43%"></span></div>
-  <ul class="how"><li>서식 탭의 <b>🗂 서식·문서함에서 고르기</b>를 누르면 서식·문서함 창이 고르기 모드로 열립니다. 예: 「계약서 작성」에 각서(수의계약 배제사유) 양식.</li><li>줄을 눌러 체크하고 <b>[서식 연결하기]</b>를 누릅니다. 두 번 누르면 미리보기, Shift+클릭으로 범위 고르기. 창에 파일을 끌어다 놓으면 지금 폴더에 저장되고 바로 체크됩니다.</li></ul>
-</figure>
-<figure class="scene" id="s-10_step3done">
-  <figcaption><span class="no">13</span>붙인 내용 확인</figcaption>
-  <div class="shot"><img src="img/10_step3done.png" alt="붙인 내용 확인 화면" loading="lazy"><span class="hl" style="left:29.24%;top:22.84%;width:41.53%;height:51.85%"></span></div>
-  <ul class="how"><li>붙인 항목은 「업무팁 ✓ · 서식 1」처럼 버튼에 표시됩니다.</li></ul>
-</figure>
-<figure class="scene" id="s-11_refpick">
-  <figcaption><span class="no">14</span>④ 참고 자료 고르기 (법령·매뉴얼)</figcaption>
-  <div class="shot"><img src="img/11_refpick.png" alt="④ 참고 자료 고르기 (법령·매뉴얼) 화면" loading="lazy"><span class="hl" style="left:11.18%;top:87.53%;width:77.64%;height:7.28%"></span></div>
-  <ul class="how"><li>업무 전체에서 참고할 법령·지침·공문을 <b>📚 법령·매뉴얼에서 고르기</b>로 고릅니다. 예: 지방계약법 시행령. 아래 <b>[참고 자료 연결하기]</b>를 누르면 연결됩니다.</li></ul>
-</figure>
-<figure class="scene" id="s-12_step4">
-  <figcaption><span class="no">15</span>④ 참고 자료 확인 → 시작하기</figcaption>
-  <div class="shot"><img src="img/12_step4.png" alt="④ 참고 자료 확인 → 시작하기 화면" loading="lazy"><span class="hl" style="left:29.24%;top:22.84%;width:41.53%;height:11.85%"></span></div>
-  <ul class="how"><li>연결한 자료가 목록에 보입니다. <b>⬆ 내 PC에서 올리기</b>로 새 파일을 넣을 수도 있습니다 (법령·매뉴얼에도 저장).</li><li><b>[시작하기]</b>를 누르면 업무가 만들어지고 일하는 화면이 열립니다. 다음 장부터는 연습 업무(소모품 구매)로 일하는 모습을 봅니다.</li></ul>
-</figure>
-</section><section class="ch" id="ch2"><h2>2. 일하는 화면</h2><p class="intro">체크하고, 처리결과를 적고, 업무팁·근거·서식을 보며 일합니다. 예시는 연습 업무 「소모품 구매」로, 01 구매 준비를 끝내고 02 계약 방법 정하기를 하는 중입니다.</p>
-<figure class="scene" id="s-13_focus">
-  <figcaption><span class="no">16</span>화면 구성</figcaption>
-  <div class="shot"><img src="img/13_focus.png" alt="화면 구성 화면" loading="lazy"><span class="hl" style="left:20.97%;top:33.83%;width:47.57%;height:60.62%"></span></div>
-  <ul class="how"><li><b>왼쪽</b>: 진행률·마감일·일정 보기, 체크리스트 편집 · 업무 분담 · 진행상황 출력 · 내보내기 · 삭제</li><li><b>가운데</b>: 참고 자료 칩(한 줄)과 체크리스트. 단계는 번호 네모, 할 일은 동그라미. 지금 단계만 펼쳐지고 나머지는 접혀 있습니다.</li><li><b>오른쪽</b>: 업무 절차 — 전체 흐름과 지금 단계, 「지금 할 일」의 업무팁·서식. 맨 위 <b>「✓ 완료 1/6단계 ▾」</b> 줄은 스크롤해도 늘 보이고, 누르면 끝난 단계가 펼쳐집니다.</li><li><kbd>Esc</kbd>를 누르면 한 단계씩 닫힙니다: 떠 있는 메뉴·창 → 고른 줄 → 업무 목록으로.</li></ul>
-</figure>
-<figure class="scene" id="s-17_work">
-  <figcaption><span class="no">17</span>체크하고 처리결과 적기</figcaption>
-  <div class="shot"><img src="img/17_work.png" alt="체크하고 처리결과 적기 화면" loading="lazy"><span class="hl" style="left:23.06%;top:56.30%;width:45.49%;height:5.31%"></span></div>
-  <ul class="how"><li>동그라미를 누르면 체크됩니다(다시 누르면 풀림). 단계의 할 일을 모두 끝내면 단계 네모가 초록 ✓로 채워지고 다음 단계가 펼쳐집니다. 끝난 단계의 할 일을 풀면 그 단계도 다시 진행 중이 됩니다. 앞 단계가 안 끝났는데 뒤를 체크하면 「앞 단계가 아직 진행중입니다」로 알려 줍니다.</li><li>줄을 한 번 누르면 <b>처리결과 한 줄 입력칸</b>이 열립니다. <kbd>Enter</kbd> 저장하고 다음 할 일로, <kbd>Shift</kbd>+<kbd>Enter</kbd> 줄바꿈, <kbd>Esc</kbd> 닫기. 칸 옆 📎로 결과 파일을 붙이고 [⤢ 자세히]로 항목 창을 엽니다.</li><li>줄은 제목과 꼭 필요한 것만 한 줄로 보입니다. 단계 오른쪽 <b>「1/2」</b>는 끝낸 할 일 수, 날짜는 완료 날짜 또는 마감 D-n. 업무팁·서식이 있는 줄은 제목 뒤에 작은 점(<b style="color:#f59e0b">•</b>).</li><li>줄에 <b>마우스를 올리면</b> 날짜 자리에 <b><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#8b5cf6" aria-hidden="true"><path d="M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.14-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14a2 2 0 0 0 1.44 1.44l6.14 1.58a.5.5 0 0 1 0 .96l-6.14 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg> 길잡이 · <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#f59e0b" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg> 업무팁 · <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#10b981" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg> 서식 · <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#2563eb" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg> 마감일 · <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#64748b" aria-hidden="true"><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="19" cy="12" r="1.3" fill="currentColor"/><circle cx="5" cy="12" r="1.3" fill="currentColor"/></svg></b> 버튼이 나옵니다. 내용이 있는 버튼은 색, 없는 버튼은 연한 회색 선입니다.</li><li>건너뛰기 버튼이 있는 줄(예: 「금액 기준 확인 — 갈림길」)에는 제목 아래 <b>[1인 견적] [2인 이상 견적] [견적 생략]</b> 단추가 나옵니다 — 이 장 끝 「갈림길에서 건너뛰기」.</li></ul>
-</figure>
-<figure class="scene" id="s-17b_thumbs">
-  <figcaption><span class="no">18</span>업무 절차 패널 — 업무팁·지난 기록·예시</figcaption>
-  <div class="shot"><img src="img/17b_thumbs.png" alt="업무 절차 패널 — 업무팁·지난 기록·예시 화면" loading="lazy"><span class="hl" style="left:76.25%;top:70.00%;width:19.86%;height:6.42%"></span></div>
-  <ul class="how"><li>오른쪽 업무 절차의 업무팁은 세 칸으로 보입니다: 맨 위 <b style="color:#dc2626">놓치기 쉬운 것</b>(빨간 상자) · 가운데 업무 팁 · 맨 아래 <b>근거</b>. 길면 가운데만 줄여 보이고, 놓치기 쉬운 것과 근거는 늘 다 보입니다.</li><li><b>「지난번엔 이렇게」</b>: 다른 업무(처리완료 등)에서 같은 이름의 할 일에 남긴 처리결과가 최근 것부터 2개 나옵니다. 예: 5월에 끝낸 「소모품 구매 (토너·복사용지)」의 견적 결과. 누르면 그때의 항목 창이 열려 증빙까지 봅니다 — 끝낸 업무를 지우지 말고 처리완료로 남겨 두면 다음 사람이 이렇게 봅니다.</li><li>업무팁 아래 <b>예시·사진 썸네일</b>이 한 줄로 보입니다. 누르면 미리보기, <kbd>←</kbd> <kbd>→</kbd>로 넘겨 봅니다. 「필요 서식·문서」 이름을 누르면 바로 미리보기, 마우스를 올리면 ⬇ 내려받기.</li></ul>
-</figure>
-<figure class="scene" id="s-17c_pick">
-  <figcaption><span class="no">19</span>고른 항목 미리 보기 — 다음 할 일 준비</figcaption>
-  <div class="shot"><img src="img/17c_pick.png" alt="고른 항목 미리 보기 — 다음 할 일 준비 화면" loading="lazy"><span class="hl" style="left:73.54%;top:28.02%;width:23.40%;height:61.98%"></span></div>
-  <ul class="how"><li>체크리스트에서 줄을 <b>한 번 누르면</b> 오른쪽 업무 절차에서 그 항목이 <b>제자리에서 펼쳐져</b> 업무팁·서식이 보입니다. 예: 03 계약의 「배제사유 확인 · 각서 받기」를 골라 각서 양식을 미리 내려받아 둡니다.</li><li>맨 위 「완료」 줄 자리가 고른 항목 이름 한 줄로 바뀌고, 그동안 지금 할 일 상자는 접힙니다. <b>지금 할 일로</b>를 누르거나 같은 줄을 다시 누르면(또는 <kbd>Esc</kbd>) 원래대로 돌아갑니다 — Esc는 미리 보기만 풀고 화면은 그대로입니다.</li></ul>
-</figure>
-<figure class="scene" id="s-17d_wide">
-  <figcaption><span class="no">20</span>업무 절차 넓게 보기</figcaption>
-  <div class="shot"><img src="img/17d_wide.png" alt="업무 절차 넓게 보기 화면" loading="lazy"><span class="hl" style="left:59.44%;top:8.15%;width:39.17%;height:89.38%"></span></div>
-  <ul class="how"><li>업무 절차 머리의 <b>⤢</b>(또는 머리를 두 번 누르기)를 누르면 왼쪽 패널이 아이콘 줄로 접히고 업무 절차가 넓어지며 글자도 10% 커집니다. 가운데 체크리스트는 너비 그대로입니다.</li><li>아이콘 줄: 펼치기 · 진행률 · 일정 · 체크리스트 편집 · 업무 분담 · 진행상황 출력 · 내보내기 (마우스를 올리면 이름). 다시 ⤢를 누르면 원래대로. 다음에 열어도 기억합니다.</li></ul>
-</figure>
-<figure class="scene" id="s-17e_font">
-  <figcaption><span class="no">21</span>읽는 글 크기 「가가」</figcaption>
-  <div class="shot"><img src="img/17e_font.png" alt="읽는 글 크기 「가가」 화면" loading="lazy"><span class="hl" style="left:87.64%;top:14.57%;width:11.81%;height:26.05%"></span></div>
-  <ul class="how"><li>업무 절차·길잡이 머리의 <b>「가가」</b>를 누르면 <b>작게 90% · 보통 · 크게 115% · 아주 크게 130%</b>를 고릅니다. 업무팁·길잡이 본문만 커지고 나머지 화면은 그대로입니다. 보통이 아니면 단추에 색이 들어옵니다.</li><li>환경설정 → 일반 → 화면의 「읽는 글 크기」도 같은 설정입니다. 메뉴는 <kbd>Esc</kbd>로 닫습니다(뒤 화면은 그대로).</li></ul>
-</figure>
-<figure class="scene" id="s-18_result">
-  <figcaption><span class="no">22</span>항목 창 — 처리결과와 첨부</figcaption>
-  <div class="shot"><img src="img/18_result.png" alt="항목 창 — 처리결과와 첨부 화면" loading="lazy"><span class="hl" style="left:25.00%;top:12.96%;width:50.00%;height:74.07%"></span></div>
-  <ul class="how"><li>줄을 <b>두 번 누르면</b> 항목 창이 열립니다 (처리결과·업무팁·서식).</li><li>예: 「조달청 가격정보 · ○○가구 · △△오피스 3곳 비교 — 최저 13,980,000원」 + 가격 조사표 PDF·조달청 화면 캡처 — 절차를 지켰다는 <b>증빙</b>이 그 항목에 함께 남습니다.</li><li>적고 바로 <kbd>Esc</kbd>를 눌러도 저장됩니다. 제목 옆 번호: 단계는 「01」, 할 일은 「01-3」.</li></ul>
-</figure>
-<figure class="scene" id="s-19_formats">
-  <figcaption><span class="no">23</span>항목 창 — 서식</figcaption>
-  <div class="shot"><img src="img/19_formats.png" alt="항목 창 — 서식 화면" loading="lazy"><span class="hl" style="left:26.32%;top:26.54%;width:47.36%;height:3.21%"></span></div>
-  <ul class="how"><li>서식 탭에는 <b>채워서 쓰는 빈 양식</b>을 둡니다. 예: 「배제사유 확인 · 각서 받기」의 각서(수의계약 배제사유).</li><li>연결한 서식을 누르면 미리보기, 마우스를 올리면 ⬇ 내려받기·✕ 빼기, 끌어서 순서 바꾸기. 오른쪽 클릭: 보기 · 내려받기 · 서식·문서함에서 위치 보기 · 🖼 업무팁 예시로 옮기기 · ⤴ 단계 공통으로 / ⤵ 할 일로 옮기기 · ✕ 빼기.</li><li>서식·문서함에서 이 양식을 새 판으로 <b>교체</b>하면 이 항목도 새 판을 봅니다(8장).</li></ul>
-</figure>
-<figure class="scene" id="s-20_refpop">
-  <figcaption><span class="no">24</span>참고 자료 목록</figcaption>
-  <div class="shot"><img src="img/20_refpop.png" alt="참고 자료 목록 화면" loading="lazy"><span class="hl" style="left:54.44%;top:23.21%;width:27.78%;height:21.60%"></span></div>
-  <ul class="how"><li>제목 아래 참고 자료 칩은 늘 한 줄입니다 (2개 + 「+N개」·「목록」). 오른쪽 [＋ 넣기]로 바로 넣고, 칩 오른쪽 클릭으로 보기·내려받기·위치 보기·빼기.</li><li>누르면 떠 있는 목록: 줄 누르기 = 보기 · ⬇ 내려받기 · ✕ 빼기 · <b>[⬇ 모두 내려받기]</b> · <b>[📚 법령·매뉴얼에서 관리]</b></li></ul>
-</figure>
-<figure class="scene" id="s-21_preview">
-  <figcaption><span class="no">25</span>미리보기</figcaption>
-  <div class="shot"><img src="img/21_preview.png" alt="미리보기 화면" loading="lazy"><span class="hl" style="left:16.67%;top:6.05%;width:66.67%;height:88.02%"></span></div>
-  <ul class="how"><li>PDF·한글(HWPX)·워드·사진·텍스트를 프로그램 안에서 봅니다. 예: 지방계약법 시행령.</li><li>위쪽 <b>[⬇ 내려받기]</b>로 바로 저장 · 가장자리나 모서리를 끌어 크기 조절(기억됨) · ⤢ 전체 화면 · <kbd>Esc</kbd> 닫기</li></ul>
-</figure>
-<figure class="scene" id="s-21b_zoom">
-  <figcaption><span class="no">26</span>사진 미리보기 — 확대·축소</figcaption>
-  <div class="shot"><img src="img/21b_zoom.png" alt="사진 미리보기 — 확대·축소 화면" loading="lazy"><span class="hl" style="left:44.03%;top:87.78%;width:11.94%;height:4.44%"></span></div>
-  <ul class="how"><li>사진·화면 캡처를 <b>누르면 누른 곳을 중심으로 확대</b>되고, 다시 누르면 창에 맞춥니다. <kbd>Ctrl</kbd>+휠로 조금씩 확대·축소, 확대한 사진은 끌어서 옮깁니다.</li><li>아래 가운데 막대: <b>[－] [배율] [＋] [맞춤]</b>. 키보드 <kbd>＋</kbd> / <kbd>－</kbd> / <kbd>0</kbd>(맞춤)도 됩니다.</li></ul>
-</figure>
-<figure class="scene" id="s-22_menu">
-  <figcaption><span class="no">27</span>오른쪽 클릭 메뉴 (일하는 화면)</figcaption>
-  <div class="shot"><img src="img/22_menu.png" alt="오른쪽 클릭 메뉴 (일하는 화면) 화면" loading="lazy"><span class="hl" style="left:41.11%;top:50.12%;width:14.58%;height:46.91%"></span></div>
-  <ul class="how"><li>맨 위에 <b>체크 (완료) / 체크 취소</b>, 그 줄에 건너뛰기 버튼이 있으면 그 버튼(⤼ 1인 견적 …)이 함께 나옵니다.</li><li><b>해당 없음으로 빼기</b>: 이번 업무에서 할 필요 없는 항목을 뺍니다. 알림의 [되돌리기]로 바로 되살릴 수 있고, 여러 항목은 「여러 항목 해당 없음…」 또는 체크리스트 위 [해당 없음 고르기].</li><li>업무 길잡이 · 처리결과 · 업무팁 · 서식 · 마감일 정하기 — 마우스를 올리면 나오는 버튼 줄과 같은 순서·같은 아이콘이고, 버튼 줄의 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#64748b" aria-hidden="true"><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="19" cy="12" r="1.3" fill="currentColor"/><circle cx="5" cy="12" r="1.3" fill="currentColor"/></svg>를 눌러도 버튼 바로 아래에 같은 메뉴가 열립니다. <kbd>Esc</kbd>는 메뉴만 닫습니다.</li><li>완료한 업무·레퍼런스도 메뉴가 나옵니다: 보는 명령은 그대로, 고치는 명령은 회색이고 맨 아래 「[완료 취소] 후 고칠 수 있습니다」(레퍼런스는 「[복사하여 시작]한 업무에서…」).</li></ul>
-</figure>
-<figure class="scene" id="s-22a_panelmenu">
-  <figcaption><span class="no">28</span>업무 절차 패널에서도 같은 메뉴</figcaption>
-  <div class="shot"><img src="img/22a_panelmenu.png" alt="업무 절차 패널에서도 같은 메뉴 화면" loading="lazy"><span class="hl" style="left:79.72%;top:35.68%;width:14.58%;height:35.06%"></span></div>
-  <ul class="how"><li>오른쪽 업무 절차의 단계·할 일 줄을 오른쪽 클릭해도 가운데 체크리스트와 같은 메뉴가 나옵니다 — 패널만 보며 일할 때 체크·처리결과·업무팁을 바로 엽니다.</li><li>접힌 알약(「해당 없음 · 1」·「⤼ 1인 견적 · 1」)을 오른쪽 클릭하면 펼치기/접기 · 모두 되살리기 / 건너뛰기 취소(알림 [되돌리기]).</li></ul>
-</figure>
-<figure class="scene" id="s-22b_guide">
-  <figcaption><span class="no">29</span>업무 길잡이 — 이 할 일에 필요한 것을 한 화면에</figcaption>
-  <div class="shot"><img src="img/22b_guide.png" alt="업무 길잡이 — 이 할 일에 필요한 것을 한 화면에 화면" loading="lazy"><span class="hl" style="left:26.39%;top:7.41%;width:47.22%;height:75.06%"></span></div>
-  <ul class="how"><li>줄에 마우스를 올려 <b><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#8b5cf6" aria-hidden="true"><path d="M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.14-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14a2 2 0 0 0 1.44 1.44l6.14 1.58a.5.5 0 0 1 0 .96l-6.14 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg> 길잡이</b>를 누르거나 오른쪽 클릭 → <b>업무 길잡이</b>: 그 할 일의 <b><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#f59e0b" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg> 업무팁</b>(놓치기 쉬운 것·근거 포함, 예시 썸네일) · <b><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#10b981" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg> 서식</b> · 「단계 공통」 · <b><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#2563eb" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg> 참고 자료</b>가 묶음별로 모여 나옵니다. 비어 있는 묶음은 보이지 않습니다.</li><li>참고 자료가 4개 이상이면 3개만 보이고 「▸ n개 더 보기」(묶음 머리를 눌러도 펼침, 기억됨). 머리 「가가」로 글자 크기, ⤢로 전체화면.</li><li>아래 <b>「다음 할 일 (단계 › 할 일) ›」</b>로 다음 할 일의 길잡이로 넘어가고, <b>[항목 창에서 고치기]</b>로 업무팁·예시·서식을 고칩니다 — 항목 창을 닫으면 같은 길잡이로 돌아와 고친 내용이 바로 보입니다. 🔈 듣기로 소리로 들을 수도 있습니다(자동으로 읽기는 환경설정에서). <kbd>Esc</kbd>로 닫습니다.</li></ul>
-</figure>
-<figure class="scene" id="s-40_practice_skip">
-  <figcaption><span class="no">30</span>갈림길에서 건너뛰기 — 미리 보고 실행</figcaption>
-  <div class="shot"><img src="img/40_practice_skip.png" alt="갈림길에서 건너뛰기 — 미리 보고 실행 화면" loading="lazy"><span class="hl" style="left:58.06%;top:55.19%;width:3.82%;height:3.95%"></span></div>
-  <ul class="how"><li>02 「금액 기준 확인 — 갈림길」 줄의 <b>[1인 견적]</b>을 누르면 무엇을 건너뛰는지 먼저 보여 줍니다: 「나라장터 수의계약 안내공고 (2인 이상 견적)」 1개.</li><li><b>[실행]</b>(또는 <kbd>Enter</kbd>)을 누르면 건너뛰고, <b>[취소]</b>·바깥 누르기·<kbd>Esc</kbd>는 아무것도 바꾸지 않습니다. 금액 기준(2천만원 이하·초과·200만원 미만)은 그 줄의 업무팁에 있습니다.</li><li>건너뛰기 버튼은 조건(금액·처분 종류 등)에 따라 <b>필요 없는 절차를 한 번에 빼고 까닭을 남기는</b> 기능입니다. 갈림길이 있는 업무는 레퍼런스에 버튼을 꼭 넣어 두세요(3장).</li></ul>
-</figure>
-<figure class="scene" id="s-22e_skip">
-  <figcaption><span class="no">31</span>건너뛴 항목도 제자리에 — 업무 절차 패널</figcaption>
-  <div class="shot"><img src="img/22e_skip.png" alt="건너뛴 항목도 제자리에 — 업무 절차 패널 화면" loading="lazy"><span class="hl" style="left:72.29%;top:16.30%;width:0.00%;height:0.00%"></span></div>
-  <ul class="how"><li>해당 없음으로 빼거나 건너뛰기 버튼으로 건너뛴 단계·할 일은 오른쪽 업무 절차에서 사라지지 않고 <b>제자리에 흐리게</b>(취소선) 남습니다. 예: 「1인 견적」으로 건너뛴 나라장터 안내공고, 1인 견적이라 해당 없음으로 뺀 예정가격 작성.</li><li>알약으로 까닭을 나눕니다: 회색 <b>「해당 없음」</b> · 보라 <b>「⤼ 버튼 이름」</b>. 마우스를 올리면 사유가 보이고, 누르면 체크리스트의 그 줄로 갑니다. 연달아 여러 단계를 건너뛰면 「⤼ n개 건너뜀 ▸」 한 줄로 접히고, 진행 줄에는 「완료 1/6단계 · 건너뜀 1」처럼 나옵니다.</li></ul>
-</figure>
-<figure class="scene" id="s-40b_skip_taken">
-  <figcaption><span class="no">32</span>건너뛰기 표시 ⤼ — 건너뛰기 취소</figcaption>
-  <div class="shot"><img src="img/40b_skip_taken.png" alt="건너뛰기 표시 ⤼ — 건너뛰기 취소 화면" loading="lazy"><span class="hl" style="left:26.67%;top:52.35%;width:17.36%;height:4.94%"></span></div>
-  <ul class="how"><li>버튼을 누른 줄과 그 버튼으로 건너뛴 줄은 제목 앞에 보라 <b>⤼</b> 표시가 붙습니다(마우스를 올려도 가려지지 않음). 펼친 건너뛴 줄은 보라 테두리입니다.</li><li>⤼를 누르면 <b>[건너뛰기 취소]</b> 하나만 나옵니다. 묻지 않고 바로 풀리고, 알림의 <b>[되돌리기]</b>로 다시 건너뜁니다. 오른쪽 클릭 메뉴 맨 위에도 「건너뛰기 취소」가 있습니다.</li><li>가운데 체크리스트에서 건너뛴 줄은 점선 위 알약 <b>「⤼ 1인 견적 · 1」</b>(보라)로, 직접 뺀 줄은 <b>「해당 없음 · 1」</b>(회색)로 따로 접힙니다. 알약을 누르면 펼쳐집니다.</li></ul>
-</figure>
-<figure class="scene" id="s-22d_checklist">
-  <figcaption><span class="no">33</span>진행상황 출력 — 체크리스트</figcaption>
-  <div class="shot"><img src="img/22d_checklist.png" alt="진행상황 출력 — 체크리스트 화면" loading="lazy"><span class="hl" style="left:16.04%;top:25.68%;width:67.22%;height:64.69%"></span></div>
-  <ul class="how"><li>업무 화면 왼쪽 <b>[진행상황 출력]</b>을 누르면 창이 열리고 <b>「체크리스트」</b> 탭이 먼저 나옵니다. 처음 한 번은 작성자 정보(내 정보)를 확인합니다.</li><li><b>제목은 눌러서 고칩니다</b>(<kbd>Enter</kbd>로 끝). 표: 단계 줄은 진한 바탕(번호 · 단계 · 끝낸 할 일 수 · 완료일 · 처리결과), 할 일은 「○ 할 일」 · 상태 ☑ ☐ · 완료일(안 끝난 것은 회색 「~마감일」) · 처리결과. ☐/☑가 한 줄로 맞춰 있어 종이에 펜으로 체크하기 쉽습니다.</li><li>위 「넣을 것」: <b>세로 / 가로</b> · 처리결과 · 처리결과 3줄까지 · 해당 없음 항목 · <b>빈 점검표</b>(점검 항목 · 확인 · 확인일 · 비고 — 현장에서 손으로 체크). 여러 장이면 머리줄이 장마다 반복됩니다.</li><li><b>[인쇄 · PDF]</b>를 누르면 작은 인쇄 창이 따로 열립니다(대상에서 「PDF로 저장」). <b>[한글에 붙여넣기용 복사]</b> 후 한글에서 <kbd>Ctrl</kbd>+<kbd>V</kbd>. <kbd>Esc</kbd>로 출력 창을 닫으면 일하는 화면 그대로입니다.</li></ul>
-</figure>
-<figure class="scene" id="s-41_practice_print">
-  <figcaption><span class="no">34</span>출력에서 빠진 까닭 보기</figcaption>
-  <div class="shot"><img src="img/41_practice_print.png" alt="출력에서 빠진 까닭 보기 화면" loading="lazy"><span class="hl" style="left:25.56%;top:54.20%;width:48.19%;height:4.07%"></span></div>
-  <ul class="how"><li>「해당 없음 항목」을 체크하면 직접 뺀 줄은 「해당 없음」, 건너뛰기 버튼으로 건너뛴 줄은 <b>「건너뜀」</b>과 처리결과 칸의 <b>「⤼ 1인 견적」</b>으로 나와 종이에서도 왜 하지 않았는지 보입니다 — 점검·감사 때 절차를 빠뜨린 것이 아니라는 증빙이 됩니다.</li></ul>
-</figure>
-<figure class="scene" id="s-22c_report">
-  <figcaption><span class="no">35</span>진행상황 출력 — 공무원 보고서(개조식)</figcaption>
-  <div class="shot"><img src="img/22c_report.png" alt="진행상황 출력 — 공무원 보고서(개조식) 화면" loading="lazy"><span class="hl" style="left:15.97%;top:5.06%;width:68.06%;height:90.00%"></span></div>
-  <ul class="how"><li>같은 창 위 <b>「진행상황 보고」</b> 탭: <b>1. 「업무명」의 진행상황 보고입니다</b>(진행률·마감) → <b>2. 추진 경과</b>(끝낸 단계·할 일과 처리결과) → <b>3. 향후 계획</b>(남은 일과 마감일) → <b>4. 담당자 의견</b> · 붙임. 맨 위 오른쪽 한 줄에 「'26.10.17. 소속 계급 이름 (☎ 내선)」.</li><li>종이 위 <b>어느 줄이든</b> 눌러서 바로 고칩니다(업무마다 편집본으로 기억, [↺ 처음 내용으로]로 되돌림). <kbd>Enter</kbd> 새 줄 · <kbd>Shift</kbd>+<kbd>Enter</kbd> 줄바꿈 · <kbd>Tab</kbd>/<kbd>Shift</kbd>+<kbd>Tab</kbd> 들이기·내기 · 빈 줄에서 <kbd>Backspace</kbd> 지우기.</li><li>미리보기는 A4 한 장씩 실제 인쇄와 똑같이 나뉘고 쪽 번호 「- 1 -」이 붙습니다. [한글에 붙여넣기용 복사] · [인쇄 · PDF].</li></ul>
-</figure>
-</section><section class="ch" id="ch3"><h2>3. 체크리스트 편집</h2><p class="intro">구조를 바꾸는 화면입니다 (추가·삭제·위치·단계↔할 일·이름·건너뛰기). 탐색기·엑셀처럼 한 번 클릭 = 고르기, 두 번 클릭 = 이름 바꾸기입니다. [저장]을 눌러야 반영되고, 진행 상태(체크·처리결과)는 그대로 남습니다.</p>
-<figure class="scene" id="s-14_edit">
-  <figcaption><span class="no">36</span>편집 화면과 명령 줄</figcaption>
-  <div class="shot"><img src="img/14_edit.png" alt="편집 화면과 명령 줄 화면" loading="lazy"><span class="hl" style="left:19.44%;top:25.93%;width:50.62%;height:5.31%"></span></div>
-  <ul class="how"><li>왼쪽 <b>[체크리스트 편집]</b>을 누릅니다. 줄을 <b>한 번</b> 누르면 고르기(파란 바탕), <b>두 번</b>(또는 <kbd>F2</kbd>) 누르면 이름 바꾸기입니다. 이름 바꾸기에서 <kbd>Enter</kbd>는 이름만 확정하고, <kbd>Esc</kbd>는 원래 이름으로 돌립니다.</li><li>위 명령 줄: <b>＋ 단계 · ＋ 할 일 · 이름 바꾸기 · ↑ ↓ · ⇥ 할 일로 · ⇤ 단계로 · 건너뛰기 · 삭제</b> — 오른쪽 클릭 메뉴도 같은 명령·같은 순서입니다(잘라내기·복사·붙여넣기 더). 명령 줄에 마우스를 올리면 「한 번 누르면 고르기 · 두 번 누르면 이름 바꾸기 · 끌면 옮기기」가 보입니다.</li><li><kbd>Delete</kbd> 지우기(알림 [실행 취소]) · <kbd>Ctrl</kbd>+<kbd>Z</kbd> 되돌리기 · <kbd>Insert</kbd> 아래에 새 줄 · <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>↑↓</kbd> 위치 · <kbd>Tab</kbd>/<kbd>Shift</kbd>+<kbd>Tab</kbd> 할 일↔단계 · 끌어서 옮기기. 새 줄에서는 <kbd>Enter</kbd>가 다음 새 줄을 만듭니다.</li><li>[편집 취소]나 <kbd>Esc</kbd>를 누르면 바꾼 것이 있을 때 <b>「변경 내용을 저장할까요?」</b> — [저장] · [저장 안 함](편집 전으로) · [취소](계속 편집). 이름을 적지 않은 새 줄은 저절로 지워집니다.</li></ul>
-</figure>
-<figure class="scene" id="s-15_branch">
-  <figcaption><span class="no">37</span>건너뛰기 버튼 만들기·고치기 — 체크해서 고르기</figcaption>
-  <div class="shot"><img src="img/15_branch.png" alt="건너뛰기 버튼 만들기·고치기 — 체크해서 고르기 화면" loading="lazy"><span class="hl" style="left:19.44%;top:25.93%;width:50.62%;height:5.31%"></span></div>
-  <ul class="how"><li>갈림길이 되는 줄을 고르고 <b>[⤼ 건너뛰기]</b>를 누릅니다(오른쪽 클릭 → 건너뛰기…도 같음). 체크리스트가 <b>고르기 모드</b>(보라)로 바뀝니다. 예: 「계약금액 확인 — 갈림길」의 [5천만원 이하] 버튼이 건너뛸 항목.</li><li>맨 위 칸에 버튼 이름을 적고, 아래 목록에서 건너뛸 항목을 체크합니다. 단계를 체크하면 그 할 일도 함께. 기준 줄보다 앞의 줄은 고를 수 없습니다.</li><li><kbd>Enter</kbd> 또는 [저장] = 만들기 · <kbd>Esc</kbd> 또는 [취소] = 그만두기. 이미 버튼이 있는 줄에서 [건너뛰기]를 누르면 버튼 이름(고치기·🗑 지우기) · 새 건너뛰기 버튼 메뉴가 열립니다.</li></ul>
-</figure>
-<figure class="scene" id="s-16_edit_tags">
-  <figcaption><span class="no">38</span>건너뛰기 표시</figcaption>
-  <div class="shot"><img src="img/16_edit_tags.png" alt="건너뛰기 표시 화면" loading="lazy"><span class="hl" style="left:61.46%;top:24.07%;width:6.25%;height:0.00%"></span></div>
-  <ul class="how"><li>버튼이 있는 줄은 채운 알약 「⤼ 5천만원 이하」, 건너뛰어지는 줄은 같은 색 테두리 태그입니다. 편집을 마치면 왼쪽 <b>[✓ 저장]</b>.</li></ul>
-</figure>
-</section><section class="ch" id="ch4"><h2>4. 일정과 마감</h2><p class="intro">업무 마감일과 할 일 마감일을 정하면 달력과 「이번 주 할 일」에 모이고, 사이드바 「마감 임박」과 마감 알림에도 그대로 쓰입니다.</p>
-<figure class="scene" id="s-23_schedule">
-  <figcaption><span class="no">39</span>일정 보기</figcaption>
-  <div class="shot"><img src="img/23_schedule.png" alt="일정 보기 화면" loading="lazy"></div>
-  <ul class="how"><li>왼쪽 마감 카드 또는 줄의 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#2563eb" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg> 버튼으로 마감일을 정합니다. 법정 기한이 있는 일은 할 일 마감으로 잡아 두세요. 예: 대가 지급은 청구일부터 5일 안.</li><li><b>일정</b>(맨 위 [일정] 또는 왼쪽 [일정 보기]): 달력에 업무·할 일·회신 기한이 표시되고, 오른쪽 「이번 주 할 일」에 기한 지남 · 오늘 · 내일 · 날짜별로 모입니다. 날짜를 누르면 그날 항목, 항목을 끌어 다른 날짜에 놓으면 마감일이 바뀝니다. 공휴일도 표시됩니다. <kbd>Esc</kbd>로 닫습니다.</li></ul>
-</figure>
-</section><section class="ch" id="ch5"><h2>5. 업무 분담과 회신 대기</h2><p class="intro">단계나 할 일을 동료에게 맡기고, 요청 파일을 보내고, 회신 파일을 받아 합칩니다. 서버 없이 파일로 주고받습니다. 받는 사람은 맡은 단계의 업무팁·근거·서식까지 함께 받으므로, 관리자는 「무엇을 · 언제까지 · 어떤 근거로」를 한 번에 지시할 수 있습니다.</p>
-<figure class="scene" id="s-24_collab">
-  <figcaption><span class="no">40</span>요청 보내기</figcaption>
-  <div class="shot"><img src="img/24_collab.png" alt="요청 보내기 화면" loading="lazy"><span class="hl" style="left:15.28%;top:2.47%;width:69.44%;height:95.06%"></span></div>
-  <ul class="how"><li>왼쪽 <b>[업무 분담]</b>을 누릅니다. ① 함께 일할 사람(주소록에서 추가)과 회신 기한 → ② 단계 나누기: 예) 04 납품·검사 → 김민수, 05 대가 지급 → 이수진 (단계를 맡기면 그 할 일도 함께) → 전달사항 한 줄.</li><li><b>[📨 요청 파일 만들기]</b>로 파일 <b>하나</b>를 만들어 맡은 사람 모두에게 메신저·메일로 보냅니다(받은 사람이 열고 본인 이름을 고름). 창 위 탭: 요청 보내기 · 회신 현황 · 주고받은 기록.</li><li>요청 파일을 만들기 전에 창을 닫으면(<kbd>Esc</kbd>) <b>「보내지 않은 지정이 있습니다」</b> — [임시 저장하고 닫기] · [지우고 닫기] · [계속 작업]. 임시 저장한 지정은 왼쪽 단추에 「보내기 전 n」으로 남습니다.</li></ul>
-</figure>
-<figure class="scene" id="s-25_waiting">
-  <figcaption><span class="no">41</span>맡긴 단계 — 회신 대기 표시</figcaption>
-  <div class="shot"><img src="img/25_waiting.png" alt="맡긴 단계 — 회신 대기 표시 화면" loading="lazy"><span class="hl" style="left:20.97%;top:72.59%;width:48.26%;height:4.69%"></span></div>
-  <ul class="how"><li>보낸 단계는 체크리스트에서 ⏳ 「김민수 · 회신 대기 · D-14」 줄로 바뀝니다.</li><li><b>담당자 쪽</b>: 받은 요청 파일을 [▾ → 업무 가져오기]로 열고 본인 이름을 고릅니다 → 맡은 단계만 체크·처리결과·첨부(다른 단계는 보기 전용) → 왼쪽 <b>[관리자에게 회신]</b>에서 중간 회신 또는 최종 회신.</li><li><b>관리자 쪽</b>: 회신 파일을 왼쪽 [회신 가져오기](또는 업무 분담 창에 끌어다 놓기·[업무 가져오기])로 열면 체크·처리결과·첨부가 합쳐지고 「바뀐 곳」 목록이 뜹니다. 같은 회신을 두 번 열어도 한 번만 반영됩니다.</li></ul>
-</figure>
-<figure class="scene" id="s-25b_runmenu">
-  <figcaption><span class="no">42</span>맡긴 줄 메뉴 — 회수 · 맡기기 취소</figcaption>
-  <div class="shot"><img src="img/25b_runmenu.png" alt="맡긴 줄 메뉴 — 회수 · 맡기기 취소 화면" loading="lazy"><span class="hl" style="left:50.83%;top:76.54%;width:11.81%;height:10.86%"></span></div>
-  <ul class="how"><li>⏳ 맡긴 줄을 누르거나 오른쪽 클릭하면 메뉴: <b>회신 대기</b> 줄은 「↩ 회수하고 직접 처리…」 · 「📋 회신 현황 보기」, <b>보내기 전</b> 줄은 「↩ 맡기기 취소 (직접 처리)」 · 「✎ 업무 분담에서 고치기」(알림 [되돌리기]).</li></ul>
-</figure>
-<figure class="scene" id="s-25c_recall">
-  <figcaption><span class="no">43</span>맡긴 일을 직접 처리하려면 — 회수</figcaption>
-  <div class="shot"><img src="img/25c_recall.png" alt="맡긴 일을 직접 처리하려면 — 회수 화면" loading="lazy"><span class="hl" style="left:34.72%;top:34.20%;width:30.56%;height:31.73%"></span></div>
-  <ul class="how"><li>회신을 기다리는 줄을 체크하거나 회수를 고르면 확인 창이 뜹니다 — 담당자가 이미 일하고 있을 수 있어 먼저 묻습니다(다른 사람에게 영향이 가는 일). [회수하고 직접 처리] · [회신 기다리기].</li><li><b>보내기 전</b> 줄을 체크하면 묻지 않고 맡기기가 취소되고 알림 [되돌리기]로 되살립니다. 이미 받은 중간 회신 처리결과는 지우지 않고 남깁니다.</li></ul>
-</figure>
-<figure class="scene" id="s-26_sidebar">
-  <figcaption><span class="no">44</span>사이드바 — 업무 분담 현황</figcaption>
-  <div class="shot"><img src="img/26_sidebar.png" alt="사이드바 — 업무 분담 현황 화면" loading="lazy"><span class="hl" style="left:2.78%;top:8.15%;width:18.06%;height:89.38%"></span></div>
-  <ul class="how"><li>메인 화면 왼쪽 <b>업무 분담 현황</b>에 모든 업무의 회신 대기가 「누가 · 어느 단계 · 언제까지」로 모이고, 누르면 그 업무가 열립니다.</li></ul>
-</figure>
-<figure class="scene" id="s-27_addressbook">
-  <figcaption><span class="no">45</span>주소록</figcaption>
-  <div class="shot"><img src="img/27_addressbook.png" alt="주소록 화면" loading="lazy"><span class="hl" style="left:19.44%;top:13.58%;width:61.11%;height:79.01%"></span></div>
-  <ul class="how"><li>자주 함께 일하는 사람을 소속(묶음)별로 저장합니다. 업무 분담에서 <b>[＋ 주소록에서 추가]</b>로 고르고, 환경설정 → 일반 → [주소록 관리]에서도 엽니다.</li></ul>
-</figure>
-</section><section class="ch" id="ch6"><h2>6. 업무 공유</h2><p class="intro">만든 업무를 동료에게 넘기거나 같은 업무를 맡을 후임에게 전합니다. 부서 표준 레퍼런스를 만들어 이 방법으로 나눠 주면 모두 같은 절차로 일합니다.</p>
-<figure class="scene" id="s-28_share">
-  <figcaption><span class="no">46</span>공유 창</figcaption>
-  <div class="shot"><img src="img/28_share.png" alt="공유 창 화면" loading="lazy"><span class="hl" style="left:77.36%;top:89.01%;width:10.21%;height:4.44%"></span></div>
-  <ul class="how"><li>맨 위 <b>[공유]</b>를 누르고, 보낼 업무를 체크한 뒤 <b>[업무 파일 만들기]</b>. 서식·업무팁·첨부·참고 자료까지 파일 하나에 담깁니다.</li><li>받은 사람은 <b>[▾ → 업무 가져오기]</b>로 열고 「그대로 가져오기」(이어서) 또는 「복사하여 시작」(새로)을 고릅니다.</li><li>업무 하나는 업무 화면 왼쪽 <b>[내보내기]</b>로 바로 저장해도 같은 파일입니다. 업무와 관리 자격까지 넘길 때(인수인계 중 회신을 기다리는 단계가 있을 때)는 [업무 분담] 창 위 「다른 사람에게 넘기기」.</li></ul>
-</figure>
-<figure class="scene" id="s-28b_tipexclude">
-  <figcaption><span class="no">47</span>예시·사진 빼고 다시 저장</figcaption>
-  <div class="shot"><img src="img/28b_tipexclude.png" alt="예시·사진 빼고 다시 저장 화면" loading="lazy"><span class="hl" style="left:70.69%;top:87.04%;width:27.78%;height:10.25%"></span></div>
-  <ul class="how"><li>내보내기·공유·업무 분담 파일은 묻지 않고 바로 저장되고, 업무팁 예시·사진이 들어 있으면 알림에 「업무팁 예시·사진 n개 포함」이 나옵니다.</li><li>내 기관 시스템 화면처럼 남에게 넘기면 안 되는 캡처가 있으면 알림의 <b>[예시·사진 빼고 다시 저장]</b>. 이 PC의 사진은 그대로 남습니다.</li></ul>
-</figure>
-</section><section class="ch" id="ch7"><h2>7. 마무리 — 처리완료 · 레퍼런스 · 보관</h2><p class="intro">끝난 업무는 처리완료로 옮기고, 잘 된 업무는 레퍼런스(본보기)로 등록해 다음에 그대로 다시 씁니다. 예시는 연습 업무 「월간 업무 실적 보고」.</p>
-<figure class="scene" id="s-29_done">
-  <figcaption><span class="no">48</span>완료 처리</figcaption>
-  <div class="shot"><img src="img/29_done.png" alt="완료 처리 화면" loading="lazy"><span class="hl" style="left:1.39%;top:8.15%;width:0.00%;height:0.00%"></span></div>
-  <ul class="how"><li>모든 단계가 끝나면 왼쪽 아래에 <b>[✅ 완료 처리]</b>가 나타납니다. 누르면 묻지 않고 「처리완료」 탭으로 옮겨지고, 알림의 <b>[되돌리기]</b>나 [↩ 완료 취소]로 되돌립니다.</li><li>완료한 업무는 체크가 잠기고(왼쪽 위 「처리완료 업무」), 고치려면 [완료 취소]를 누릅니다.</li></ul>
-</figure>
-<figure class="scene" id="s-30_main_done">
-  <figcaption><span class="no">49</span>처리완료 탭</figcaption>
-  <div class="shot"><img src="img/30_main_done.png" alt="처리완료 탭 화면" loading="lazy"><span class="hl" style="left:24.24%;top:20.25%;width:70.97%;height:29.75%"></span></div>
-  <ul class="how"><li>메인 화면 <b>처리완료</b> 탭에서 끝낸 업무를 봅니다. 지우지 말고 남겨 두면 다음 담당자가 같은 할 일에서 「지난번엔 이렇게」로 이 기록을 봅니다.</li></ul>
-</figure>
-<figure class="scene" id="s-31_reference">
-  <figcaption><span class="no">50</span>레퍼런스로 등록</figcaption>
-  <div class="shot"><img src="img/31_reference.png" alt="레퍼런스로 등록 화면" loading="lazy"><span class="hl" style="left:41.67%;top:39.51%;width:14.24%;height:40.00%"></span></div>
-  <ul class="how"><li><b>업무 관리</b>에서 업무를 오른쪽 클릭 → <b>레퍼런스로 등록 (사본 만들기)</b> (완료한 업무 화면 왼쪽 [레퍼런스로 등록]도 같음). 이름·폴더를 확인하는 창이 뜨고 [만들기]·[취소](<kbd>Esc</kbd>).</li><li>체크를 비운 깨끗한 사본이 레퍼런스가 되고, 원래 업무는 처리 기록과 함께 그대로 남습니다.</li></ul>
-</figure>
-<figure class="scene" id="s-32_reftab">
-  <figcaption><span class="no">51</span>레퍼런스 탭 — 다음 달엔 복사하여 시작</figcaption>
-  <div class="shot"><img src="img/32_reftab.png" alt="레퍼런스 탭 — 다음 달엔 복사하여 시작 화면" loading="lazy"><span class="hl" style="left:11.18%;top:11.11%;width:77.64%;height:5.19%"></span></div>
-  <ul class="how"><li>레퍼런스는 책 모양 표시와 함께 <b>레퍼런스</b> 탭에 모입니다. 다음 달이 되면 레퍼런스를 열고 <b>[복사하여 시작]</b> → 업무명·마감일 → [시작하기]. 절차·업무팁·서식을 그대로 가지고 체크는 빈 채로 시작합니다.</li><li>레퍼런스는 보기 전용이라 실수로 체크되지 않습니다. 본보기 자체를 고칠 때는 [편집 (레퍼런스 고치기)].</li></ul>
-</figure>
-<figure class="scene" id="s-33_archive">
-  <figcaption><span class="no">52</span>보관함</figcaption>
-  <div class="shot"><img src="img/33_archive.png" alt="보관함 화면" loading="lazy"><span class="hl" style="left:26.46%;top:33.95%;width:62.36%;height:5.56%"></span></div>
-  <ul class="how"><li>오래되었거나 당분간 볼 일이 없는 업무는 업무 관리에서 오른쪽 클릭 → <b>보관함으로 이동</b>. 메인 목록에서는 빠지고 업무 관리의 <b>보관함</b> 탭에 남습니다(오른쪽 클릭 → 복원).</li></ul>
-</figure>
-</section><section class="ch" id="ch8"><h2>8. 조직의 자료로 남기기</h2><p class="intro">업무를 폴더로 정리하고, 법령·지침과 서식을 조직 공용 자료함에 모아 모든 업무에서 다시 씁니다. 자료를 새 판으로 교체하면 그 자료를 연결한 모든 업무 카드가 새 판을 봅니다.</p>
-<figure class="scene" id="s-34_folders">
-  <figcaption><span class="no">53</span>업무 관리 — 폴더</figcaption>
-  <div class="shot"><img src="img/34_folders.png" alt="업무 관리 — 폴더 화면" loading="lazy"><span class="hl" style="left:11.18%;top:16.30%;width:15.28%;height:78.52%"></span></div>
-  <ul class="how"><li>윈도우 탐색기와 같습니다: 한 번 클릭 = 고르기, 두 번 클릭 = 열기, 오른쪽 클릭 = 메뉴, 끌어서 옮기기, <kbd>Delete</kbd> = 휴지통(알림 [실행 취소]·<kbd>Ctrl</kbd>+<kbd>Z</kbd>), <kbd>Esc</kbd> = 메뉴 닫기 → 고른 것 풀기 → 창 닫기.</li><li>예: 회계·계약 / 2026년, 정기 보고 — 폴더 안에 폴더를 단계 제한 없이 만들고 <kbd>Ctrl+X/C/V</kbd>로 옮깁니다. 업무 관리에서 연 업무를 닫으면 업무 관리로 돌아옵니다.</li></ul>
-</figure>
-<figure class="scene" id="s-35_law">
-  <figcaption><span class="no">54</span>법령·매뉴얼</figcaption>
-  <div class="shot"><img src="img/35_law.png" alt="법령·매뉴얼 화면" loading="lazy"><span class="hl" style="left:11.11%;top:2.96%;width:77.78%;height:91.98%"></span></div>
-  <ul class="how"><li>법령·지침·매뉴얼을 폴더별로 모읍니다. <b>쓰는 곳</b> 칸에 이 자료를 참고 자료로 쓰는 업무 수가 보입니다. [파일 올리기] 또는 창에 끌어다 놓기.</li><li>위 검색칸에 낱말을 적으면 바로 걸러지고, 검색칸에서 <kbd>Esc</kbd>를 누르면 검색어부터 지웁니다(한 번 더 누르면 창 닫기).</li></ul>
-</figure>
-<figure class="scene" id="s-35b_lawreplace">
-  <figcaption><span class="no">55</span>법령이 바뀌면 — 같은 이름으로 올려 「최신 파일로 바꾸기」</figcaption>
-  <div class="shot"><img src="img/35b_lawreplace.png" alt="법령이 바뀌면 — 같은 이름으로 올려 「최신 파일로 바꾸기」 화면" loading="lazy"><span class="hl" style="left:34.72%;top:21.23%;width:30.56%;height:57.53%"></span></div>
-  <ul class="how"><li>개정된 법령을 <b>같은 파일 이름</b>으로 올리면 「이미 있습니다」 창이 뜹니다. <b>[최신 파일로 바꾸기]</b>를 고르면 같은 자료(고유번호)가 새 판이 되어, 이 법령을 참고 자료로 쓰는 <b>모든 업무</b>가 새 판을 봅니다.</li><li>그래서 파일 이름에는 시행일을 넣지 않는 것이 좋습니다(예: 「지방계약법 시행령.pdf」). 이름이 다르면 새 자료로 더해지고, 업무들은 예전 판을 계속 봅니다. 업무팁 「근거」의 조문 번호는 사람이 확인해 고쳐야 합니다.</li></ul>
-</figure>
-<figure class="scene" id="s-36_repo">
-  <figcaption><span class="no">56</span>서식·문서함</figcaption>
-  <div class="shot"><img src="img/36_repo.png" alt="서식·문서함 화면" loading="lazy"><span class="hl" style="left:11.11%;top:2.96%;width:77.78%;height:91.98%"></span></div>
-  <ul class="how"><li>기안·보고·행정 서식과 예시 공문을 모읍니다. 할 일에 연결해 일할 때 바로 꺼내 씁니다. 오른쪽 클릭 「🔗 쓰는 곳 보기 (n곳)」로 어느 업무의 어느 할 일이 이 서식을 쓰는지 봅니다.</li></ul>
-</figure>
-<figure class="scene" id="s-36b_repo_replace">
-  <figcaption><span class="no">57</span>서식이 바뀌면 — 교체</figcaption>
-  <div class="shot"><img src="img/36b_repo_replace.png" alt="서식이 바뀌면 — 교체 화면" loading="lazy"><span class="hl" style="left:35.42%;top:30.99%;width:29.17%;height:38.15%"></span></div>
-  <ul class="how"><li>새 판 서식을 <b>같은 파일 이름</b>으로 올리면 「같은 이름의 파일이 있습니다」: <b>[교체 — 기존 파일을 새 파일로 덮어쓰기]</b> · [번호 붙여 추가] · [취소](<kbd>Esc</kbd>). 교체하면 이 서식을 연결한 모든 할 일이 새 판을 엽니다.</li></ul>
-</figure>
-</section><section class="ch" id="ch9"><h2>9. 안전하게 지키기 · 설정</h2><p class="intro">지운 업무는 30일 동안 휴지통에 남고, 백업 파일 하나로 모든 자료를 보관하고 되돌립니다.</p>
-<figure class="scene" id="s-37_trash">
-  <figcaption><span class="no">58</span>휴지통</figcaption>
-  <div class="shot"><img src="img/37_trash.png" alt="휴지통 화면" loading="lazy"><span class="hl" style="left:22.22%;top:13.58%;width:55.56%;height:33.95%"></span></div>
-  <ul class="how"><li>지운 업무는 30일 동안 남습니다. 줄을 두 번 누르거나 오른쪽 클릭 → 복구. 업무 관리·목록에서 지운 것은 알림의 [실행 취소]로 바로 되살릴 수도 있습니다.</li></ul>
-</figure>
-<figure class="scene" id="s-38_backup">
-  <figcaption><span class="no">59</span>백업 및 복원</figcaption>
-  <div class="shot"><img src="img/38_backup.png" alt="백업 및 복원 화면" loading="lazy"><span class="hl" style="left:19.44%;top:7.78%;width:61.11%;height:84.57%"></span></div>
-  <ul class="how"><li><b>설정 → 백업 및 복원 → [지금 백업하기]</b>: 업무·첨부·서식·법령·매뉴얼·설정을 파일 하나로 저장합니다. 백업 알림 주기를 정해 두면 잊지 않게 알려 줍니다.</li><li><b>[파일 선택…]</b>으로 백업을 되돌리면 「백업한 날 상태로 되돌립니다 — 지금 업무 n건 → 백업의 업무 m건」을 묻고, 되돌리기 전 지금 자료를 「복원 전 자동백업」 파일로 먼저 저장합니다(마음이 바뀌면 그 파일로 다시). [취소]하면 아무것도 바뀌지 않습니다.</li><li>PC나 브라우저를 바꾸기 전에는 꼭 백업하세요 — 자료는 브라우저마다 따로 저장됩니다.</li></ul>
-</figure>
-<figure class="scene" id="s-38b_prefs">
-  <figcaption><span class="no">60</span>환경설정 — 일반 (내 정보 · 화면)</figcaption>
-  <div class="shot"><img src="img/38b_prefs.png" alt="환경설정 — 일반 (내 정보 · 화면) 화면" loading="lazy"><span class="hl" style="left:19.44%;top:7.78%;width:61.11%;height:84.57%"></span></div>
-  <ul class="how"><li>오른쪽 위 이름 동그라미를 누르면 환경설정 → 일반이 <b>내 정보 고치기</b> 상태로 열립니다(이름·계급·소속·연락처, <kbd>Enter</kbd> 저장 · <kbd>Esc</kbd> 취소). 같은 칸이 처음 켤 때 창·진행상황 출력 작성자 창에도 쓰입니다.</li><li>일반 순서: 내 정보 → 음성안내 → 화면(다크/라이트 · 읽는 글 크기) → 주소록. 왼쪽 탭: 일반 · 알림 · AI 연결(배포판은 보안 정책상 잠김) · 백업 및 복원 · 저장 공간 · 정보(버전·바뀐 점).</li></ul>
-</figure>
-</section>
-<section class="ch" id="faq"><h2>부록 · 자주 묻는 질문</h2><details class="faq"><summary>업무가 안 보여요</summary><p>업무는 <b>브라우저마다(엣지·크롬, 프로필마다) 따로</b> 저장됩니다. 늘 쓰던 브라우저로 프로그램 파일을 여세요. 다른 PC로 옮길 때는 설정 → 백업 및 복원 → [지금 백업하기] 파일을 새 PC에서 [파일 선택…]으로 되돌립니다. 목록 오른쪽 기간 단추가 「최근 3개월」이면 오래된 업무는 「전체 기간」에서 보입니다.</p></details><details class="faq"><summary>같은 프로그램을 창(탭) 두 개에서 열었어요</summary><p>한쪽에서 고친 것이 다른 창에 보이지 않아 덮어쓸 수 있으므로, 두 번째 창을 열면 「다른 창에서도 열려 있습니다」 알림이 뜹니다. 하나만 쓰고 나머지는 닫으세요. 프로그램은 불러오기가 끝나기 전에는 저장하지 않고, 이 창이 모르는 업무는 지우지 않으며, 한꺼번에 많이 지우려 하면 멈추는 안전장치가 있습니다.</p></details><details class="faq"><summary>실수로 지웠어요</summary><p>알림의 [되돌리기]·[실행 취소] 또는 <kbd>Ctrl</kbd>+<kbd>Z</kbd>. 시간이 지났으면 휴지통(30일). 그보다 오래됐으면 백업 파일.</p></details><details class="faq"><summary>법령·서식이 바뀌었어요</summary><p>같은 파일 이름으로 올리고 「최신 파일로 바꾸기」(법령·매뉴얼) · 「교체」(서식·문서함)를 고르면 연결된 모든 업무가 새 판을 봅니다. 업무팁의 조문 번호는 직접 확인해 고치세요.</p></details><details class="faq"><summary>다른 사람에게 일을 맡겼는데 회신이 안 와요</summary><p>왼쪽 「업무 분담 현황」에서 회신 기한(D-n)을 봅니다. 직접 하려면 그 줄의 메뉴 → 「회수하고 직접 처리」(먼저 묻습니다). 회수했다고 담당자에게 알려 주세요.</p></details><details class="faq"><summary>AI 단추가 안 보여요</summary><p>배포판은 보안 정책상 외부 AI 연결이 막혀 있어 AI 관련 단추를 숨깁니다. 체크리스트·업무팁·분담·출력 등 나머지 기능은 모두 그대로 씁니다.</p></details></section>
-<section class="ch" id="keys"><h2>부록 · 마우스와 단축키</h2><h3>어디서나</h3><table class="keys"><tr><th>Esc</th><td>떠 있는 메뉴 → 창 → (일하는 화면이면) 고른 줄 → 업무 목록 순서로 한 단계씩 닫기. 검색칸에서는 검색어부터 지우기</td></tr><tr><th>로고 「✦ 업무 내비게이터」</th><td>처음 화면(업무 목록 맨 위)으로</td></tr><tr><th>Ctrl+N</th><td>새 업무</td></tr></table><h3>일하는 화면</h3><table class="keys"><tr><th>한 번 클릭 (줄)</th><td>처리결과 한 줄 입력칸 · 오른쪽 패널에 그 항목 미리 보기</td></tr><tr><th>두 번 클릭 (줄)</th><td>항목 창</td></tr><tr><th>오른쪽 클릭 · ⋯</th><td>체크/체크 취소 · 건너뛰기 · 해당 없음 · 길잡이 · 처리결과 · 업무팁 · 서식 · 마감일</td></tr><tr><th>Enter (처리결과 칸)</th><td>저장하고 다음 할 일로</td></tr><tr><th>Shift+Enter (처리결과 칸)</th><td>줄바꿈</td></tr><tr><th>⤢ · 가가 (업무 절차 머리)</th><td>넓게 보기 · 읽는 글 크기</td></tr></table><h3>체크리스트 편집</h3><table class="keys"><tr><th>한 번 클릭</th><td>줄 고르기 (Ctrl·Shift 여러 줄)</td></tr><tr><th>두 번 클릭 · F2</th><td>이름 바꾸기 (Enter 확정 · Esc 취소)</td></tr><tr><th>끌기</th><td>옮기기</td></tr><tr><th>↑ ↓ (Shift) · Ctrl+A</th><td>줄 옮겨 고르기 · 모두 고르기</td></tr><tr><th>Insert</th><td>아래에 새 줄</td></tr><tr><th>Alt+Shift+↑↓</th><td>줄 위치 바꾸기</td></tr><tr><th>Tab / Shift+Tab</th><td>할 일로 / 단계로</td></tr><tr><th>Delete · Ctrl+X/C/V · Ctrl+Z</th><td>삭제 · 잘라내기·복사·붙여넣기 · 되돌리기</td></tr></table><h3>업무 관리·법령·서식·휴지통 창 (탐색기)</h3><table class="keys"><tr><th>한 번 / 두 번 클릭</th><td>고르기 / 열기</td></tr><tr><th>Ctrl·Shift·끌어서 고르기</th><td>여러 개</td></tr><tr><th>F2 · Delete</th><td>이름 바꾸기 · 삭제</td></tr><tr><th>Ctrl+X/C/V · Ctrl+Z</th><td>잘라내기·복사·붙여넣기 · 되돌리기</td></tr><tr><th>Alt+← → ↑ · Backspace</th><td>뒤로 · 앞으로 · 상위 폴더</td></tr><tr><th>Ctrl+Shift+N</th><td>새 폴더</td></tr></table></section>
-</main></div></body></html>
+:root { --ac:#2563eb; --ac2:#eef4ff; --tx:#1e2d47; --mu:#64748b; --ln:#e2e8f0; --hl:#f59e0b; --warn:#dc2626; --warnbg:#fef2f2; --tipbg:#eff6ff; --page:#fff; --desk:#e7eaf0; }
+* { box-sizing:border-box; }
+html { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+body { margin:0; background:var(--desk); color:var(--tx); font-family:'Pretendard','Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif; font-size:10.5pt; line-height:1.6; word-break:keep-all; overflow-wrap:break-word; }
+a { color:inherit; text-decoration:none; }
+.pg { scroll-margin-top:14mm; position:relative; width:210mm; height:297mm; margin:10mm auto; background:var(--page); box-shadow:0 2px 12px rgba(15,23,42,.12); overflow:hidden; }
+.pb { position:absolute; left:16mm; right:16mm; top:20mm; bottom:16mm; overflow:hidden; }
+.ph { position:absolute; left:16mm; right:16mm; top:9mm; display:flex; justify-content:space-between; font-size:8pt; color:var(--mu); border-bottom:.3mm solid var(--ln); padding-bottom:1.6mm; }
+.ph span:last-child { color:var(--ac); font-weight:700; }
+.pf { position:absolute; left:0; right:0; bottom:7mm; text-align:center; font-size:8.5pt; color:var(--mu); }
+kbd { display:inline-block; padding:0 1.4mm; border:.25mm solid #cbd5e1; border-bottom-width:.6mm; border-radius:1.2mm; background:#f8fafc; font-family:inherit; font-size:8.5pt; line-height:1.45; }
+.lead { margin:0 0 4mm; font-size:10.5pt; color:#334155; }
+/* 장 띠 */
+.band { display:flex; gap:4mm; align-items:center; background:var(--ac2); border-radius:3mm; padding:3.5mm 5mm; margin:0 0 6mm; }
+.band-no { flex:none; width:12mm; height:12mm; border-radius:2.5mm; background:var(--ac); color:#fff; font-size:17pt; font-weight:800; display:flex; align-items:center; justify-content:center; }
+.band-t { font-size:13pt; font-weight:800; color:var(--ac); }
+.band-i { font-size:9pt; color:#475569; line-height:1.5; }
+/* 기능 제목 */
+.ft { display:flex; align-items:baseline; gap:3mm; margin:0 0 2mm; }
+.ft h2 { margin:0; font-size:17pt; letter-spacing:-.02em; }
+.fno { font-size:10pt; font-weight:800; color:var(--ac); }
+/* 사진 */
+.shot { position:relative; overflow:hidden; margin:0 auto 5mm; border:.3mm solid #cbd5e1; border-radius:2mm; background:#0f172a; }
+.shot img { display:block; width:100%; height:100%; }
+.hl { position:absolute; border:.7mm solid var(--hl); border-radius:1.5mm; box-shadow:0 0 0 .9mm rgba(245,158,11,.25); }
+/* 따라 하기 */
+.steps-h { font-size:9pt; font-weight:800; color:var(--ac); letter-spacing:.05em; margin:0 0 1.5mm; }
+.steps { list-style:none; counter-reset:s; margin:0 0 4mm; padding:0; }
+.steps li { counter-increment:s; position:relative; padding:0 0 0 9mm; margin:0 0 2.2mm; }
+.steps li::before { content:counter(s); position:absolute; left:0; top:.3mm; width:5.6mm; height:5.6mm; border-radius:50%; background:var(--ac); color:#fff; font-size:8.5pt; font-weight:800; display:flex; align-items:center; justify-content:center; line-height:1; }
+/* 알아 두기 · 주의 */
+.note { border-left:1.1mm solid var(--ac); background:var(--tipbg); border-radius:0 2mm 2mm 0; padding:2.2mm 4mm; margin:0 0 2.5mm; font-size:9.5pt; }
+.note .nl { display:block; font-size:8.5pt; font-weight:800; color:var(--ac); margin-bottom:.3mm; }
+.note p { margin:0; }
+.note.warn { border-left-color:var(--warn); background:var(--warnbg); }
+.note.warn .nl { color:var(--warn); }
+.see { margin-top:3mm; font-size:9pt; color:var(--mu); }
+.see a { color:var(--ac); margin-left:1.5mm; } .see em { font-style:normal; color:var(--mu); }
+/* 앞쪽 · 부록 */
+.pt { font-size:20pt; margin:0 0 4mm; letter-spacing:-.02em; }
+.sh { font-size:11.5pt; margin:6mm 0 2.5mm; color:var(--ac); }
+.tbl { width:100%; border-collapse:collapse; font-size:9.5pt; margin:0 0 2mm; }
+.tbl th, .tbl td { border:.25mm solid var(--ln); padding:1.8mm 3mm; text-align:left; vertical-align:top; }
+.tbl th { width:38%; background:#f8fafc; font-weight:700; }
+.terms th { width:30%; }
+.dots { margin:0; padding-left:5mm; } .dots li { margin:0 0 1.8mm; }
+.howto { border:.3mm solid var(--ln); border-radius:2.5mm; overflow:hidden; }
+.ht-row { display:flex; gap:4mm; padding:2.4mm 4mm; border-top:.3mm solid var(--ln); } .ht-row:first-child { border-top:0; }
+.ht-row b { flex:none; width:30mm; color:var(--ac); }
+.hl-sample { display:inline-block; width:8mm; height:4mm; border:.6mm solid var(--hl); border-radius:1mm; vertical-align:-.6mm; }
+.quick { list-style:none; margin:0 0 5mm; padding:0; }
+.quick li { display:flex; align-items:center; gap:4mm; padding:3mm 0; border-bottom:.3mm solid var(--ln); }
+.quick .qn { flex:none; width:8mm; height:8mm; border-radius:50%; background:var(--ac); color:#fff; font-weight:800; display:flex; align-items:center; justify-content:center; }
+.quick div { flex:1; } .quick p { margin:.3mm 0 0; color:#475569; font-size:9.5pt; }
+.quick em { font-style:normal; color:var(--ac); font-size:9pt; flex:none; }
+.qa { margin:0 0 5mm; } .qa .q { font-weight:800; color:var(--ac); margin-bottom:1mm; } .qa p { margin:0; }
+/* 목차 */
+.toc { list-style:none; margin:0; padding:0; }
+.toc li { font-size:9.8pt; line-height:1.55; padding:.45mm 0 .45mm 6mm; }
+.toc li.toc-h { padding-left:0; margin-top:2.6mm; font-weight:800; color:var(--ac); font-size:10.5pt; }
+.toc a { display:flex; align-items:baseline; gap:2mm; }
+.toc i { flex:1; border-bottom:.3mm dotted #94a3b8; transform:translateY(-1mm); }
+.toc em { font-style:normal; min-width:7mm; text-align:right; }
+/* 표지 */
+.pg-cover .pb { top:22mm; bottom:18mm; }
+.cover { height:100%; display:flex; flex-direction:column; }
+.cv-top { color:var(--ac); font-weight:700; font-size:11pt; }
+.cover h1 { font-size:34pt; line-height:1.2; margin:3mm 0 2mm; letter-spacing:-.03em; }
+.cover h1 span { font-size:22pt; color:#475569; font-weight:700; }
+.cv-ver { color:var(--mu); margin-bottom:10mm; }
+.cv-shot .shot { box-shadow:0 3mm 8mm rgba(15,23,42,.18); }
+.cv-pts { list-style:none; padding:0; margin:6mm 0 0; font-size:12pt; } .cv-pts li { padding:1.5mm 0 1.5mm 6mm; position:relative; }
+.cv-pts li::before { content:''; position:absolute; left:0; top:4mm; width:2.4mm; height:2.4mm; border-radius:50%; background:var(--ac); }
+.cv-foot { margin-top:auto; border-top:.3mm solid var(--ln); padding-top:4mm; color:var(--mu); font-size:10pt; }
+/* 화면에서 볼 때 */
+.topbar { position:sticky; top:0; z-index:5; display:flex; justify-content:center; gap:3mm; padding:2.5mm; background:rgba(231,234,240,.92); backdrop-filter:blur(4px); font-size:10pt; }
+.topbar a { background:#fff; border:1px solid #cbd5e1; border-radius:999px; padding:1mm 4mm; }
+@media screen and (max-width:820px) {
+  .pg { width:auto; height:auto; margin:12px; }
+  .pb, .ph, .pf { position:static; }
+  .pb { padding:16px; } .ph { padding:12px 16px 6px; margin:0 16px; } .pf { padding:8px 0 14px; }
+  .shot { width:100% !important; }
+}
+@media print {
+  @page { size:A4; margin:0; }
+  body { background:#fff; }
+  .topbar { display:none; }
+  .pg { margin:0; box-shadow:none; break-after:page; }
+}
+</style></head><body>
+<div class="topbar"><a href="#p-toc">목차</a><a href="#p-quick">5분 만에 시작하기</a><a href="#p-faq">자주 묻는 질문</a></div>
+<section class="pg pg-cover" id="p-cover"><div class="pb"><div class="cover">
+  <div class="cv-top">소방 공무원을 위한 업무 관리 프로그램</div>
+  <h1>업무 내비게이터<br><span>사용 설명서</span></h1>
+  <div class="cv-ver">v1.5.7 · 2026. 10.</div>
+  <div class="cv-shot"><div class="shot" style="width:178.0mm;aspect-ratio:1440/810"><img src="img/01_main.jpg" alt="첫 화면 화면"></div></div>
+  <ul class="cv-pts"><li>업무를 <b>단계와 할 일</b> 체크리스트로</li><li>일하면서 <b>처리결과 · 업무팁 · 서식</b>을 쌓아</li><li>다음 담당자에게 <b>그대로 물려줍니다</b></li></ul>
+  <div class="cv-foot">설치 없이 · 서버 없이 · 이 PC 안에만 저장</div>
+</div></div></section><section class="pg pg-toc" id="p-toc"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>목차</span></div><div class="pb"><h1 class="pt">목차</h1><ul class="toc"><li class="toc-h"><span>처음에</span></li><li><a href="#p-howto"><span>이 설명서 보는 법</span><i></i><em>4</em></a></li><li><a href="#p-quick"><span>5분 만에 시작하기</span><i></i><em>5</em></a></li><li class="toc-h"><a href="#p-00a_welcome"><span>1장 시작하기</span><i></i><em>6</em></a></li><li><a href="#p-00a_welcome"><span>1-1 처음 켜고 내 정보 적기</span><i></i><em>6</em></a></li><li><a href="#p-01_main"><span>1-2 첫 화면 살펴보기</span><i></i><em>7</em></a></li><li><a href="#p-02_banner"><span>1-3 마감 임박 알림 확인하기</span><i></i><em>8</em></a></li><li><a href="#p-39_practice"><span>1-4 연습 업무 넣기</span><i></i><em>9</em></a></li><li class="toc-h"><a href="#p-05_step1"><span>2장 업무 만들기</span><i></i><em>10</em></a></li><li><a href="#p-05_step1"><span>2-1 새 업무 만들기</span><i></i><em>10</em></a></li><li><a href="#p-06_step2"><span>2-2 단계와 할 일 적기</span><i></i><em>11</em></a></li><li><a href="#p-07_step3"><span>2-3 업무팁·서식 붙이기</span><i></i><em>12</em></a></li><li><a href="#p-08_tip"><span>2-4 업무팁 적기</span><i></i><em>13</em></a></li><li><a href="#p-08b_tipfiles"><span>2-5 작성례·사진 넣기</span><i></i><em>14</em></a></li><li><a href="#p-09_fmpick"><span>2-6 서식 연결하기</span><i></i><em>15</em></a></li><li><a href="#p-11_refpick"><span>2-7 참고 자료 연결하고 시작하기</span><i></i><em>16</em></a></li><li class="toc-h"><a href="#p-13_focus"><span>3장 업무 처리하기</span><i></i><em>17</em></a></li><li><a href="#p-13_focus"><span>3-1 일하는 화면 살펴보기</span><i></i><em>17</em></a></li><li><a href="#p-17_work"><span>3-2 체크하고 처리결과 적기</span><i></i><em>18</em></a></li><li><a href="#p-18_result"><span>3-3 처리결과와 증빙 남기기</span><i></i><em>19</em></a></li><li><a href="#p-17b_thumbs"><span>3-4 업무 절차 패널 보기</span><i></i><em>20</em></a></li><li><a href="#p-17c_pick"><span>3-5 다음 할 일 미리 보기</span><i></i><em>21</em></a></li><li><a href="#p-22b_guide"><span>3-6 업무 길잡이 열기</span><i></i><em>22</em></a></li><li><a href="#p-22_menu"><span>3-7 오른쪽 클릭 메뉴 쓰기</span><i></i><em>23</em></a></li><li><a href="#p-19_formats"><span>3-8 서식 꺼내 쓰기</span><i></i><em>24</em></a></li><li><a href="#p-20_refpop"><span>3-9 참고 자료 보기</span><i></i><em>25</em></a></li><li><a href="#p-21_preview"><span>3-10 미리보기</span><i></i><em>26</em></a></li><li><a href="#p-21b_zoom"><span>3-11 사진 확대해 보기</span><i></i><em>27</em></a></li><li><a href="#p-17d_wide"><span>3-12 넓게 보기와 글자 크기</span><i></i><em>28</em></a></li><li class="toc-h"><a href="#p-40_practice_skip"><span>4장 건너뛰기와 해당 없음</span><i></i><em>29</em></a></li><li><a href="#p-40_practice_skip"><span>4-1 갈림길에서 건너뛰기</span><i></i><em>29</em></a></li><li><a href="#p-40b_skip_taken"><span>4-2 건너뛰기 취소하기</span><i></i><em>30</em></a></li><li><a href="#p-22e_skip"><span>4-3 건너뛴 절차 확인하기</span><i></i><em>31</em></a></li><li class="toc-h"><a href="#p-14_edit"><span>5장 체크리스트 고치기</span><i></i><em>32</em></a></li><li><a href="#p-14_edit"><span>5-1 체크리스트 편집하기</span><i></i><em>32</em></a></li><li><a href="#p-15_branch"><span>5-2 건너뛰기 단추 만들기</span><i></i><em>33</em></a></li></ul></div><div class="pf">2</div></section><section class="pg pg-toc"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>목차</span></div><div class="pb"><ul class="toc"><li class="toc-h"><a href="#p-23_schedule"><span>6장 일정과 보고서</span><i></i><em>34</em></a></li><li><a href="#p-23_schedule"><span>6-1 마감일 정하고 일정 보기</span><i></i><em>34</em></a></li><li><a href="#p-22d_checklist"><span>6-2 체크리스트 출력하기</span><i></i><em>35</em></a></li><li><a href="#p-22c_report"><span>6-3 진행상황 보고서 만들기</span><i></i><em>36</em></a></li><li class="toc-h"><a href="#p-24_collab"><span>7장 함께 일하기</span><i></i><em>37</em></a></li><li><a href="#p-24_collab"><span>7-1 업무 나누어 맡기기</span><i></i><em>37</em></a></li><li><a href="#p-25_waiting"><span>7-2 회신 받아 합치기</span><i></i><em>38</em></a></li><li><a href="#p-25c_recall"><span>7-3 맡긴 일 회수하기</span><i></i><em>39</em></a></li><li><a href="#p-27_addressbook"><span>7-4 주소록 관리하기</span><i></i><em>40</em></a></li><li><a href="#p-28_share"><span>7-5 업무 공유하기</span><i></i><em>41</em></a></li><li><a href="#p-28b_tipexclude"><span>7-6 사진 빼고 보내기</span><i></i><em>42</em></a></li><li class="toc-h"><a href="#p-29_done"><span>8장 끝낸 업무 관리</span><i></i><em>43</em></a></li><li><a href="#p-29_done"><span>8-1 완료 처리하기</span><i></i><em>43</em></a></li><li><a href="#p-31_reference"><span>8-2 레퍼런스로 등록하기</span><i></i><em>44</em></a></li><li><a href="#p-32_reftab"><span>8-3 레퍼런스로 다음 업무 시작하기</span><i></i><em>45</em></a></li><li><a href="#p-34_folders"><span>8-4 업무를 폴더로 정리하기</span><i></i><em>46</em></a></li><li><a href="#p-33_archive"><span>8-5 보관함으로 옮기기</span><i></i><em>47</em></a></li><li><a href="#p-37_trash"><span>8-6 지운 업무 되살리기</span><i></i><em>48</em></a></li><li class="toc-h"><a href="#p-35_law"><span>9장 법령·서식 자료함</span><i></i><em>49</em></a></li><li><a href="#p-35_law"><span>9-1 법령·매뉴얼 모으기</span><i></i><em>49</em></a></li><li><a href="#p-35b_lawreplace"><span>9-2 법령이 개정되었을 때</span><i></i><em>50</em></a></li><li><a href="#p-36_repo"><span>9-3 서식·문서함 쓰기</span><i></i><em>51</em></a></li><li><a href="#p-36b_repo_replace"><span>9-4 서식이 바뀌었을 때</span><i></i><em>52</em></a></li><li class="toc-h"><a href="#p-38_backup"><span>10장 설정과 백업</span><i></i><em>53</em></a></li><li><a href="#p-38_backup"><span>10-1 백업하고 되돌리기</span><i></i><em>53</em></a></li><li><a href="#p-38b_prefs"><span>10-2 환경설정</span><i></i><em>54</em></a></li><li class="toc-h"><a href="#p-keys"><span>부록</span><i></i><em>55</em></a></li><li><a href="#p-keys"><span>마우스와 단축키</span><i></i><em>55</em></a></li><li><a href="#p-faq"><span>자주 묻는 질문</span><i></i><em>57</em></a></li><li><a href="#p-terms"><span>용어 풀이</span><i></i><em>59</em></a></li></ul></div><div class="pf">3</div></section><section class="pg pg-front" id="p-howto"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>처음에</span></div><div class="pb"><h1 class="pt">이 설명서 보는 법</h1>
+<p class="lead">기능 하나를 한 쪽에 담았습니다. 모든 쪽은 같은 순서로 되어 있어, 필요한 기능만 찾아 읽으면 됩니다.</p>
+<div class="howto">
+ <div class="ht-row"><b>제목</b><span>그 쪽에서 할 수 있는 일 (예: 「업무팁 적기」)</span></div>
+ <div class="ht-row"><b>사진</b><span><span class="hl-sample"></span> 주황 테두리가 누르거나 볼 곳입니다. 사진은 필요한 부분만 잘라 크게 보여 줍니다.</span></div>
+ <div class="ht-row"><b>따라 하기</b><span>번호 순서대로 누르면 됩니다.</span></div>
+ <div class="ht-row"><b>알아 두기 · 주의</b><span>알면 편한 것과 꼭 지켜야 할 것입니다.</span></div>
+</div>
+<h2 class="sh">표기</h2>
+<table class="tbl"><tr><th><b>[시작하기]</b></th><td>화면의 단추 · 메뉴 이름 (화면과 똑같이 적었습니다)</td></tr>
+<tr><th><kbd>Ctrl</kbd>+<kbd>Z</kbd></th><td>키보드 키 (동시에 누름)</td></tr>
+<tr><th>오른쪽 클릭</th><td>마우스 오른쪽 단추로 누르면 그 자리에서 할 수 있는 명령이 나옵니다.</td></tr></table>
+<div class="note tip"><span class="nl">알아 두기</span><p>알면 더 편한 방법과 참고할 내용입니다.</p></div>
+<div class="note warn"><span class="nl">주의</span><p>자료를 잃거나 문제가 될 수 있는 것입니다.</p></div>
+<h2 class="sh">시작 전에</h2>
+<ul class="dots">
+ <li>프로그램은 HTML 파일 하나입니다. <b>엣지</b>나 <b>크롬</b>으로 열면 바로 쓸 수 있고, 설치할 것이 없습니다.</li>
+ <li>자료는 서버가 아니라 <b>이 PC의 브라우저 안</b>에만 저장됩니다. 늘 같은 브라우저로 여세요.</li>
+ <li>사진은 프로그램 안에 들어 있는 <b>연습 업무</b>(가상 자료)로 찍었습니다. 「연습 업무 넣기」(<a href="#p-39_practice">9쪽</a>)로 똑같이 따라 해 볼 수 있습니다.</li>
+ <li>AI 기능은 이 설명서에서 다루지 않습니다.</li>
+</ul></div><div class="pf">4</div></section><section class="pg pg-front" id="p-quick"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>처음에</span></div><div class="pb"><h1 class="pt">5분 만에 시작하기</h1>
+<p class="lead">연습 업무로 이 프로그램의 핵심 흐름을 한 번 해 봅니다. 자세한 방법은 오른쪽 쪽 번호를 보세요.</p>
+<ol class="quick"><li><span class="qn">1</span><div><b>연습 업무 넣기</b><p>왼쪽 위 [새 업무 만들기] 옆 ▾ → 연습 업무 넣기</p></div><em><a href="#p-39_practice">9쪽</a></em></li><li><span class="qn">2</span><div><b>업무 열기</b><p>「[연습] 소모품 구매」 카드를 누릅니다.</p></div><em><a href="#p-13_focus">17쪽</a></em></li><li><span class="qn">3</span><div><b>체크하기</b><p>할 일 앞 동그라미를 누릅니다. 단계가 끝나면 다음 단계가 펼쳐집니다.</p></div><em><a href="#p-17_work">18쪽</a></em></li><li><span class="qn">4</span><div><b>처리결과 남기기</b><p>줄을 한 번 누르고 한 줄 적은 뒤 Enter.</p></div><em><a href="#p-17_work">18쪽</a></em></li><li><span class="qn">5</span><div><b>업무팁·서식 보기</b><p>오른쪽 업무 절차에서 놓치기 쉬운 것과 근거를 확인합니다.</p></div><em><a href="#p-17b_thumbs">20쪽</a></em></li><li><span class="qn">6</span><div><b>갈림길 고르기</b><p>「금액 기준 확인」 줄의 [1인 견적] → [실행].</p></div><em><a href="#p-40_practice_skip">29쪽</a></em></li><li><span class="qn">7</span><div><b>보고서 출력</b><p>왼쪽 [진행상황 출력] → [인쇄 · PDF].</p></div><em><a href="#p-22d_checklist">35쪽</a></em></li><li><span class="qn">8</span><div><b>내 업무 만들기</b><p>[새 업무 만들기] → 이름 → 단계와 할 일 → [바로 시작].</p></div><em><a href="#p-05_step1">10쪽</a></em></li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>연습 업무는 다 해 본 뒤 지우면 됩니다. 내 업무와 섞이지 않게 제목 앞에 [연습]이 붙어 있습니다.</p></div></div><div class="pf">5</div></section><section class="pg pg-feat" id="p-00a_welcome"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>1장 시작하기</span></div><div class="pb"><div class="band"><div class="band-no">1</div><div><div class="band-t">시작하기</div><div class="band-i">프로그램을 처음 켜고, 첫 화면을 둘러보고, 연습 업무로 따라 해 볼 준비를 합니다.</div></div></div><div class="ft"><span class="fno">1-1</span><h2>처음 켜고 내 정보 적기</h2></div>
+<p class="lead">처음 켜면 한 번만 내 정보를 묻습니다. 적은 내 정보는 보고서의 작성자와 업무 분담의 보내는 사람으로 쓰입니다.</p>
+<div class="shot" style="width:164.9mm;aspect-ratio:820/527"><img src="img/00a_welcome.jpg" alt="처음 켜고 내 정보 적기 화면"><span class="hl" style="left:20.73%;top:6.83%;width:58.54%;height:86.34%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>「업무 내비게이터에 오신 것을 환영합니다」 창에 <b>이름</b>을 적습니다(꼭 적어야 함).</li><li>계급·소속·연락처를 적습니다(비워 두어도 됨).</li><li><b>[시작하기]</b>를 누르거나 <kbd>Enter</kbd>를 누릅니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>지금 적기 어려우면 <b>[나중에]</b>를 누릅니다. 오른쪽 위 이름 동그라미를 누르면 언제든 고칠 수 있습니다.</p></div><div class="note warn"><span class="nl">주의</span><p>업무는 <b>브라우저(엣지·크롬)마다 따로</b> 저장됩니다. 늘 같은 브라우저로 여세요.</p></div><div class="see">함께 보기 <a href="#p-38b_prefs">환경설정 <em>54쪽</em></a></div></div><div class="pf">6</div></section><section class="pg pg-feat" id="p-01_main"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>1장 시작하기</span></div><div class="pb"><div class="ft"><span class="fno">1-2</span><h2>첫 화면 살펴보기</h2></div>
+<p class="lead">첫 화면에는 내 업무 카드와 오늘 챙길 일이 모여 있습니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:1440/810"><img src="img/01_main.jpg" alt="첫 화면 살펴보기 화면"><span class="hl" style="left:2.78%;top:8.15%;width:18.06%;height:89.38%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li><b>왼쪽 위</b>: [새 업무 만들기]와 ▾(업무 가져오기 · 연습 업무 넣기).</li><li><b>왼쪽 목록</b>: 「마감 임박」(기한이 가까운 업무·할 일)과 「업무 분담 현황」(회신을 기다리는 일).</li><li><b>가운데</b>: 업무 카드. 위쪽 탭으로 진행중 · 레퍼런스 · 처리완료 · 전체를 골라 봅니다.</li><li><b>맨 위</b>: 업무 관리 · 일정 · 법령·매뉴얼 · 서식·문서함 · 공유 · 🔔 알림센터 · 설정.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>업무는 최근에 일한 순서로 놓입니다. 오래된 업무가 안 보이면 목록 오른쪽 기간 단추를 「전체 기간」으로 바꿉니다.</p></div><div class="note tip"><span class="nl">알아 두기</span><p>맨 왼쪽 위 로고 「✦ 업무 내비게이터」를 누르면 어디서든 이 화면으로 돌아옵니다.</p></div></div><div class="pf">7</div></section><section class="pg pg-feat" id="p-02_banner"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>1장 시작하기</span></div><div class="pb"><div class="ft"><span class="fno">1-3</span><h2>마감 임박 알림 확인하기</h2></div>
+<p class="lead">프로그램을 켜면 하루 한 번, 기한이 지났거나 다가오는 업무를 화면 가운데에 알려 줍니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:820/390"><img src="img/02_banner.jpg" alt="마감 임박 알림 확인하기 화면"><span class="hl" style="left:23.17%;top:29.23%;width:53.66%;height:41.54%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>알림에서 급한 업무부터 확인합니다(5건까지, 넘으면 「외 n건」).</li><li>업무 이름을 누르면 그 업무가 바로 열립니다.</li><li>모두 보려면 <b>[마감 임박 목록 보기 →]</b>를 누릅니다.</li><li><b>[닫기]</b> 또는 <kbd>Esc</kbd>로 닫습니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>지나간 알림은 맨 위 🔔 <b>알림센터</b>에서 다시 봅니다. 알림 횟수(하루 한 번 · 열 때마다 · 끄기)는 환경설정 → 알림에서 정합니다.</p></div></div><div class="pf">8</div></section><section class="pg pg-feat" id="p-39_practice"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>1장 시작하기</span></div><div class="pb"><div class="ft"><span class="fno">1-4</span><h2>연습 업무 넣기</h2></div>
+<p class="lead">가상 자료로 된 연습 업무 2개를 넣어, 이 설명서를 그대로 따라 해 볼 수 있습니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:820/390"><img src="img/39_practice.jpg" alt="연습 업무 넣기 화면"><span class="hl" style="left:8.54%;top:45.64%;width:24.39%;height:8.72%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>왼쪽 위 [새 업무 만들기] 옆 <b>▾</b>를 누릅니다.</li><li><b>연습 업무 넣기</b>를 누릅니다.</li><li>「[연습] 소모품 구매 — 계약부터 대가 지급까지」와 「[연습] 월간 업무 실적 보고」가 목록에 들어옵니다.</li><li>업무 카드를 눌러 열고 체크해 봅니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>마감일은 넣는 날을 기준으로 정해집니다. 다 해 본 뒤에는 지우면 됩니다(휴지통).</p></div><div class="note warn"><span class="nl">주의</span><p>연습 업무의 법령 근거는 2026. 7. 1. 기준입니다. 실제 업무 전에는 최신 법령을 확인하세요.</p></div><div class="see">함께 보기 <a href="#p-17_work">체크하고 처리결과 적기 <em>18쪽</em></a></div></div><div class="pf">9</div></section><section class="pg pg-feat" id="p-05_step1"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>2장 업무 만들기</span></div><div class="pb"><div class="band"><div class="band-no">2</div><div><div class="band-t">업무 만들기</div><div class="band-i">업무 이름 → 단계와 할 일 → 업무팁·서식 → 참고 자료, 4단계로 내 업무를 만듭니다. ③·④는 건너뛰고 바로 시작해도 됩니다.</div></div></div><div class="ft"><span class="fno">2-1</span><h2>새 업무 만들기</h2></div>
+<p class="lead">업무 이름만 적으면 바로 시작할 수 있습니다. 마감일·폴더는 일하면서 정해도 됩니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:820/390"><img src="img/05_step1.jpg" alt="새 업무 만들기 화면"><span class="hl" style="left:13.54%;top:43.85%;width:72.93%;height:12.31%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>왼쪽 위 <b>[새 업무 만들기]</b>를 누릅니다.</li><li>① 업무 이름을 적습니다. 예: 사무용 의자 구매 (2026. 11.)</li><li><kbd>Enter</kbd> 또는 <b>[다음]</b>을 눌러 ② 절차로 넘어갑니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>쓰던 중에 창을 닫으면 임시 저장할지 묻고, 다음에 열 때 「이어서 쓰기」로 계속합니다.</p></div><div class="note tip"><span class="nl">알아 두기</span><p>위 <b>[초기화]</b>는 처음부터 다시 씁니다. 알림의 [되돌리기]로 바로 되살릴 수 있습니다.</p></div></div><div class="pf">10</div></section><section class="pg pg-feat" id="p-06_step2"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>2장 업무 만들기</span></div><div class="pb"><div class="ft"><span class="fno">2-2</span><h2>단계와 할 일 적기</h2></div>
+<p class="lead">업무를 큰 <b>단계</b>(번호 네모)와 그 안의 <b>할 일</b>(동그라미)로 나눠 적습니다.</p>
+<div class="shot" style="width:136.0mm;aspect-ratio:680/610"><img src="img/06_step2.jpg" alt="단계와 할 일 적기 화면"><span class="hl" style="left:6.03%;top:21.80%;width:87.21%;height:63.44%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>첫 줄에 단계 이름을 적고 Enter를 누릅니다. 예: 01 구매 준비</li><li>새 줄에서 <kbd>Tab</kbd>을 누르면 그 단계의 할 일이 됩니다.</li><li>다음 단계는 <kbd>Shift</kbd>+<kbd>Tab</kbd>으로 단계로 되돌린 뒤 적습니다.</li><li>다 적으면 <b>[다음]</b>을 누릅니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>할 일은 <b>따로 끝내고 따로 체크할 수 있는 일 하나</b>씩, 단계마다 2~8개가 알맞습니다.</p></div><div class="note tip"><span class="nl">알아 두기</span><p>⠿를 끌어 순서를 바꾸고, 빈 줄에서 <kbd>Backspace</kbd>를 누르면 줄이 지워집니다.</p></div></div><div class="pf">11</div></section><section class="pg pg-feat" id="p-07_step3"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>2장 업무 만들기</span></div><div class="pb"><div class="ft"><span class="fno">2-3</span><h2>업무팁·서식 붙이기</h2></div>
+<p class="lead">다음 담당자가 헤매지 않도록, 필요한 할 일에만 업무팁과 서식을 붙입니다(선택).</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:820/492"><img src="img/07_step3.jpg" alt="업무팁·서식 붙이기 화면"><span class="hl" style="left:13.54%;top:7.32%;width:72.93%;height:85.37%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>③ 화면에서 붙일 줄의 <b><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#f59e0b" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg> 업무팁 +</b> 또는 <b><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#10b981" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg> 서식 +</b>를 누릅니다.</li><li>항목 창이 그 탭으로 열립니다. 업무팁을 적거나 서식을 연결합니다.</li><li>창을 닫으면(<kbd>Esc</kbd>) ③ 화면으로 돌아오고, 버튼에 「업무팁 ✓ · 서식 1」처럼 표시됩니다.</li><li><b>[다음]</b>을 누르거나, 나중에 하려면 <b>[바로 시작]</b>을 누릅니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>서식 파일을 줄 위에 끌어다 놓아도 그 할 일의 서식으로 연결됩니다.</p></div><div class="see">함께 보기 <a href="#p-08_tip">업무팁 적기 <em>13쪽</em></a> · <a href="#p-09_fmpick">서식 연결하기 <em>15쪽</em></a></div></div><div class="pf">12</div></section><section class="pg pg-feat" id="p-08_tip"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>2장 업무 만들기</span></div><div class="pb"><div class="ft"><span class="fno">2-4</span><h2>업무팁 적기</h2></div>
+<p class="lead">업무팁은 세 칸으로 나눠 적습니다. 다음 담당자는 이 내용을 일하는 화면에서 바로 봅니다.</p>
+<div class="shot" style="width:176.8mm;aspect-ratio:974/672"><img src="img/08_tip.jpg" alt="업무팁 적기 화면"><span class="hl" style="left:13.04%;top:5.36%;width:73.92%;height:89.29%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li><b>놓치기 쉬운 것</b>(빨간 칸): 틀리면 문제가 되는 기한·요건을 한 줄에 하나씩 적습니다.</li><li><b>업무 팁</b>(가운데 칸): 하는 방법과 순서를 적습니다.</li><li><b>근거</b>(아래 칸): 법령 조문·지침을 한 줄에 하나씩 적습니다.</li><li>칸 밖을 누르거나 창을 닫으면 저장됩니다(저장 단추 없음).</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>예: 놓치기 쉬운 것 「추정가격 2천만원 초과면 1인 견적 불가」 · 근거 「시행령 제30조제1항제2호」</p></div><div class="note tip"><span class="nl">알아 두기</span><p>단계 전체에 필요한 내용은 <b>단계</b>에 한 번 적으면 그 단계의 모든 할 일에 「단계 공통」으로 보입니다.</p></div></div><div class="pf">13</div></section><section class="pg pg-feat" id="p-08b_tipfiles"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>2장 업무 만들기</span></div><div class="pb"><div class="ft"><span class="fno">2-5</span><h2>작성례·사진 넣기</h2></div>
+<p class="lead">작성례, 현장 사진, 시스템 화면 캡처처럼 「이렇게 하면 된다」를 보여 주는 자료를 업무팁에 붙입니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:820/390"><img src="img/08b_tipfiles.jpg" alt="작성례·사진 넣기 화면"><span class="hl" style="left:8.66%;top:43.59%;width:82.56%;height:20.51%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>항목 창 <b>업무팁</b> 탭 아래 <b><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#f59e0b" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg> 예시·사진</b>으로 갑니다.</li><li><b>[⬆ 내 PC에서 올리기]</b>를 누르거나 파일을 끌어다 놓습니다.</li><li>화면 캡처는 복사한 뒤 <kbd>Ctrl</kbd>+<kbd>V</kbd>로 바로 붙입니다.</li><li>붙인 사진을 누르면 미리보기가 열리고 <kbd>←</kbd> <kbd>→</kbd>로 넘겨 봅니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>채워서 쓰는 <b>빈 양식</b>은 [서식] 탭에, <b>작성례·사진</b>은 업무팁에 둡니다.</p></div><div class="note warn"><span class="nl">주의</span><p>이름·주민등록번호 같은 개인정보는 가린 사본만 넣으세요. 예시·사진은 공유·내보내기에 함께 갑니다.</p></div><div class="see">함께 보기 <a href="#p-28b_tipexclude">사진 빼고 보내기 <em>42쪽</em></a></div></div><div class="pf">14</div></section><section class="pg pg-feat" id="p-09_fmpick"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>2장 업무 만들기</span></div><div class="pb"><div class="ft"><span class="fno">2-6</span><h2>서식 연결하기</h2></div>
+<p class="lead">서식·문서함에 모아 둔 빈 양식을 할 일에 연결해, 일할 때 바로 꺼내 씁니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:1190/567"><img src="img/09_fmpick.jpg" alt="서식 연결하기 화면"><span class="hl" style="left:3.03%;top:16.05%;width:93.95%;height:7.76%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>항목 창 <b>서식</b> 탭에서 <b>🗂 서식·문서함에서 고르기</b>를 누릅니다.</li><li>쓸 서식 줄을 눌러 체크합니다(Shift+클릭으로 여러 개).</li><li><b>[서식 연결하기]</b>를 누릅니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>창에 파일을 끌어다 놓으면 서식·문서함에 저장되면서 바로 체크됩니다. 줄을 두 번 누르면 미리보기입니다.</p></div><div class="see">함께 보기 <a href="#p-36_repo">서식·문서함 쓰기 <em>51쪽</em></a></div></div><div class="pf">15</div></section><section class="pg pg-feat" id="p-11_refpick"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>2장 업무 만들기</span></div><div class="pb"><div class="ft"><span class="fno">2-7</span><h2>참고 자료 연결하고 시작하기</h2></div>
+<p class="lead">업무 전체에서 볼 법령·지침·공문을 참고 자료로 연결하고 업무를 시작합니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:1190/567"><img src="img/11_refpick.jpg" alt="참고 자료 연결하고 시작하기 화면"><span class="hl" style="left:3.03%;top:82.19%;width:93.95%;height:10.41%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>④ 화면에서 <b>📚 법령·매뉴얼에서 고르기</b>를 누릅니다.</li><li>쓸 자료를 체크하고 <b>[참고 자료 연결하기]</b>를 누릅니다. 새 파일은 <b>⬆ 내 PC에서 올리기</b>로 넣습니다.</li><li><b>[시작하기]</b>를 누르면 업무가 만들어지고 일하는 화면이 열립니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>올린 파일은 법령·매뉴얼에도 저장되어 다른 업무에서도 다시 씁니다.</p></div><div class="see">함께 보기 <a href="#p-35_law">법령·매뉴얼 모으기 <em>49쪽</em></a></div></div><div class="pf">16</div></section><section class="pg pg-feat" id="p-13_focus"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>3장 업무 처리하기</span></div><div class="pb"><div class="band"><div class="band-no">3</div><div><div class="band-t">업무 처리하기</div><div class="band-i">체크하고, 처리결과를 남기고, 업무팁·근거·서식을 보며 일합니다. 사진은 연습 업무 「소모품 구매」입니다.</div></div></div><div class="ft"><span class="fno">3-1</span><h2>일하는 화면 살펴보기</h2></div>
+<p class="lead">업무 카드를 누르면 일하는 화면이 열립니다. 화면은 세 부분입니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:1440/810"><img src="img/13_focus.jpg" alt="일하는 화면 살펴보기 화면"><span class="hl" style="left:20.97%;top:29.51%;width:47.57%;height:60.62%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li><b>왼쪽</b>: 진행률·마감일과 명령 단추(체크리스트 편집 · 업무 분담 · 진행상황 출력 · 내보내기 · 삭제).</li><li><b>가운데</b>: 참고 자료와 체크리스트. 지금 하는 단계만 펼쳐집니다.</li><li><b>오른쪽</b>: 업무 절차. 전체 흐름과 「지금 할 일」의 업무팁·서식이 보입니다.</li><li><kbd>Esc</kbd>를 누를 때마다 한 단계씩 닫히고 마지막에 업무 목록으로 돌아갑니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>오른쪽 맨 위 「✓ 완료 1/6단계 ▾」 줄을 누르면 끝난 단계가 펼쳐집니다.</p></div></div><div class="pf">17</div></section><section class="pg pg-feat" id="p-17_work"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>3장 업무 처리하기</span></div><div class="pb"><div class="ft"><span class="fno">3-2</span><h2>체크하고 처리결과 적기</h2></div>
+<p class="lead">할 일을 끝내면 체크하고, 무엇을 했는지 한 줄로 남깁니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:820/390"><img src="img/17_work.jpg" alt="체크하고 처리결과 적기 화면"><span class="hl" style="left:10.00%;top:44.62%;width:79.88%;height:11.03%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>할 일 앞 <b>동그라미</b>를 누르면 체크됩니다. 다시 누르면 풀립니다.</li><li>줄을 한 번 누르면 처리결과 입력칸이 열립니다. 예: 「3곳 비교 — 최저 13,980,000원」</li><li><kbd>Enter</kbd>를 누르면 저장하고 다음 할 일로 갑니다(<kbd>Shift</kbd>+<kbd>Enter</kbd>는 줄바꿈).</li><li>단계의 할 일을 모두 끝내면 단계가 초록 ✓가 되고 다음 단계가 펼쳐집니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>줄에 마우스를 올리면 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#8b5cf6" aria-hidden="true"><path d="M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.14-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14a2 2 0 0 0 1.44 1.44l6.14 1.58a.5.5 0 0 1 0 .96l-6.14 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg> 길잡이 · <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#f59e0b" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg> 업무팁 · <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#10b981" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg> 서식 · <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#2563eb" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg> 마감일 · <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#64748b" aria-hidden="true"><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="19" cy="12" r="1.3" fill="currentColor"/><circle cx="5" cy="12" r="1.3" fill="currentColor"/></svg> 단추가 나옵니다. 내용이 있는 단추만 색이 있습니다.</p></div><div class="note tip"><span class="nl">알아 두기</span><p>제목 뒤 작은 주황 점(<b style="color:#f59e0b">•</b>)은 업무팁이나 서식이 있다는 뜻입니다.</p></div></div><div class="pf">18</div></section><section class="pg pg-feat" id="p-18_result"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>3장 업무 처리하기</span></div><div class="pb"><div class="ft"><span class="fno">3-3</span><h2>처리결과와 증빙 남기기</h2></div>
+<p class="lead">항목 창에 처리결과를 자세히 적고 증빙 파일을 붙입니다. 절차를 지켰다는 기록이 그 할 일에 함께 남습니다.</p>
+<div class="shot" style="width:176.8mm;aspect-ratio:974/672"><img src="img/18_result.jpg" alt="처리결과와 증빙 남기기 화면"><span class="hl" style="left:13.04%;top:5.36%;width:73.92%;height:89.29%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>할 일 줄을 <b>두 번</b> 누르면 항목 창이 열립니다.</li><li><b>처리결과</b> 탭에 내용을 적습니다.</li><li><b><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#8b5cf6" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg> 처리결과 첨부</b>에 증빙 파일(견적서 PDF·화면 캡처 등)을 끌어다 놓습니다.</li><li><kbd>Esc</kbd>를 눌러 닫으면 저장됩니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>한 줄 입력칸 옆 📎를 눌러도 결과 파일을 바로 붙입니다.</p></div></div><div class="pf">19</div></section><section class="pg pg-feat" id="p-17b_thumbs"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>3장 업무 처리하기</span></div><div class="pb"><div class="ft"><span class="fno">3-4</span><h2>업무 절차 패널 보기</h2></div>
+<p class="lead">오른쪽 업무 절차는 지금 할 일에 필요한 것을 모아 보여 줍니다. 패널만 보고 일해도 됩니다.</p>
+<div class="shot" style="width:119.1mm;aspect-ratio:740/758"><img src="img/17b_thumbs.jpg" alt="업무 절차 패널 보기 화면"><span class="hl" style="left:53.78%;top:67.94%;width:38.65%;height:6.86%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>맨 위 <b>놓치기 쉬운 것</b>(빨간 상자)을 먼저 확인합니다.</li><li>가운데 <b>업무 팁</b>과 맨 아래 <b>근거</b>를 보며 일합니다.</li><li><b>지난번엔 이렇게</b>: 예전 업무에서 같은 할 일에 남긴 처리결과입니다. 누르면 그때의 기록과 증빙을 봅니다.</li><li>예시·사진 썸네일이나 「필요 서식·문서」 이름을 누르면 바로 미리보기가 열립니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>끝낸 업무를 지우지 말고 처리완료로 남겨 두면, 다음 담당자가 「지난번엔 이렇게」로 봅니다.</p></div><div class="see">함께 보기 <a href="#p-29_done">완료 처리하기 <em>43쪽</em></a></div></div><div class="pf">20</div></section><section class="pg pg-feat" id="p-17c_pick"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>3장 업무 처리하기</span></div><div class="pb"><div class="ft"><span class="fno">3-5</span><h2>다음 할 일 미리 보기</h2></div>
+<p class="lead">아직 차례가 아닌 할 일도 미리 골라 업무팁과 서식을 볼 수 있습니다.</p>
+<div class="shot" style="width:176.8mm;aspect-ratio:832/574"><img src="img/17c_pick.jpg" alt="다음 할 일 미리 보기 화면"><span class="hl" style="left:54.21%;top:6.27%;width:40.50%;height:87.46%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>가운데 체크리스트에서 미리 볼 줄을 한 번 누릅니다.</li><li>오른쪽 업무 절차에서 그 할 일이 제자리에 펼쳐집니다.</li><li>업무팁을 읽거나 서식을 미리 내려받아 둡니다.</li><li><b>지금 할 일로</b>를 누르거나 <kbd>Esc</kbd>를 누르면 원래대로 돌아옵니다.</li></ol>
+</div><div class="pf">21</div></section><section class="pg pg-feat" id="p-22b_guide"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>3장 업무 처리하기</span></div><div class="pb"><div class="ft"><span class="fno">3-6</span><h2>업무 길잡이 열기</h2></div>
+<p class="lead">한 할 일에 필요한 업무팁·근거·서식·참고 자료를 한 화면에 모아 봅니다.</p>
+<div class="shot" style="width:176.9mm;aspect-ratio:986/680"><img src="img/22b_guide.jpg" alt="업무 길잡이 열기 화면"><span class="hl" style="left:15.52%;top:5.29%;width:68.97%;height:89.41%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>줄에 마우스를 올려 <b><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#8b5cf6" aria-hidden="true"><path d="M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.14-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14a2 2 0 0 0 1.44 1.44l6.14 1.58a.5.5 0 0 1 0 .96l-6.14 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg> 길잡이</b>를 누릅니다(오른쪽 클릭 → 업무 길잡이도 같음).</li><li>업무팁 · 서식 · 단계 공통 · 참고 자료가 묶음별로 나옵니다. 이름을 누르면 바로 열립니다.</li><li>아래 <b>다음 할 일 ›</b>로 다음 할 일의 길잡이로 넘어갑니다.</li><li>고칠 내용이 있으면 <b>[항목 창에서 고치기]</b>를 누릅니다. 닫으면 길잡이로 돌아옵니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>머리의 「가가」로 글자를 키우고, ⤢로 전체 화면으로 봅니다. 🔈 듣기로 소리로 들을 수도 있습니다.</p></div></div><div class="pf">22</div></section><section class="pg pg-feat" id="p-22_menu"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>3장 업무 처리하기</span></div><div class="pb"><div class="ft"><span class="fno">3-7</span><h2>오른쪽 클릭 메뉴 쓰기</h2></div>
+<p class="lead">줄을 오른쪽 클릭하면 그 줄에서 할 수 있는 일이 모두 나옵니다. 오른쪽 업무 절차의 줄에서도 같은 메뉴가 나옵니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:820/452"><img src="img/22_menu.jpg" alt="오른쪽 클릭 메뉴 쓰기 화면"><span class="hl" style="left:37.20%;top:7.96%;width:25.61%;height:84.07%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>할 일 줄을 오른쪽 클릭합니다(또는 줄의 ⋯ 단추).</li><li><b>체크 / 체크 취소</b>, 그 줄의 건너뛰기 단추가 맨 위에 있습니다.</li><li><b>해당 없음으로 빼기</b>: 이번 업무에서 할 필요 없는 할 일을 뺍니다.</li><li>길잡이 · 처리결과 · 업무팁 · 서식 · 마감일 정하기를 고릅니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>해당 없음으로 뺀 것은 알림의 [되돌리기]로 바로 되살립니다. 여러 개는 체크리스트 위 [해당 없음 고르기].</p></div><div class="note tip"><span class="nl">알아 두기</span><p>처리완료·레퍼런스 업무에서는 보기 명령만 쓸 수 있고 고치는 명령은 흐리게 나옵니다.</p></div></div><div class="pf">23</div></section><section class="pg pg-feat" id="p-19_formats"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>3장 업무 처리하기</span></div><div class="pb"><div class="ft"><span class="fno">3-8</span><h2>서식 꺼내 쓰기</h2></div>
+<p class="lead">할 일에 연결된 빈 양식을 미리 보고 내려받아 채워 씁니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:820/390"><img src="img/19_formats.jpg" alt="서식 꺼내 쓰기 화면"><span class="hl" style="left:8.41%;top:46.67%;width:83.17%;height:6.67%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>항목 창 <b><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#10b981" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg> 서식</b> 탭을 엽니다(또는 줄의 서식 단추).</li><li>서식 이름을 누르면 미리보기가 열립니다.</li><li>마우스를 올려 ⬇를 누르면 내려받습니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>서식을 오른쪽 클릭하면 「서식·문서함에서 위치 보기」, 「단계 공통으로 옮기기」 등을 고릅니다.</p></div><div class="note tip"><span class="nl">알아 두기</span><p>서식·문서함에서 이 양식을 새 판으로 바꾸면 이 할 일도 새 판을 엽니다.</p></div><div class="see">함께 보기 <a href="#p-36b_repo_replace">서식이 바뀌었을 때 <em>52쪽</em></a></div></div><div class="pf">24</div></section><section class="pg pg-feat" id="p-20_refpop"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>3장 업무 처리하기</span></div><div class="pb"><div class="ft"><span class="fno">3-9</span><h2>참고 자료 보기</h2></div>
+<p class="lead">업무에 연결한 법령·지침은 체크리스트 위 한 줄에 모여 있습니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:820/390"><img src="img/20_refpop.jpg" alt="참고 자료 보기 화면"><span class="hl" style="left:25.61%;top:27.69%;width:48.78%;height:44.87%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>체크리스트 위 참고 자료 이름을 누르면 미리보기가 열립니다.</li><li>「+N개」나 <b>목록</b>을 누르면 전체 목록이 나옵니다.</li><li>목록에서 ⬇로 하나씩, <b>[⬇ 모두 내려받기]</b>로 한꺼번에 내려받습니다.</li><li>자료를 더하려면 오른쪽 <b>[＋ 넣기]</b>를 누릅니다.</li></ol>
+</div><div class="pf">25</div></section><section class="pg pg-feat" id="p-21_preview"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>3장 업무 처리하기</span></div><div class="pb"><div class="ft"><span class="fno">3-10</span><h2>미리보기</h2></div>
+<p class="lead">PDF·한글(HWPX)·워드·사진·텍스트 파일을 프로그램 안에서 바로 봅니다.</p>
+<div class="shot" style="width:176.9mm;aspect-ratio:1138/785"><img src="img/21_preview.jpg" alt="미리보기 화면"><span class="hl" style="left:7.82%;top:4.59%;width:84.36%;height:90.83%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>파일 이름을 누르면 미리보기 창이 열립니다.</li><li>저장하려면 위 <b>[⬇ 내려받기]</b>를 누릅니다.</li><li>창 가장자리를 끌어 크기를 바꾸고, ⤢로 전체 화면으로 봅니다.</li><li><kbd>Esc</kbd>로 닫습니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>바꾼 창 크기는 다음에도 그대로 기억합니다.</p></div></div><div class="pf">26</div></section><section class="pg pg-feat" id="p-21b_zoom"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>3장 업무 처리하기</span></div><div class="pb"><div class="ft"><span class="fno">3-11</span><h2>사진 확대해 보기</h2></div>
+<p class="lead">화면 캡처처럼 글자가 작은 사진을 크게 확대해 봅니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:1440/810"><img src="img/21b_zoom.jpg" alt="사진 확대해 보기 화면"><span class="hl" style="left:44.03%;top:87.78%;width:11.94%;height:4.44%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>사진에서 보고 싶은 곳을 누르면 그곳을 중심으로 확대됩니다.</li><li>확대한 사진은 끌어서 옮깁니다.</li><li><kbd>Ctrl</kbd>+마우스 휠로 조금씩 확대·축소합니다.</li><li>다시 누르거나 아래 <b>[맞춤]</b>을 누르면 창에 맞춥니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>아래 막대의 [－] [＋]나 키보드 <kbd>+</kbd> <kbd>-</kbd> <kbd>0</kbd>(맞춤)도 됩니다.</p></div></div><div class="pf">27</div></section><section class="pg pg-feat" id="p-17d_wide"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>3장 업무 처리하기</span></div><div class="pb"><div class="ft"><span class="fno">3-12</span><h2>넓게 보기와 글자 크기</h2></div>
+<p class="lead">업무팁이 길거나 글자가 작을 때 업무 절차를 넓히고 읽는 글을 키웁니다.</p>
+<div class="shot" style="width:176.9mm;aspect-ratio:1154/796"><img src="img/17d_wide.jpg" alt="넓게 보기와 글자 크기 화면"><span class="hl" style="left:49.39%;top:6.53%;width:48.87%;height:90.95%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>업무 절차 머리의 <b>⤢</b>를 누르면 왼쪽 부분이 아이콘 줄로 접히고 업무 절차가 넓어집니다.</li><li>머리의 <b>「가가」</b>를 누르고 작게 · 보통 · 크게 · 아주 크게 중에서 고릅니다.</li><li>원래대로 하려면 <b>⤢</b>를 다시 누릅니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>글자 크기는 업무팁·길잡이 글에만 적용되고 다른 화면은 그대로입니다. 두 설정 모두 다음에도 기억합니다.</p></div></div><div class="pf">28</div></section><section class="pg pg-feat" id="p-40_practice_skip"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>4장 건너뛰기와 해당 없음</span></div><div class="pb"><div class="band"><div class="band-no">4</div><div><div class="band-t">건너뛰기와 해당 없음</div><div class="band-i">조건에 따라 하지 않아도 되는 절차는 건너뛰고, 왜 하지 않았는지를 기록으로 남깁니다.</div></div></div><div class="ft"><span class="fno">4-1</span><h2>갈림길에서 건너뛰기</h2></div>
+<p class="lead">금액·처분 종류처럼 조건에 따라 절차가 갈리는 곳에는 건너뛰기 단추가 있습니다. 누르면 필요 없는 절차를 한 번에 빼고 까닭을 남깁니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:820/390"><img src="img/40_practice_skip.jpg" alt="갈림길에서 건너뛰기 화면"><span class="hl" style="left:46.59%;top:45.90%;width:6.71%;height:8.21%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>갈림길 줄 아래의 단추 중 내 경우를 누릅니다. 예: [1인 견적]</li><li>무엇을 건너뛰는지 먼저 보여 줍니다. 예: 「나라장터 수의계약 안내공고」 1개</li><li>맞으면 <b>[실행]</b>(<kbd>Enter</kbd>), 아니면 <b>[취소]</b>(<kbd>Esc</kbd>)를 누릅니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>어느 단추를 골라야 할지는 그 줄의 업무팁에 적혀 있습니다(예: 금액 기준).</p></div><div class="note tip"><span class="nl">알아 두기</span><p>갈림길이 있는 업무는 레퍼런스에 건너뛰기 단추를 꼭 넣어 두세요.</p></div><div class="see">함께 보기 <a href="#p-15_branch">건너뛰기 단추 만들기 <em>33쪽</em></a></div></div><div class="pf">29</div></section><section class="pg pg-feat" id="p-40b_skip_taken"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>4장 건너뛰기와 해당 없음</span></div><div class="pb"><div class="ft"><span class="fno">4-2</span><h2>건너뛰기 취소하기</h2></div>
+<p class="lead">건너뛴 줄은 제목 앞에 보라 <b>⤼</b> 표시가 붙고, 한 묶음으로 접혀 있습니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:820/390"><img src="img/40b_skip_taken.jpg" alt="건너뛰기 취소하기 화면"><span class="hl" style="left:34.76%;top:44.87%;width:30.49%;height:10.26%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>건너뛴 줄은 체크리스트에서 「⤼ 1인 견적 · 1」 알약으로 접혀 있습니다. 누르면 펼쳐집니다.</li><li>제목 앞 <b>⤼</b>를 누릅니다.</li><li><b>[건너뛰기 취소]</b>를 누르면 바로 원래대로 돌아옵니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>취소한 뒤 알림의 [되돌리기]를 누르면 다시 건너뜁니다.</p></div><div class="note tip"><span class="nl">알아 두기</span><p>직접 뺀 줄은 회색 「해당 없음 · 1」, 단추로 건너뛴 줄은 보라 「⤼ 단추 이름」으로 따로 접힙니다.</p></div></div><div class="pf">30</div></section><section class="pg pg-feat" id="p-22e_skip"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>4장 건너뛰기와 해당 없음</span></div><div class="pb"><div class="ft"><span class="fno">4-3</span><h2>건너뛴 절차 확인하기</h2></div>
+<p class="lead">건너뛰거나 해당 없음으로 뺀 절차도 오른쪽 업무 절차에서 사라지지 않고 제자리에 흐리게 남습니다.</p>
+<div class="shot" style="width:138.3mm;aspect-ratio:680/600"><img src="img/22e_skip.jpg" alt="건너뛴 절차 확인하기 화면"></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>오른쪽 업무 절차에서 흐린 줄(취소선)을 찾습니다.</li><li>알약 색으로 까닭을 봅니다: 회색 「해당 없음」 · 보라 「⤼ 단추 이름」.</li><li>마우스를 올리면 사유가 보이고, 누르면 체크리스트의 그 줄로 갑니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>진행상황 출력에서도 「해당 없음」·「건너뜀」으로 나뉘어 나옵니다. 점검·감사 때 절차를 빠뜨린 것이 아니라는 증빙이 됩니다.</p></div><div class="see">함께 보기 <a href="#p-22d_checklist">체크리스트 출력하기 <em>35쪽</em></a></div></div><div class="pf">31</div></section><section class="pg pg-feat" id="p-14_edit"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>5장 체크리스트 고치기</span></div><div class="pb"><div class="band"><div class="band-no">5</div><div><div class="band-t">체크리스트 고치기</div><div class="band-i">단계와 할 일을 더하거나 지우고, 순서와 이름을 바꾸고, 건너뛰기 단추를 만듭니다. 체크와 처리결과는 그대로 남습니다.</div></div></div><div class="ft"><span class="fno">5-1</span><h2>체크리스트 편집하기</h2></div>
+<p class="lead">윈도우 탐색기처럼 한 번 누르면 고르기, 두 번 누르면 이름 바꾸기입니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:820/390"><img src="img/14_edit.jpg" alt="체크리스트 편집하기 화면"><span class="hl" style="left:5.61%;top:44.62%;width:88.90%;height:11.03%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>일하는 화면 왼쪽 <b>[체크리스트 편집]</b>을 누릅니다.</li><li>고칠 줄을 한 번 눌러 고릅니다(파란 바탕). 두 번 누르거나 F2를 누르면 이름을 바꿉니다.</li><li>위 명령 줄에서 <b>＋ 단계 · ＋ 할 일 · ↑ ↓ · 할 일로 · 단계로 · 삭제</b>를 누릅니다. 줄을 끌어 옮겨도 됩니다.</li><li>다 고치면 <b>[저장]</b>을 누릅니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p><kbd>Delete</kbd> 지우기 · <kbd>Ctrl</kbd>+<kbd>Z</kbd> 되돌리기 · <kbd>Insert</kbd> 아래에 새 줄. 나머지 단축키는 부록에 있습니다.</p></div><div class="note tip"><span class="nl">알아 두기</span><p>[편집 취소]나 Esc를 누르면 바꾼 것을 저장할지 묻습니다.</p></div><div class="see">함께 보기 <a href="#p-keys">마우스와 단축키 <em>55쪽</em></a></div></div><div class="pf">32</div></section><section class="pg pg-feat" id="p-15_branch"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>5장 체크리스트 고치기</span></div><div class="pb"><div class="ft"><span class="fno">5-2</span><h2>건너뛰기 단추 만들기</h2></div>
+<p class="lead">갈림길이 되는 줄에 단추를 만들고, 그 단추를 누르면 건너뛸 줄을 체크해 정합니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:820/390"><img src="img/15_branch.jpg" alt="건너뛰기 단추 만들기 화면"><span class="hl" style="left:5.61%;top:44.62%;width:88.90%;height:11.03%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>편집 화면에서 갈림길이 되는 줄을 고르고 <b>[⤼ 건너뛰기]</b>를 누릅니다.</li><li>맨 위 칸에 단추 이름을 적습니다. 예: 5천만원 이하</li><li>아래 목록에서 건너뛸 줄을 체크합니다(단계를 체크하면 그 할 일도 함께).</li><li><b>[저장]</b>(<kbd>Enter</kbd>)을 누르고, 편집을 마치면 왼쪽 <b>[✓ 저장]</b>을 누릅니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>단추가 있는 줄은 채운 알약, 건너뛰어지는 줄은 같은 색 테두리 표시로 짝이 보입니다.</p></div><div class="note tip"><span class="nl">알아 두기</span><p>이미 단추가 있는 줄에서 [건너뛰기]를 누르면 단추 이름 고치기·지우기·새 단추 만들기를 고릅니다.</p></div><div class="see">함께 보기 <a href="#p-40_practice_skip">갈림길에서 건너뛰기 <em>29쪽</em></a></div></div><div class="pf">33</div></section><section class="pg pg-feat" id="p-23_schedule"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>6장 일정과 보고서</span></div><div class="pb"><div class="band"><div class="band-no">6</div><div><div class="band-t">일정과 보고서</div><div class="band-i">마감일을 정해 한 달력에서 보고, 진행상황을 체크리스트표나 개조식 보고서로 출력합니다.</div></div></div><div class="ft"><span class="fno">6-1</span><h2>마감일 정하고 일정 보기</h2></div>
+<p class="lead">업무 마감일과 할 일 마감일을 정하면 달력, 마감 임박 목록, 마감 알림에 모두 쓰입니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:1440/810"><img src="img/23_schedule.jpg" alt="마감일 정하고 일정 보기 화면"></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>할 일 줄에 마우스를 올려 <b><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;color:#2563eb" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg> 마감일</b>을 누르고 날짜를 고릅니다.</li><li>맨 위 <b>[일정]</b>을 누르면 달력이 열립니다.</li><li>오른쪽 「이번 주 할 일」에서 기한 지남 · 오늘 · 내일 순서로 확인합니다.</li><li>달력의 항목을 다른 날짜로 끌어 놓으면 마감일이 바뀝니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>법정 기한이 있는 일은 할 일 마감으로 잡아 두세요. 예: 대가 지급은 청구일부터 5일 안.</p></div></div><div class="pf">34</div></section><section class="pg pg-feat" id="p-22d_checklist"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>6장 일정과 보고서</span></div><div class="pb"><div class="ft"><span class="fno">6-2</span><h2>체크리스트 출력하기</h2></div>
+<p class="lead">업무의 진행표나 손으로 체크할 빈 점검표를 A4로 출력합니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:1040/596"><img src="img/22d_checklist.jpg" alt="체크리스트 출력하기 화면"><span class="hl" style="left:3.46%;top:6.04%;width:93.08%;height:87.92%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>일하는 화면 왼쪽 <b>[진행상황 출력]</b>을 누릅니다. 「체크리스트」 탭이 먼저 열립니다.</li><li>위 「넣을 것」에서 세로/가로 · 처리결과 · 해당 없음 항목 · 빈 점검표를 고릅니다.</li><li>제목을 눌러 고칩니다.</li><li><b>[인쇄 · PDF]</b>를 누르고 인쇄 창의 대상에서 프린터나 「PDF로 저장」을 고릅니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>처음 한 번은 작성자 정보(내 정보)를 확인합니다.</p></div><div class="note tip"><span class="nl">알아 두기</span><p>한글 문서에 넣으려면 [한글에 붙여넣기용 복사]를 누르고 한글에서 Ctrl+V를 누릅니다.</p></div></div><div class="pf">35</div></section><section class="pg pg-feat" id="p-22c_report"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>6장 일정과 보고서</span></div><div class="pb"><div class="ft"><span class="fno">6-3</span><h2>진행상황 보고서 만들기</h2></div>
+<p class="lead">추진 경과·향후 계획을 담은 개조식 보고서를 체크리스트에서 저절로 만들고, 바로 고쳐 씁니다.</p>
+<div class="shot" style="width:176.8mm;aspect-ratio:1161/801"><img src="img/22c_report.jpg" alt="진행상황 보고서 만들기 화면"><span class="hl" style="left:7.84%;top:4.49%;width:84.41%;height:91.01%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>출력 창 위 <b>「진행상황 보고」</b> 탭을 누릅니다.</li><li>1. 개요 · 2. 추진 경과 · 3. 향후 계획 · 4. 담당자 의견이 채워져 나옵니다.</li><li>고칠 줄을 눌러 바로 고칩니다. <kbd>Enter</kbd> 새 줄 · <kbd>Tab</kbd> 들여쓰기.</li><li><b>[인쇄 · PDF]</b> 또는 <b>[한글에 붙여넣기용 복사]</b>를 누릅니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>고친 내용은 업무마다 기억됩니다. 처음 내용으로 돌리려면 [↺ 처음 내용으로]를 누릅니다.</p></div><div class="note tip"><span class="nl">알아 두기</span><p>미리보기는 실제 인쇄와 똑같이 A4 쪽으로 나뉘고 쪽 번호가 붙습니다.</p></div></div><div class="pf">36</div></section><section class="pg pg-feat" id="p-24_collab"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>7장 함께 일하기</span></div><div class="pb"><div class="band"><div class="band-no">7</div><div><div class="band-t">함께 일하기</div><div class="band-i">단계를 동료에게 맡기고 회신을 받아 합치며, 업무를 파일로 주고받습니다. 서버 없이 파일만으로 주고받습니다.</div></div></div><div class="ft"><span class="fno">7-1</span><h2>업무 나누어 맡기기</h2></div>
+<p class="lead">단계나 할 일을 동료에게 맡기고 요청 파일을 보냅니다. 받는 사람은 업무팁·근거·서식까지 함께 받습니다.</p>
+<div class="shot" style="width:159.8mm;aspect-ratio:1221/810"><img src="img/24_collab.jpg" alt="업무 나누어 맡기기 화면"><span class="hl" style="left:9.01%;top:2.47%;width:81.90%;height:95.06%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>일하는 화면 왼쪽 <b>[업무 분담]</b>을 누릅니다.</li><li><b>[＋ 주소록에서 추가]</b>로 함께 일할 사람을 고르고 회신 기한을 정합니다.</li><li>단계마다 맡을 사람을 고르고 전달사항을 적습니다. 예: 04 납품·검사 → 김민수</li><li><b>[📨 요청 파일 만들기]</b>를 누르고, 만들어진 파일 하나를 메신저·메일로 보냅니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>파일 하나를 맡은 사람 모두에게 보내면, 받은 사람이 열고 본인 이름을 고릅니다.</p></div><div class="note tip"><span class="nl">알아 두기</span><p>파일을 만들기 전에 창을 닫으면 임시 저장할지 묻습니다.</p></div><div class="see">함께 보기 <a href="#p-27_addressbook">주소록 관리하기 <em>40쪽</em></a></div></div><div class="pf">37</div></section><section class="pg pg-feat" id="p-25_waiting"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>7장 함께 일하기</span></div><div class="pb"><div class="ft"><span class="fno">7-2</span><h2>회신 받아 합치기</h2></div>
+<p class="lead">맡긴 단계는 ⏳ 회신 대기로 표시되고, 회신 파일을 열면 담당자가 처리한 내용이 내 업무에 합쳐집니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:820/390"><img src="img/25_waiting.jpg" alt="회신 받아 합치기 화면"><span class="hl" style="left:7.56%;top:45.13%;width:84.76%;height:9.74%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li><b>담당자</b>: 받은 파일을 <b>▾ → 업무 가져오기</b>로 열고 본인 이름을 고릅니다.</li><li><b>담당자</b>: 맡은 단계를 처리한 뒤 왼쪽 <b>[관리자에게 회신]</b>으로 회신 파일을 만들어 보냅니다.</li><li><b>관리자</b>: 받은 회신 파일을 왼쪽 <b>[회신 가져오기]</b>로 엽니다.</li><li>체크·처리결과·첨부가 합쳐지고 「바뀐 곳」 목록이 나옵니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>첫 화면 왼쪽 「업무 분담 현황」에 모든 업무의 회신 대기가 「누가 · 어느 단계 · 언제까지」로 모입니다.</p></div><div class="note tip"><span class="nl">알아 두기</span><p>같은 회신 파일을 두 번 열어도 한 번만 반영됩니다.</p></div></div><div class="pf">38</div></section><section class="pg pg-feat" id="p-25c_recall"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>7장 함께 일하기</span></div><div class="pb"><div class="ft"><span class="fno">7-3</span><h2>맡긴 일 회수하기</h2></div>
+<p class="lead">회신을 기다리지 않고 직접 처리하려면 맡긴 일을 회수합니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:820/390"><img src="img/25c_recall.jpg" alt="맡긴 일 회수하기 화면"><span class="hl" style="left:23.17%;top:17.18%;width:53.66%;height:65.90%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>⏳ 맡긴 줄을 누르거나 오른쪽 클릭합니다.</li><li><b>↩ 회수하고 직접 처리…</b>를 고릅니다.</li><li>확인 창에서 <b>[회수하고 직접 처리]</b>를 누릅니다.</li></ol>
+<div class="note warn"><span class="nl">주의</span><p>담당자가 이미 일하고 있을 수 있어 먼저 묻습니다. 회수했다고 담당자에게 꼭 알려 주세요.</p></div><div class="note tip"><span class="nl">알아 두기</span><p>아직 보내기 전인 줄은 묻지 않고 맡기기가 취소되며, 알림의 [되돌리기]로 되살립니다.</p></div></div><div class="pf">39</div></section><section class="pg pg-feat" id="p-27_addressbook"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>7장 함께 일하기</span></div><div class="pb"><div class="ft"><span class="fno">7-4</span><h2>주소록 관리하기</h2></div>
+<p class="lead">자주 함께 일하는 사람을 소속별로 저장해 두고 업무 분담에서 바로 고릅니다.</p>
+<div class="shot" style="width:176.8mm;aspect-ratio:1032/712"><img src="img/27_addressbook.jpg" alt="주소록 관리하기 화면"><span class="hl" style="left:7.36%;top:5.06%;width:85.27%;height:89.89%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>업무 분담 창에서 <b>[＋ 주소록에서 추가]</b>를 누릅니다(환경설정 → 일반 → [주소록 관리]도 같음).</li><li>소속(묶음)을 만들고 이름·계급·연락처를 적습니다.</li><li>업무 분담에서는 체크해서 고릅니다.</li></ol>
+</div><div class="pf">40</div></section><section class="pg pg-feat" id="p-28_share"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>7장 함께 일하기</span></div><div class="pb"><div class="ft"><span class="fno">7-5</span><h2>업무 공유하기</h2></div>
+<p class="lead">만든 업무를 파일 하나로 만들어 동료나 후임에게 넘깁니다. 서식·업무팁·첨부·참고 자료가 모두 담깁니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:1440/810"><img src="img/28_share.jpg" alt="업무 공유하기 화면"><span class="hl" style="left:77.36%;top:89.01%;width:10.21%;height:4.44%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>맨 위 <b>[공유]</b>를 누릅니다.</li><li>보낼 업무를 체크하고 <b>[업무 파일 만들기]</b>를 누릅니다.</li><li>만들어진 .json 파일을 메신저·메일로 보냅니다.</li><li>받은 사람은 <b>▾ → 업무 가져오기</b>로 열고 「그대로 가져오기」 또는 「복사하여 시작」을 고릅니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p><b>그대로 가져오기</b>는 체크·처리결과까지 이어받고(인수인계), <b>복사하여 시작</b>은 빈 체크리스트로 새로 시작합니다.</p></div><div class="note tip"><span class="nl">알아 두기</span><p>업무 하나만 보낼 때는 일하는 화면 왼쪽 [내보내기]도 같은 파일을 만듭니다.</p></div></div><div class="pf">41</div></section><section class="pg pg-feat" id="p-28b_tipexclude"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>7장 함께 일하기</span></div><div class="pb"><div class="ft"><span class="fno">7-6</span><h2>사진 빼고 보내기</h2></div>
+<p class="lead">내 기관 시스템 화면처럼 밖으로 나가면 안 되는 캡처가 있으면 예시·사진을 빼고 다시 저장합니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:580/220"><img src="img/28b_tipexclude.jpg" alt="사진 빼고 보내기 화면"><span class="hl" style="left:27.24%;top:52.27%;width:68.97%;height:37.73%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>내보내기·공유·업무 분담 파일을 만들면 알림에 「업무팁 예시·사진 n개 포함」이 나옵니다.</li><li>알림의 <b>[예시·사진 빼고 다시 저장]</b>을 누릅니다.</li><li>사진이 빠진 파일을 보냅니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>이 PC에 붙여 둔 사진은 지워지지 않고 그대로 남습니다.</p></div></div><div class="pf">42</div></section><section class="pg pg-feat" id="p-29_done"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>8장 끝낸 업무 관리</span></div><div class="pb"><div class="band"><div class="band-no">8</div><div><div class="band-t">끝낸 업무 관리</div><div class="band-i">끝난 업무는 처리완료로 남기고, 잘 된 업무는 레퍼런스(본보기)로 만들어 다음에 다시 씁니다.</div></div></div><div class="ft"><span class="fno">8-1</span><h2>완료 처리하기</h2></div>
+<p class="lead">모든 단계를 끝낸 업무를 처리완료로 옮깁니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:1440/810"><img src="img/29_done.jpg" alt="완료 처리하기 화면"></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>모든 단계가 끝나면 일하는 화면 왼쪽 아래에 <b>[✅ 완료 처리]</b>가 나옵니다.</li><li>누르면 업무가 「처리완료」 탭으로 옮겨집니다.</li><li>첫 화면의 처리완료 탭에서 끝낸 업무를 봅니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>완료한 업무는 체크가 잠깁니다. 고치려면 [완료 취소]를 누릅니다(알림의 [되돌리기]도 됨).</p></div><div class="note tip"><span class="nl">알아 두기</span><p>끝낸 업무를 남겨 두면 다음 담당자가 「지난번엔 이렇게」로 이 기록을 봅니다.</p></div><div class="see">함께 보기 <a href="#p-17b_thumbs">업무 절차 패널 보기 <em>20쪽</em></a></div></div><div class="pf">43</div></section><section class="pg pg-feat" id="p-31_reference"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>8장 끝낸 업무 관리</span></div><div class="pb"><div class="ft"><span class="fno">8-2</span><h2>레퍼런스로 등록하기</h2></div>
+<p class="lead">잘 된 업무를 체크를 비운 본보기(레퍼런스)로 만들어 둡니다. 원래 업무는 그대로 남습니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:820/396"><img src="img/31_reference.jpg" alt="레퍼런스로 등록하기 화면"><span class="hl" style="left:37.56%;top:9.09%;width:25.00%;height:81.82%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>맨 위 <b>[업무 관리]</b>를 엽니다.</li><li>업무를 오른쪽 클릭하고 <b>레퍼런스로 등록 (사본 만들기)</b>를 고릅니다.</li><li>이름과 폴더를 확인하고 <b>[만들기]</b>를 누릅니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>완료한 업무 화면 왼쪽 [레퍼런스로 등록]도 같습니다.</p></div></div><div class="pf">44</div></section><section class="pg pg-feat" id="p-32_reftab"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>8장 끝낸 업무 관리</span></div><div class="pb"><div class="ft"><span class="fno">8-3</span><h2>레퍼런스로 다음 업무 시작하기</h2></div>
+<p class="lead">매달·매년 되풀이하는 업무는 레퍼런스에서 복사해 바로 시작합니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:1190/567"><img src="img/32_reftab.jpg" alt="레퍼런스로 다음 업무 시작하기 화면"><span class="hl" style="left:3.03%;top:15.87%;width:93.95%;height:7.41%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>첫 화면이나 업무 관리의 <b>레퍼런스</b> 탭에서 쓸 레퍼런스를 엽니다.</li><li><b>[복사하여 시작]</b>을 누릅니다.</li><li>업무명·마감일을 적고 <b>[시작하기]</b>를 누릅니다.</li><li>절차·업무팁·서식은 그대로, 체크는 빈 채로 새 업무가 시작됩니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>레퍼런스는 보기 전용이라 실수로 체크되지 않습니다. 본보기 자체를 고치려면 [편집 (레퍼런스 고치기)]를 누릅니다.</p></div></div><div class="pf">45</div></section><section class="pg pg-feat" id="p-34_folders"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>8장 끝낸 업무 관리</span></div><div class="pb"><div class="ft"><span class="fno">8-4</span><h2>업무를 폴더로 정리하기</h2></div>
+<p class="lead">업무 관리 창은 윈도우 탐색기와 같은 방식으로 업무를 폴더에 정리합니다.</p>
+<div class="shot" style="width:177.0mm;aspect-ratio:1027/708"><img src="img/34_folders.jpg" alt="업무를 폴더로 정리하기 화면"><span class="hl" style="left:15.68%;top:5.08%;width:21.42%;height:89.83%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>맨 위 <b>[업무 관리]</b>를 엽니다.</li><li>새 폴더는 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd> 또는 오른쪽 클릭 → 새 폴더로 만듭니다.</li><li>업무를 끌어 폴더에 놓거나 Ctrl+X → Ctrl+V로 옮깁니다.</li><li>두 번 누르면 업무가 열리고, 닫으면 업무 관리로 돌아옵니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>한 번 클릭 고르기 · 두 번 클릭 열기 · F2 이름 바꾸기 · Ctrl·Shift로 여러 개 고르기.</p></div></div><div class="pf">46</div></section><section class="pg pg-feat" id="p-33_archive"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>8장 끝낸 업무 관리</span></div><div class="pb"><div class="ft"><span class="fno">8-5</span><h2>보관함으로 옮기기</h2></div>
+<p class="lead">당분간 볼 일이 없는 업무를 보관함으로 옮겨 첫 화면 목록을 깔끔하게 합니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:970/462"><img src="img/33_archive.jpg" alt="보관함으로 옮기기 화면"><span class="hl" style="left:3.71%;top:45.02%;width:92.58%;height:9.74%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li><b>[업무 관리]</b>에서 업무를 오른쪽 클릭합니다.</li><li><b>보관함으로 이동</b>을 고릅니다.</li><li>다시 꺼내려면 <b>보관함</b> 탭에서 오른쪽 클릭 → <b>복원</b>을 고릅니다.</li></ol>
+</div><div class="pf">47</div></section><section class="pg pg-feat" id="p-37_trash"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>8장 끝낸 업무 관리</span></div><div class="pb"><div class="ft"><span class="fno">8-6</span><h2>지운 업무 되살리기</h2></div>
+<p class="lead">업무를 지우면 묻지 않고 휴지통으로 가고, 30일 동안 되살릴 수 있습니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:872/415"><img src="img/37_trash.jpg" alt="지운 업무 되살리기 화면"><span class="hl" style="left:4.13%;top:16.87%;width:91.74%;height:66.27%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>지운 직후라면 알림의 <b>[실행 취소]</b>나 <kbd>Ctrl</kbd>+<kbd>Z</kbd>를 누릅니다.</li><li>시간이 지났으면 <b>휴지통</b>을 엽니다.</li><li>되살릴 업무를 두 번 누르거나 오른쪽 클릭 → <b>복구</b>를 고릅니다.</li></ol>
+<div class="note warn"><span class="nl">주의</span><p>휴지통에서 「영구 삭제」한 업무는 되살릴 수 없습니다(먼저 묻습니다). 30일이 지난 것은 백업 파일로만 되살립니다.</p></div><div class="see">함께 보기 <a href="#p-38_backup">백업하고 되돌리기 <em>53쪽</em></a></div></div><div class="pf">48</div></section><section class="pg pg-feat" id="p-35_law"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>9장 법령·서식 자료함</span></div><div class="pb"><div class="band"><div class="band-no">9</div><div><div class="band-t">법령·서식 자료함</div><div class="band-i">법령·지침과 서식을 조직 공용 자료함에 모아 모든 업무에서 다시 씁니다. 새 판으로 바꾸면 그 자료를 쓰는 모든 업무가 새 판을 봅니다.</div></div></div><div class="ft"><span class="fno">9-1</span><h2>법령·매뉴얼 모으기</h2></div>
+<p class="lead">법령·지침·매뉴얼을 폴더별로 모아 두고, 업무의 참고 자료로 연결합니다.</p>
+<div class="shot" style="width:156.0mm;aspect-ratio:1192/810"><img src="img/35_law.jpg" alt="법령·매뉴얼 모으기 화면"><span class="hl" style="left:3.02%;top:2.96%;width:93.96%;height:91.98%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>맨 위 <b>[법령·매뉴얼]</b>을 엽니다.</li><li><b>[파일 올리기]</b>를 누르거나 파일을 창에 끌어다 놓습니다.</li><li>위 검색칸에 낱말을 적어 찾습니다.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>「쓰는 곳」 칸에 이 자료를 참고 자료로 쓰는 업무 수가 나옵니다.</p></div></div><div class="pf">49</div></section><section class="pg pg-feat" id="p-35b_lawreplace"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>9장 법령·서식 자료함</span></div><div class="pb"><div class="ft"><span class="fno">9-2</span><h2>법령이 개정되었을 때</h2></div>
+<p class="lead">개정된 법령을 새 판으로 바꾸면, 그 법령을 쓰는 모든 업무가 새 판을 봅니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:820/538"><img src="img/35b_lawreplace.jpg" alt="법령이 개정되었을 때 화면"><span class="hl" style="left:23.17%;top:6.69%;width:53.66%;height:86.62%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li><b>[법령·매뉴얼]</b>에 개정된 파일을 <b>같은 이름</b>으로 올리면 「이미 있습니다」 창이 뜹니다.</li><li>두 파일의 수정 날짜와 이 자료를 쓰는 업무 수를 확인합니다.</li><li><b>[최신 파일로 바꾸기]</b>를 누릅니다. 바꾸지 않으려면 <b>[이 파일은 건너뛰기]</b>(<kbd>Esc</kbd>).</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>파일 이름이 다르면(예: 시행일이 바뀐 이름) 예전 자료를 오른쪽 클릭 → <b>⤴ 새 판으로 바꾸기…</b>로 새 파일을 고릅니다.</p></div><div class="note warn"><span class="nl">주의</span><p>업무팁 「근거」에 적은 조문 번호는 저절로 바뀌지 않습니다. 직접 확인해 고치세요. 잘못 바꿨으면 알림의 [되돌리기].</p></div></div><div class="pf">50</div></section><section class="pg pg-feat" id="p-36_repo"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>9장 법령·서식 자료함</span></div><div class="pb"><div class="ft"><span class="fno">9-3</span><h2>서식·문서함 쓰기</h2></div>
+<p class="lead">기안·보고·행정 서식과 예시 공문을 모아 두고, 할 일에 연결해 꺼내 씁니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:1192/810"><img src="img/36_repo.jpg" alt="서식·문서함 쓰기 화면"><span class="hl" style="left:3.02%;top:2.96%;width:93.96%;height:91.98%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>맨 위 <b>[서식·문서함]</b>을 엽니다.</li><li>서식 파일을 올리거나 끌어다 놓습니다.</li><li>어느 업무에서 쓰는지 보려면 오른쪽 클릭 → <b>🔗 쓰는 곳 보기</b>를 고릅니다.</li></ol>
+<div class="see">함께 보기 <a href="#p-09_fmpick">서식 연결하기 <em>15쪽</em></a></div></div><div class="pf">51</div></section><section class="pg pg-feat" id="p-36b_repo_replace"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>9장 법령·서식 자료함</span></div><div class="pb"><div class="ft"><span class="fno">9-4</span><h2>서식이 바뀌었을 때</h2></div>
+<p class="lead">새 판 서식으로 바꾸면 이 서식을 연결한 모든 할 일이 새 판을 엽니다.</p>
+<div class="shot" style="width:178.0mm;aspect-ratio:820/390"><img src="img/36b_repo_replace.jpg" alt="서식이 바뀌었을 때 화면"><span class="hl" style="left:24.39%;top:13.85%;width:51.22%;height:72.31%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>새 판 서식을 <b>같은 이름</b>으로 올리면 묻는 창이 뜹니다(다른 이름이면 오른쪽 클릭 → <b>⤴ 새 판으로 바꾸기…</b>).</li><li><b>[최신 파일로 바꾸기]</b>: 새 판으로 바꿉니다. 쓰는 할 일 수가 함께 나옵니다.</li><li><b>[둘 다 보관]</b>: 올린 파일을 새 이름으로 따로 둡니다.</li><li><b>[이 파일은 건너뛰기]</b>(<kbd>Esc</kbd>): 아무것도 바꾸지 않습니다.</li></ol>
+</div><div class="pf">52</div></section><section class="pg pg-feat" id="p-38_backup"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>10장 설정과 백업</span></div><div class="pb"><div class="band"><div class="band-no">10</div><div><div class="band-t">설정과 백업</div><div class="band-i">모든 자료를 백업 파일 하나로 지키고, 내 정보와 화면·알림을 설정합니다.</div></div></div><div class="ft"><span class="fno">10-1</span><h2>백업하고 되돌리기</h2></div>
+<p class="lead">업무·첨부·서식·법령·설정을 파일 하나로 저장하고, 필요할 때 그 파일로 되돌립니다.</p>
+<div class="shot" style="width:153.7mm;aspect-ratio:1098/757"><img src="img/38_backup.jpg" alt="백업하고 되돌리기 화면"><span class="hl" style="left:9.93%;top:4.76%;width:80.15%;height:90.49%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>설정 → <b>백업 및 복원</b>을 엽니다.</li><li><b>[지금 백업하기]</b>를 누르면 백업 파일이 저장됩니다.</li><li>되돌릴 때는 <b>[파일 선택…]</b>으로 백업 파일을 고릅니다.</li><li>지금 업무 수와 백업의 업무 수를 확인하고 되돌립니다.</li></ol>
+<div class="note warn"><span class="nl">주의</span><p>PC나 브라우저를 바꾸기 전에는 꼭 백업하세요. 자료는 브라우저마다 따로 저장됩니다.</p></div><div class="note tip"><span class="nl">알아 두기</span><p>되돌리기 전 지금 자료를 「복원 전 자동백업」 파일로 먼저 저장하므로, 마음이 바뀌면 그 파일로 다시 되돌립니다.</p></div></div><div class="pf">53</div></section><section class="pg pg-feat" id="p-38b_prefs"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>10장 설정과 백업</span></div><div class="pb"><div class="ft"><span class="fno">10-2</span><h2>환경설정</h2></div>
+<p class="lead">내 정보, 화면, 알림, 백업, 저장 공간을 설정합니다.</p>
+<div class="shot" style="width:177.0mm;aspect-ratio:1098/757"><img src="img/38b_prefs.jpg" alt="환경설정 화면"><span class="hl" style="left:9.93%;top:4.76%;width:80.15%;height:90.49%"></span></div>
+<div class="steps-h">따라 하기</div><ol class="steps"><li>오른쪽 위 이름 동그라미를 누르면 환경설정이 내 정보 고치기로 열립니다.</li><li><b>일반</b>: 내 정보 · 음성안내 · 화면(다크/라이트 · 읽는 글 크기) · 주소록.</li><li><b>알림</b>: 마감 알림 횟수. <b>백업 및 복원</b> · <b>저장 공간</b>: 백업과 남은 공간.</li><li><b>정보</b>: 버전과 바뀐 점, 「오류 기록 · 문제 보고」.</li></ol>
+<div class="note tip"><span class="nl">알아 두기</span><p>프로그램이 이상하면 정보 탭의 [문제 보고 파일 만들기]로 만든 파일을 담당자에게 보내 주세요. 업무 제목·내용·첨부는 들어가지 않습니다.</p></div></div><div class="pf">54</div></section><section class="pg pg-appx" id="p-keys"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>부록</span></div><div class="pb"><h1 class="pt">부록 · 마우스와 단축키</h1><p class="lead">윈도우 탐색기와 같은 방식입니다: 한 번 누르면 고르기, 두 번 누르면 열기, 오른쪽 클릭은 메뉴.</p><h2 class="sh">어디서나</h2><table class="tbl keys"><tr><th>Esc</th><td>떠 있는 메뉴 → 창 → 고른 줄 → 업무 목록 순서로 한 단계씩 닫기</td></tr><tr><th>로고 「✦ 업무 내비게이터」</th><td>첫 화면으로</td></tr><tr><th>Ctrl+N</th><td>새 업무</td></tr></table><h2 class="sh">일하는 화면</h2><table class="tbl keys"><tr><th>Ctrl+Z</th><td>마지막 동작 되돌리기 (체크·삭제 등)</td></tr><tr><th>동그라미 누르기</th><td>체크 / 체크 취소</td></tr><tr><th>줄 한 번 누르기</th><td>처리결과 입력칸 · 오른쪽에 그 할 일 미리 보기</td></tr><tr><th>줄 두 번 누르기</th><td>항목 창</td></tr><tr><th>오른쪽 클릭 · ⋯</th><td>줄 메뉴</td></tr><tr><th>Enter (처리결과 칸)</th><td>저장하고 다음 할 일로</td></tr><tr><th>Shift+Enter (처리결과 칸)</th><td>줄바꿈</td></tr></table><h2 class="sh">체크리스트 편집</h2><table class="tbl keys"><tr><th>한 번 누르기</th><td>줄 고르기 (Ctrl·Shift로 여러 줄)</td></tr><tr><th>두 번 누르기 · F2</th><td>이름 바꾸기 (Enter 확정 · Esc 취소)</td></tr><tr><th>끌기</th><td>옮기기</td></tr><tr><th>Insert</th><td>아래에 새 줄</td></tr><tr><th>Alt+Shift+↑↓</th><td>줄 위치 바꾸기</td></tr><tr><th>Tab / Shift+Tab</th><td>할 일로 / 단계로</td></tr><tr><th>Delete</th><td>지우기</td></tr><tr><th>Ctrl+X / C / V</th><td>잘라내기 / 복사 / 붙여넣기</td></tr></table></div><div class="pf">55</div></section><section class="pg pg-appx"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>부록</span></div><div class="pb"><h2 class="sh">업무 관리 · 법령·매뉴얼 · 서식·문서함 · 휴지통</h2><table class="tbl keys"><tr><th>한 번 / 두 번 누르기</th><td>고르기 / 열기</td></tr><tr><th>Ctrl · Shift + 누르기</th><td>여러 개 고르기</td></tr><tr><th>F2 · Delete</th><td>이름 바꾸기 · 지우기</td></tr><tr><th>Ctrl+X / C / V</th><td>잘라내기 / 복사 / 붙여넣기</td></tr><tr><th>Alt+← → · Backspace</th><td>뒤로 · 앞으로 · 상위 폴더</td></tr><tr><th>Ctrl+Shift+N</th><td>새 폴더</td></tr></table><h2 class="sh">미리보기</h2><table class="tbl keys"><tr><th>← →</th><td>앞뒤 예시·사진 넘기기</td></tr><tr><th>사진 누르기</th><td>누른 곳 확대 / 맞춤</td></tr><tr><th>Ctrl+휠 · + − 0</th><td>확대 · 축소 · 맞춤</td></tr><tr><th>Esc</th><td>닫기</td></tr></table></div><div class="pf">56</div></section><section class="pg pg-appx" id="p-faq"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>부록</span></div><div class="pb"><h1 class="pt">부록 · 자주 묻는 질문</h1><div class="qa"><div class="q">Q. 업무가 안 보여요</div><p>업무는 <b>브라우저마다(엣지·크롬, 프로필마다) 따로</b> 저장됩니다. 늘 쓰던 브라우저로 프로그램을 여세요. 목록 오른쪽 기간 단추가 「최근 3개월」이면 오래된 업무는 「전체 기간」에서 보입니다.</p></div><div class="qa"><div class="q">Q. 다른 PC로 옮기고 싶어요</div><p>지금 PC에서 설정 → 백업 및 복원 → [지금 백업하기]로 백업 파일을 만들고, 새 PC에서 [파일 선택…]으로 그 파일을 되돌립니다.</p></div><div class="qa"><div class="q">Q. 실수로 지웠어요</div><p>알림의 [되돌리기]·[실행 취소] 또는 <kbd>Ctrl</kbd>+<kbd>Z</kbd>. 시간이 지났으면 휴지통(30일). 그보다 오래됐으면 백업 파일로 되돌립니다.</p></div><div class="qa"><div class="q">Q. 프로그램을 창(탭) 두 개에서 열었어요</div><p>한쪽에서 고친 것이 다른 창에 보이지 않아 덮어쓸 수 있습니다. 「다른 창에서도 열려 있습니다」 알림이 뜨면 하나만 남기고 닫으세요.</p></div><div class="qa"><div class="q">Q. 법령·서식이 바뀌었어요</div><p>오른쪽 클릭 → 「⤴ 새 판으로 바꾸기…」로 새 파일을 넣으면 연결된 모든 업무가 새 판을 봅니다. 업무팁의 조문 번호는 직접 확인해 고치세요.</p></div></div><div class="pf">57</div></section><section class="pg pg-appx"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>부록</span></div><div class="pb"><div class="qa"><div class="q">Q. 맡긴 일의 회신이 안 와요</div><p>첫 화면 왼쪽 「업무 분담 현황」에서 회신 기한을 확인합니다. 직접 하려면 그 줄의 메뉴 → 「회수하고 직접 처리」. 회수했다고 담당자에게 알려 주세요.</p></div><div class="qa"><div class="q">Q. 인쇄하면 내용이 잘려요</div><p>진행상황 출력은 [인쇄 · PDF]로 여는 작은 인쇄 창에서 인쇄하세요. 앱이 A4 쪽을 미리 나눠 둡니다. 가로로 긴 표는 「넣을 것」에서 「가로」를 고릅니다.</p></div><div class="qa"><div class="q">Q. 인쇄 창이 따로 열리지 않아요</div><p>브라우저가 팝업을 막으면 알림이 뜨고 일반 인쇄로 넘어갑니다. 작은 인쇄 창으로 보려면 주소창 오른쪽의 팝업 차단 표시를 눌러 이 파일의 팝업을 허용하세요.</p></div><div class="qa"><div class="q">Q. 프로그램이 이상하게 움직여요</div><p>환경설정 → 정보 → 「오류 기록 · 문제 보고」에서 [문제 보고 파일 만들기]를 눌러 만든 파일을 담당자에게 보내 주세요. 업무 제목·내용·첨부는 들어가지 않습니다.</p></div><div class="qa"><div class="q">Q. AI 단추가 안 보여요</div><p>배포판은 보안 정책상 외부 AI 연결이 막혀 있어 AI 관련 단추를 숨깁니다. 나머지 기능은 모두 그대로 씁니다.</p></div></div><div class="pf">58</div></section><section class="pg pg-appx" id="p-terms"><div class="ph"><span>업무 내비게이터 사용 설명서</span><span>부록</span></div><div class="pb"><h1 class="pt">부록 · 용어 풀이</h1><table class="tbl terms"><tr><th>단계</th><td>업무의 큰 순서. 번호 네모(01, 02…)로 보이고, 할 일을 모두 끝내면 초록 ✓가 됩니다.</td></tr><tr><th>할 일</th><td>단계 안에서 따로 끝내고 체크하는 일 하나. 동그라미로 보입니다.</td></tr><tr><th>처리결과</th><td>할 일을 어떻게 처리했는지 남긴 글과 증빙 파일(처리결과 첨부).</td></tr><tr><th>업무팁</th><td>다음 담당자를 위한 안내. 놓치기 쉬운 것 · 업무 팁 · 근거 세 칸과 예시·사진.</td></tr><tr><th>단계 공통</th><td>단계에 적은 업무팁·서식. 그 단계의 모든 할 일에 함께 보입니다.</td></tr><tr><th>서식</th><td>채워서 쓰는 빈 양식. 서식·문서함에 모아 두고 할 일에 연결합니다.</td></tr><tr><th>참고 자료</th><td>업무 전체에서 보는 법령·지침·공문. 법령·매뉴얼에 모아 두고 업무에 연결합니다.</td></tr><tr><th>업무 절차 (패널)</th><td>일하는 화면 오른쪽. 전체 흐름과 지금 할 일의 업무팁·서식을 보여 줍니다.</td></tr><tr><th>항목 창</th><td>할 일을 두 번 누르면 열리는 창. 처리결과 · 업무팁 · 서식 탭이 있습니다.</td></tr><tr><th>업무 길잡이</th><td>한 할 일에 필요한 업무팁·서식·참고 자료를 한 화면에 모아 보는 창.</td></tr><tr><th>건너뛰기 (⤼)</th><td>조건에 따라 필요 없는 절차를 단추 하나로 빼고, 그 까닭(단추 이름)을 남기는 것.</td></tr><tr><th>해당 없음</th><td>이번 업무에서 하지 않아도 되는 할 일을 직접 빼 두는 것.</td></tr><tr><th>업무 분담 · 회신</th><td>단계를 동료에게 맡기는 요청 파일과, 처리한 내용을 돌려주는 회신 파일.</td></tr><tr><th>처리완료</th><td>모든 단계를 끝내고 완료 처리한 업무. 체크가 잠깁니다.</td></tr><tr><th>레퍼런스</th><td>체크를 비운 본보기 업무. [복사하여 시작]으로 같은 업무를 다시 시작합니다.</td></tr><tr><th>그대로 가져오기 / 복사하여 시작</th><td>받은 업무 파일을 체크·처리결과까지 이어받기 / 빈 체크리스트로 새로 시작하기.</td></tr></table></div><div class="pf">59</div></section>
+</body></html>

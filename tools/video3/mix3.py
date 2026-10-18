@@ -18,7 +18,7 @@ for k, m in enumerate(mk['marks']):
     fl.append(f"[{k + 2}:a]aresample=48000,adelay={d}|{d},volume=1.0[v{k}]")
 n = len(mk['marks'])
 fl.append(''.join(f'[v{k}]' for k in range(n)) + f'amix=inputs={n}:normalize=0[nar]')
-fl.append('[1:a]volume=0.30[bg]')
+fl.append('[1:a]volume=0.40[bg]')
 fl.append('[nar][bg]amix=inputs=2:normalize=0,loudnorm=I=-15:TP=-1.5:LRA=11,aresample=48000[a]')
 fl.append('[0:v]fps=30,scale=1920:1080:flags=lanczos,format=yuv420p[v]')
 args += ['-filter_complex', ';'.join(fl), '-map', '[v]', '-map', '[a]', '-t', f'{total:.2f}',
