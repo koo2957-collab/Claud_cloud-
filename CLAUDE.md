@@ -143,9 +143,9 @@
 - (2026-10-18) ① 관리자 장면 d10 「업무 지시는 체크리스트로」(d8 보고서와 d9 인수인계 사이, 업무 분담 창에서 04 납품·검사 → 김민수·05 대가 지급 → 이수진, 회신 기한 → [요청 파일 만들기] → 회신 현황 → ⏳ 회신 대기 줄) ② 음악 클라이맥스를 「설치 0·서버 0」(이제 쌓아 올리는 구간)에서 e1 「숙달된 직원의 노하우를, **처음 맡은 직원에게**」로 옮김 — 같은 4음 주제 선율(1-3-5-4)이 처음엔 가단조 피아노로 외롭게, 클라이맥스에서 라장조로 크게, 직전 0.8초 멈춤 ③ 음색은 피아노(배음 합성)·현악(톱니파+떨림)·큰북·글로켄, 예전 사각파 멜로디 없앰. 자세한 흐름은 `bgm3.py` 머리 주석
 - 배경음악 합성은 약 5분 걸림(`render3.mjs`가 최대 20분 기다림). 내레이션 때 자동으로 낮춤(쌓아 올림·클라이맥스는 덜 낮춤)
 - 녹화용 예시 자료 `seed.js`는 `mkman2.py`의 `00_seed` 단계(이름으로 찾음 — 예전엔 첫 단계를 가져와 환영 장면이 들어가던 버그). 예시 자료가 연습 업무 01 단계를 끝내 두므로 `rec3.mjs`가 시작할 때 연습 업무를 처음 상태로 되돌리고, 인수인계 장면(d9)은 예시 자료의 5월 처리완료본(소모품 구매 토너·복사용지)을 레퍼런스로 등록·내보내기
-- 순서(PC 어디서나, `pip install edge-tts imageio-ffmpeg`): `python tools/video3/tts.py` → `python tools/video3/build3.py` → (리허설) `node tools/video3/rec3.mjs index.html dry`(장면 끝·중간 사진 → `영상작업/dry/`) → 녹화 `node tools/video3/rec3.mjs index.html`(→ `영상작업/raw.mp4`·`marks.json`) → `python tools/video3/bgm3.py`(약 7분) → `python tools/video3/mix3.py` → `영상작업/업무내비게이터_시연영상.mp4`(3분 38초 · 15.9MB, 23장면)
+- 순서(PC 어디서나, `pip install edge-tts imageio-ffmpeg`): `python tools/video3/tts.py` → `python tools/video3/build3.py` → (리허설) `node tools/video3/rec3.mjs index.html dry`(장면 끝·중간 사진 → `영상작업/dry/`) → 녹화 `node tools/video3/rec3.mjs index.html`(→ `영상작업/raw.mp4`·`marks.json`) → `python tools/video3/bgm3.py`(약 7분) → `python tools/video3/mix3.py` → `영상작업/업무내비게이터_시연영상.mp4`(3분 37초 · 15.7MB, 23장면 — 2026-10-20 판)
 - `rec3.mjs`: 연습 업무로 실제 앱을 조작(가짜 화살표·누른 자리 물결·주황 강조 상자·아래 자막·장면 이름표·큰 글씨 장면을 화면 위에 덧씌워 함께 녹화). 장면별 조작은 `ACT`. 탭 공유를 켜면 크롬이 「공유 중」 줄을 넣어 화면이 줄므로 창을 다시 키운 뒤 녹화함(안 하면 아래가 초록 띠). 대본 문장을 바꾸면 tts.py부터 다시
-- 완성본은 `사용설명서/업무내비게이터_시연영상.mp4`(15.9MB, 저장소에 있음). `영상작업/`은 저장소에 올리지 않음(`.git/info/exclude`). 예전 방식(`video_script.py`·`build_video2.py`·`rec.mjs`, 사진을 움직이는 영상 108MB)은 더 쓰지 않음
+- 완성본은 `사용설명서/업무내비게이터_시연영상.mp4`(15.7MB, 2026-10-20 판, 저장소에 있음). `영상작업/`은 저장소에 올리지 않음(`.git/info/exclude`). 예전 방식(`video_script.py`·`build_video2.py`·`rec.mjs`, 사진을 움직이는 영상 108MB)은 더 쓰지 않음
 
 ## 이어서 할 일 (2026-10-11 저녁 기준 · 윈도우 PC 세션에서 클라우드 세션으로 넘김)
 
