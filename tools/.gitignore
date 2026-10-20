@@ -16,3 +16,5 @@ video2.html
 c_*.json
 __pycache__/
 man2_base/
+
+!practice/*.png

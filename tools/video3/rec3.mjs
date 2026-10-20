@@ -70,6 +70,8 @@ async function hl(selJs, pad = 6) { const r = await at(selJs, false); await ev(`
 const hlOff = () => ev('__v.hl(null)');
 let snapN = 0, curSeg = '';
 async function snap(tag) { if (!DRY) return; await sleep(250); const sh = await send('Page.captureScreenshot', { format: 'png' }); fs.mkdirSync(path.join(work, 'dry'), { recursive: true }); fs.writeFileSync(path.join(work, 'dry', `m${String(++snapN).padStart(2, '0')}_${curSeg}_${tag}.png`), Buffer.from(sh.result.data, 'base64')); }
+const ST = k => { const x = SEG.find(s => s.id === curSeg)?.sents?.[k]; return x ? x.t : 0; };   // 지금 장면 k번째 문장이 시작하는 때(초)
+const SD = k => { const x = SEG.find(s => s.id === curSeg)?.sents?.[k]; return x ? x.t + x.d : 0; };   // …끝나는 때
 let actT0 = 0; const until = async t => { const w = actT0 + t * 1000 - Date.now(); if (w > 0) await sleep(w); };
 async function typeText(t, cps = 22) { for (const ch of t) { await send('Input.insertText', { text: ch }); await sleep(1000 / cps); } }
 
@@ -117,15 +119,27 @@ const ACT = {
     await sleep(1500);
     await click("document.getElementById('branchPreviewConfirmBtn')");
     await sleep(1500);
-    await hl("document.querySelector('#aiPanelOfflineDashboard .proc-skip-pill')?.parentElement", 5); await snap('skip'); await sleep(2200); await hlOff();
+    await hl("document.querySelector('#aiPanelOfflineDashboard .proc-skip-pill')?.parentElement", 5); await snap('skip'); await sleep(2000); await hlOff();
+    // 02 단계 남은 할 일 체크 → 03 단계(배제사유 확인 · 각서 받기)로 — 다음 장면이 서식부터 바로 보이게
+    for (const t of ['1인 견적서 받기', '수의계약 근거서류 갖추기']) { await click(`row(${JSON.stringify(t)})?.querySelector('input.checkbox')`); await sleep(700); }
   },
-  async forms() {     // 남은 할 일 체크 → 03 단계 첫 할 일의 서식 바로 열기 → 예시 그림
-    for (const t of ['1인 견적서 받기', '수의계약 근거서류 갖추기']) { await click(`row(${JSON.stringify(t)})?.querySelector('input.checkbox')`); await sleep(800); }
-    await sleep(900);
-    await click("document.querySelector('#aiPanelOfflineDashboard .proc-fmt-open')");
-    await sleep(1800); await snap('form'); await sleep(800);
-    await js("document.querySelectorAll('.pv-modal').forEach(m=>m.querySelector('.close-preview-modal')?.click());await W(200);app.previewTipFile(PW().id,ix('지출 처리 (e호조)'),0);return 1");
-    await sleep(1800); await snap('ex'); await sleep(800);
+  async forms() {     // 서식 이름 누르기 → 한글 서식 미리 보기 → [⬇ 내려받기] → 업무팁 작성례 → 다음 사진으로 넘기기
+    const P = "document.querySelector('#aiPanelOfflineDashboard')";
+    await click(`${P}.querySelector('.proc-fmt-open')`);
+    await sleep(1500); await snap('form');
+    const DL = "[...document.querySelectorAll('.pv-modal .pv-dl, .modal.show .pv-dl')].filter(b=>b.offsetParent).pop()";
+    await until(ST(0) + 3.0); await hl(DL, 5);
+    await until(ST(0) + 4.1); await click(DL, { scroll: false }); await hlOff();
+    await ev(`__v.dl(${JSON.stringify('각서(수의계약 배제사유).hwpx')})`); await snap('dl');
+    await until(Math.max(ST(1) - 0.3, ST(0) + 6.0));
+    await js("document.querySelectorAll('.pv-modal').forEach(m=>m.querySelector('.close-preview-modal')?.click());app.restoreBodyScroll&&app.restoreBodyScroll();return 1");
+    await sleep(400);
+    await click(`${P}.querySelector('.proc-thumb')`);
+    await sleep(1400); await snap('ex1');
+    await until(ST(1) + 2.4);
+    await ev("__v.ripple()"); await send('Input.dispatchKeyEvent', { type: 'rawKeyDown', key: 'ArrowRight', code: 'ArrowRight', windowsVirtualKeyCode: 39 }); await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'ArrowRight', code: 'ArrowRight', windowsVirtualKeyCode: 39 });
+    await sleep(1200); await snap('ex2');
+    await until(SD(1) + 0.8);
     await js("document.querySelectorAll('.pv-modal').forEach(m=>m.querySelector('.close-preview-modal')?.click());app.restoreBodyScroll&&app.restoreBodyScroll();return 1");
   },
   async result() {    // 줄을 눌러 처리결과 칸 → 적기 → 체크 → 마감일 D-n
@@ -141,15 +155,14 @@ const ACT = {
     await hl(`[...row('수의계약 체결 제한 대상인지 확인').querySelectorAll('*')].find(e=>e.children.length===0&&/^D-\\d+$/.test(e.textContent.trim()))`, 5);
     await snap('due'); await sleep(1800); await hlOff();
   },
-  async report() {    // 진행상황 출력: 체크리스트 → 진행상황 보고
-    await js("app._prTab=null;app.openProgressReport(PW().id);return 1");
-    await sleep(2600);
-    await snap('cl');
-    await click("document.querySelector('.pr-tabs [data-tab=report]')");
-    await sleep(1500); await snap('rep'); await sleep(1700);
+  async report() {    // 합쳐진 업무 → 진행상황 보고서 → 체크리스트(빠진 절차 점검표로)
+    await js("app._prTab='report';app.openProgressReport(PW().id);return 1");
+    await sleep(2400); await snap('rep');
+    await until(ST(1) + 0.3);
     await click("document.querySelector('.pr-tabs [data-tab=checklist]')");
-    await sleep(2200);
-    await js("app.closeProgressReport();return 1"); await sleep(400);
+    await sleep(1600); await snap('cl');
+    await until(SD(1) + 0.5);
+    await js("app.closeProgressReport();app._prTab=null;return 1"); await sleep(400);
   },
   async collab() {    // 관리자: [업무 분담] → 04 납품·검사 김민수 · 05 대가 지급 이수진(회신 기한) → [요청 파일 만들기] → 회신 현황 → ⏳ 회신 대기 줄
     const D = n => new Date(Date.now() + n * 864e5).toLocaleDateString('sv-SE');   // 이 PC 시간대 기준 날짜
@@ -164,13 +177,13 @@ const ACT = {
       await sleep(600);
     }
     await hl(ROW('납품·검사'), 4); await snap('assigned');
-    await until(5.2);
+    await until(Math.max(5.2, SD(1) - 2.6));
     const SEND = "[...document.querySelectorAll('#collabModal button')].find(b=>b.textContent.includes('요청 파일 만들기'))";
     await hl(`${SEND}.closest('.cb-foot')||${SEND}`, 4);
-    await until(7.6); await hlOff();
+    await until(Math.max(7.6, SD(1))); await hlOff();
     await click(SEND);
     await sleep(1600); await snap('status');
-    await until(12.0);
+    await until(Math.max(12.0, SD(2) - 0.2));
     await js("app.closeCollabModal(true);app.restoreBodyScroll&&app.restoreBodyScroll();document.querySelectorAll('.toast').forEach(t=>t.classList.remove('show'));return 1");
     await sleep(600);
     await at("document.querySelector('.cb-run')");   // 화면 밖이면 가운데로
@@ -180,11 +193,11 @@ const ACT = {
   async merge() {     // 관리자: 김민수의 회신 파일을 [회신 가져오기]로 열기 → 「바뀐 곳」 → [바뀐 곳 보기] → 04 납품·검사가 ✓
     // 담당자 PC에서 만든 것과 같은 형식(collab_reply)의 회신 파일을 만듦 — 합치는 것은 앱의 실제 기능(collabImportReplyFile)
     await js(`const w=PW(),c=w.collab,cl=w.checklist,sid=cl[ix('납품·검사')].itemId,st=c.steps[sid];
-      const R={'납품 완료 통지 받기 (서면)':'○○상사 납품 완료 통지서 접수','납품 검사 (업체 참관)':'의자 20개·책상 10개 — 수량·규격 이상 없음 (업체 참관)','검사조서 작성':'검사조서 작성 — 검사자 김민수','검사 결과 서면 통지':'검사 합격 서면 통지 완료'};
+      const R={'납품 완료 통지 받기 (서면)':'○○상사 납품 완료 통지서 접수','납품 검사 (업체 참관)':'일회용 장갑 200상자·마스크 300상자 — 수량·규격 이상 없음 (업체 참관)','검사조서 작성':'검사조서 작성 — 검사자 김민수','검사 결과 서면 통지':'검사 합격 서면 통지 완료'};
       const now=new Date().toISOString();
       const items=app._collabStepIndices(cl,sid,c.steps).map(i=>({itemId:app.ensureChecklistItemId(cl[i]),stepId:sid,text:cl[i].text,completed:true,completedAt:now,completedViaSubItems:false,skipped:false,skipReason:'',skipManual:false,skipActionId:null,branchActionTaken:null,branchOnly:false,result:{text:R[cl[i].text]||'',summary:''}}));
       const cv=document.createElement('canvas');cv.width=900;cv.height=600;const g=cv.getContext('2d');g.fillStyle='#eef2f7';g.fillRect(0,0,900,600);g.fillStyle='#94a3b8';for(let k=0;k<5;k++){g.fillRect(90+k*150,250,110,190);g.fillRect(80+k*150,230,130,26);}
-      g.fillStyle='#1e3a8a';g.font='bold 44px sans-serif';g.fillText('납품 검사 — 사무용 의자',90,120);g.fillStyle='#334155';g.font='28px sans-serif';g.fillText('수량 20개 · 규격 확인 · 업체 참관',90,180);g.fillText('검사자 김민수',90,520);
+      g.fillStyle='#1e3a8a';g.font='bold 44px sans-serif';g.fillText('납품 검사 — 구급 소모품',90,120);g.fillStyle='#334155';g.font='28px sans-serif';g.fillText('장갑 200상자 · 마스크 300상자 · 업체 참관',90,180);g.fillText('검사자 김민수',90,520);
       const it=items.find(x=>x.text.startsWith('납품 검사'));const files={};
       if(it)files[it.itemId]=[{name:'납품검사_사진.jpg',type:'image/jpeg',size:60000,uploadDate:now,base64Data:cv.toDataURL('image/jpeg',0.85)}];
       window.__reply={type:'collab_reply',version:1,appVersion:APP_VERSION,uid:c.uid,sendId:st.sendId,from:'김민수',owner:c.owner,title:w.title,round:1,kind:'final',repliedAt:now,steps:[sid],items,files,comment:'검사 이상 없습니다. 검사 사진 첨부합니다.'};return 1`);
@@ -268,9 +281,10 @@ const OVERLAY = String.raw`(()=>{if(window.__v)return;const st=document.createEl
 #vCur{position:absolute;left:0;top:0;width:26px;height:26px;transform:translate(800px,500px);transition-property:transform;transition-timing-function:cubic-bezier(.45,.05,.25,1);filter:drop-shadow(0 2px 3px rgba(0,0,0,.35));opacity:0}
 #vCur.on{opacity:1}#vRip{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;border:3px solid #f59e0b;opacity:0}
 #vRip.go{animation:vrip .5s ease-out}@keyframes vrip{0%{opacity:.95;transform:scale(.3)}100%{opacity:0;transform:scale(1.4)}}
+#vDl{position:absolute;right:28px;top:76px;display:flex;align-items:center;gap:12px;background:#fff;color:#0f172a;border:1px solid #cbd5e1;border-radius:12px;padding:12px 18px;font-size:19px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.22);opacity:0;transform:translateY(-10px);transition:all .35s}#vDl.on{opacity:1;transform:none}#vDl b{display:inline-flex;width:30px;height:30px;border-radius:50%;background:#10b981;color:#fff;align-items:center;justify-content:center;font-size:18px}#vDl small{display:block;font-size:15px;color:#64748b;font-weight:500}
 #vHl{position:absolute;border:3px solid #f59e0b;border-radius:10px;box-shadow:0 0 0 4px rgba(245,158,11,.25),0 0 30px rgba(245,158,11,.35);opacity:0;transition:all .4s cubic-bezier(.2,.8,.2,1)}#vHl.on{opacity:1}
 ` + '`' + String.raw`;document.head.appendChild(st);
-const o=document.createElement('div');o.id='vOv';o.innerHTML='<div id="vCard"><div class="glow"></div><div id="vCardIn" style="display:flex;flex-direction:column;align-items:center;position:relative"></div></div><div id="vHl"></div><div id="vBot"><div id="vLab"></div><div id="vSub"></div></div><div id="vCardSub"></div><div id="vRip"></div><svg id="vCur" viewBox="0 0 24 24"><path d="M4 2l16 9.5-7 1.6 4.2 7.4-2.9 1.6-4.2-7.5L4 19z" fill="#fff" stroke="#111" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+const o=document.createElement('div');o.id='vOv';o.innerHTML='<div id="vCard"><div class="glow"></div><div id="vCardIn" style="display:flex;flex-direction:column;align-items:center;position:relative"></div></div><div id="vHl"></div><div id="vDl"></div><div id="vBot"><div id="vLab"></div><div id="vSub"></div></div><div id="vCardSub"></div><div id="vRip"></div><svg id="vCur" viewBox="0 0 24 24"><path d="M4 2l16 9.5-7 1.6 4.2 7.4-2.9 1.6-4.2-7.5L4 19z" fill="#fff" stroke="#111" stroke-width="1.4" stroke-linejoin="round"/></svg>';
 document.body.appendChild(o);const $=i=>document.getElementById(i);let subT=[],curX=800,curY=500;
 window.__v={
  card(c){const k=$('vCard');k.className='on'+(c.climax?' cl':'')+(c.title?' tt':'');const ci=$('vCardIn');ci.innerHTML=c.lines.map(l=>{const b=/^\*\*(.*)\*\*$/.exec(l);return '<div class="ln'+(b?' big':'')+'">'+(b?b[1]:l)+'</div>'}).join('')+(c.sub?'<div class="sb">'+c.sub+'</div>':'');
@@ -282,6 +296,7 @@ window.__v={
  cur(x,y,ms){const c=$('vCur');c.classList.add('on');c.style.transitionDuration=ms+'ms';c.style.transform='translate('+(x-4)+'px,'+(y-2)+'px)';curX=x;curY=y;},
  ripple(){const r=$('vRip');r.style.left=curX+'px';r.style.top=curY+'px';r.classList.remove('go');void r.offsetWidth;r.classList.add('go');},
  hl(x,y,w,h){const e=$('vHl');if(x===null||x===undefined){e.classList.remove('on');return}Object.assign(e.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px'});e.classList.add('on');},
+ dl(n){const e=$('vDl');e.innerHTML='<b>⬇</b><div>'+n+'<small>내 PC에 저장됨 — 한글에서 바로 작성</small></div>';e.classList.add('on');clearTimeout(this._dlT);this._dlT=setTimeout(()=>e.classList.remove('on'),3200);},
  t0:0,now(){return (performance.now()-this.t0)/1000;}
 };})()`;
 
@@ -292,6 +307,7 @@ try {
   await new Promise(r => ws.onopen = r);
   ws.onmessage = m => { const d = JSON.parse(m.data); if (d.id && pend.has(d.id)) { pend.get(d.id)(d); pend.delete(d.id); } };
   await send('Runtime.enable'); await send('Page.enable');
+  await send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: path.join(work, 'dl') });
   await send('Emulation.setFocusEmulationEnabled', { enabled: true });
   const url = 'file:///' + path.resolve(appFile).replace(/\\/g, '/');
   await send('Page.navigate', { url }); await sleep(3500);

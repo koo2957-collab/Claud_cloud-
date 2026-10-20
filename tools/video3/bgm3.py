@@ -8,6 +8,9 @@
 #   클라이맥스(e1 「숙달된 직원의 노하우를, 처음 맡은 직원에게」~): 라장조로 올려 주제 선율을 크게(피아노 옥타브 + 현악 + 글로켄)
 #   끝: 주제가 1-3-5-8로 풀리며 긴 화음
 # 음색: 피아노(배음을 겹친 소리)·현악(천천히 커지는 톱니파 여럿 + 떨림)·큰북·글로켄 — 예전 사각파 멜로디는 쓰지 않음
+# (2026-10-20 동기부여 영상 느낌, 사용자 요청 — 남의 곡은 쓰지 않고 그 장르의 장점만): 문제 장면 맥박 → 심장 박동(쿵-쿵),
+#   2막 현악 반복(8분음표, 작게) → 3막 16분음표 → 쌓아 올림에서 현악 반복·금관이 부풀고 북 합주·빨라지는 작은북 → 멈춤 →
+#   클라이맥스 첫 박 「브람」(아주 낮은 금관이 확 열림) + 금관 화음·주제 선율을 금관이 함께 → 끝 화음에 금관
 # 내레이션 동안은 음악을 낮춤(덕킹). 크롬 OfflineAudioContext로 실제 시간보다 빠르게 만듦
 # 실행: python tools/video3/bgm3.py [marks.json 경로]
 import json, os, sys, subprocess
@@ -73,6 +76,26 @@ const impact = (t, v = 0.8) => { const x = ac.createOscillator(), g = ac.createG
 const riser = (t0, t1, v = 0.2) => { const s = ac.createBufferSource(); s.buffer = noiseBuf; s.loop = true; const f = ac.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = 2.2; f.frequency.setValueAtTime(350, t0); f.frequency.exponentialRampToValueAtTime(6500, t1); const g = ac.createGain(); g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(v, t1 - 0.04); g.gain.linearRampToValueAtTime(0.0001, t1); s.connect(f); f.connect(g); g.connect(bus); s.start(t0); s.stop(t1 + 0.05);
   let t = t0 + (t1 - t0) * 0.3, step = 0.3; while (t < t1 - 0.05) { tom(t, 0.15 + 0.4 * (t - t0) / (t1 - t0), 120); t += step; step = Math.max(0.07, step * 0.85); } };
 
+// ── 동기부여 영상 느낌(2026-10-20 사용자 요청): 짧게 끊는 현악 반복·낮은 금관·북 합주·빨라지는 작은북 ──
+// 금관: 톱니파 셋 + 필터가 열리며 커짐(호른·트롬본 느낌)
+function brass(ch, t, dur, v, a = 0.3, r = 0.9, open = 2200) {
+  if (silent(t)) return; dur = cut(t, dur); if (dur <= 0.05) return; const rr = (t + dur >= HUSH0 - 0.02 && t < HUSH0) ? 0.08 : r;
+  const f = ac.createBiquadFilter(); f.type = 'lowpass'; f.Q.value = 1.1; f.frequency.setValueAtTime(260, t); f.frequency.linearRampToValueAtTime(open, t + a); f.frequency.setTargetAtTime(open * 0.6, t + a, 0.7);
+  const g = ac.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + a); g.gain.setValueAtTime(v * 0.85, t + dur); g.gain.exponentialRampToValueAtTime(0.0001, t + dur + rr);
+  f.connect(g); g.connect(bus); send(g, 0.45);
+  ch.forEach(m => [-7, 0, 7].forEach(d => { const x = ac.createOscillator(); x.type = 'sawtooth'; x.frequency.value = N(m); x.detune.value = d; const s = ac.createGain(); s.gain.value = 1 / (ch.length * 3); x.connect(s); s.connect(f); x.start(t); x.stop(t + dur + rr + 0.1); }));
+}
+// 「브람」: 아주 낮은 금관 화음이 확 열림(예고편의 쿵—)
+const braam = (root, t, v = 0.3) => { brass([root - 24, root - 12, root - 5, root], t, 1.6, v, 0.07, 1.8, 1700); impact(t, 0.7); };
+// 짧게 끊는 현악(스피카토)과 반복 음형: 근음-근음-옥타브-근음-5도-근음-옥타브-5도
+function spic(m, t, v, lp = 2400) { if (silent(t)) return; const f = ac.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = lp; const g = ac.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + 0.006); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.16); f.connect(g); g.connect(bus); send(g, 0.3); [-6, 6].forEach(d => { const x = ac.createOscillator(); x.type = 'sawtooth'; x.frequency.value = N(m); x.detune.value = d; x.connect(f); x.start(t); x.stop(t + 0.2); }); }
+const OST = [0, 0, 12, 0, 7, 0, 12, 7];
+const ostinato = (root, t, dur, v, div = 4, lp = 2400) => { const st = B / div; for (let k = 0; k * st < dur - 0.01; k++) spic(root + OST[k % 8], t + k * st, v * (k % 4 === 0 ? 1.3 : 1), lp); };
+// 북 합주 한 마디: 쿵 · (쿵)쿵 쿵 · 쿵쿵
+const taiko = (t, v) => [[0, 1, 70], [1.5, 0.55, 90], [2, 0.85, 70], [3, 0.7, 80], [3.5, 0.6, 95]].forEach(([b, a, f]) => tom(t + b * B, v * a, f));
+// 빨라지는 작은북(t0~t1, 커지면서)
+const roll = (t0, t1, v = 0.12) => { let t = t0, st = B / 2; while (t < t1 - 0.03) { const p = (t - t0) / (t1 - t0); noise(t, 0.01, v * (0.3 + 0.7 * p), 'bandpass', 1900, 0.9, 0.001, 0.07); t += st; st = Math.max(B / 8, st * 0.9); } };
+
 const BPM = 96, B = 60 / BPM, BAR = 4 * B;
 // 주제 선율(1-3-5-4)과 리듬(박): 1 · 3 · 5(길게) · 4(길게)
 const MOTIF = [[0, 0, 1], [1, 4, 1], [2, 7, 2], [4, 5, 2.5]];   // [박, 음(반음), 길이(박)]
@@ -83,7 +106,8 @@ const motif = (root, t, v, beat, oct = 0, minor = false) => MOTIF.forEach(([b, i
   while (t < C.title - 0.4) { const d = Math.min(BARp * 2, C.title - t); strings(ch[i % 4].map(m => m - 12), t, d, 0.05, 800, 1.6, 1.6); bass(ch[i % 4][0] - 12, t, d * 0.9, 0.12);
     if (t + 6 * Bp < C.title - 0.6) motif(i % 2 ? 64 : 69, t + 0.2, 0.11, Bp, 0, true);   // 가 → 마 단조로 두 번
     t += BARp * 2; i++; }
-  for (let p = 0.6; p < C.title - 0.4; p += Bp * 2) { const x = ac.createOscillator(), g = ac.createGain(); x.frequency.value = N(33); g.gain.setValueAtTime(0.0001, p); g.gain.linearRampToValueAtTime(0.1, p + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, p + 0.5); x.connect(g); g.connect(bus); x.start(p); x.stop(p + 0.55); }
+  // 심장 박동(쿵-쿵): 문제 장면의 긴장
+  for (let p = 0.6; p < C.title - 0.4; p += Bp * 2) [[0, 0.12], [0.22, 0.08]].forEach(([o, v]) => { const q = p + o, x = ac.createOscillator(), g = ac.createGain(); x.frequency.setValueAtTime(62, q); x.frequency.exponentialRampToValueAtTime(40, q + 0.2); g.gain.setValueAtTime(0.0001, q); g.gain.linearRampToValueAtTime(v, q + 0.015); g.gain.exponentialRampToValueAtTime(0.0001, q + 0.35); x.connect(g); g.connect(bus); x.start(q); x.stop(q + 0.4); });
   riser(C.title - 2.0, C.title, 0.12); }
 
 // ② 제목: 쿵 + 주제 첫 두 음을 다장조로 밝게 + 반짝
@@ -103,6 +127,7 @@ const PC = [[48, 52, 55, 60], [43, 50, 55, 59], [45, 52, 57, 60], [41, 48, 53, 5
       if (bar >= 2) shaker(tb + B / 2, rise2 ? 0.04 : 0.03); if (rise && b === 3) tom(tb + B / 2, 0.22); if (rise2 && b === 1) tom(tb + B / 2, 0.18, 120);
       bass(ch[0] - 12, tb, B * 0.85, 0.22); }
     for (let e = 0; e < 8; e++) { const te = t + e * B / 2; if (te < end) piano(ch[arp[e]] + 12, te, bar < 2 ? 0.05 : 0.06, 1.2, 0.35); }
+    if (rise) ostinato(ch[0], t, Math.min(BAR, end - t), rise2 ? 0.026 : 0.02, rise2 ? 4 : 2, rise2 ? 2000 : 1600);   // 현악 반복: 2막 8분음표 → 3막 16분음표(내레이션 밑에서 작게)
     if (bar % 8 === 4 || (rise && bar % 4 === 0)) motif(72, t, 0.05, B / 2, 12);   // 주제 선율 살짝 (밝게)
   } }
 
@@ -112,27 +137,32 @@ const PC = [[48, 52, 55, 60], [43, 50, 55, 59], [45, 52, 57, 60], [41, 48, 53, 5
     const ch = PB[Math.min(3, Math.floor((t - C.build) / dur * 4))], p = (t - C.build) / dur;
     strings(ch, t, Math.min(BAR, HUSH0 - t), 0.07 + 0.06 * p, 1800 + 2500 * p, 0.3, 0.6);
     strings(ch.map(m => m + 12), t, Math.min(BAR, HUSH0 - t), 0.03 + 0.04 * p, 2500 + 2500 * p, 0.3, 0.6);
-    for (let b = 0; b < 4; b++) { const tb = t + b * B; if (tb >= HUSH0 - 0.05) break;
-      tom(tb, 0.3 + 0.35 * p); if (p > 0.45) tom(tb + B / 2, 0.18 + 0.25 * p, 120);
-      bass(ch[0] - 12, tb, B * 0.9, 0.24); }
+    ostinato(ch[0] + 12, t, Math.min(BAR, HUSH0 - t), 0.03 + 0.04 * p, 4, 1800 + 3000 * p);   // 현악 반복이 점점 밝고 크게
+    if (p > 0.25) brass(ch.map(m => m - 12), t, Math.min(BAR, HUSH0 - t), 0.04 + 0.09 * p, BAR * 0.6, 0.6, 1200 + 1500 * p);   // 금관이 마디마다 부풀어 오름
+    if (p > 0.5) taiko(t, 0.25 + 0.35 * p);
+    else for (let b = 0; b < 4; b++) { const tb = t + b * B; if (tb >= HUSH0 - 0.05) break; tom(tb, 0.3 + 0.35 * p); }
+    for (let b = 0; b < 4; b++) { const tb = t + b * B; if (tb >= HUSH0 - 0.05) break; bass(ch[0] - 12, tb, B * 0.9, 0.24); }
     for (let e = 0; e < 8; e++) { const te = t + e * B / 2; if (te < HUSH0 - 0.05) piano(ch[[0, 2, 3, 2][e % 4]] + 24, te, 0.035 + 0.03 * p, 0.8, 0.4); }
   }
-  riser(Math.max(C.build, HUSH0 - 3.2), HUSH0, 0.15); }
+  riser(Math.max(C.build, HUSH0 - 3.2), HUSH0, 0.15); roll(Math.max(C.build, HUSH0 - 2 * BAR), HUSH0, 0.13); }
 
 // ⑥ 클라이맥스: 라장조 D-A-Bm-G — 주제 선율을 피아노 옥타브로 크게 + 현악 + 글로켄 + 큰북
 const PD = [[50, 54, 57, 62], [45, 52, 57, 61], [47, 54, 59, 62], [43, 50, 55, 59]];
-{ impact(C.climax, 0.9); crash(C.climax, 0.34); let bar = 0;
+{ braam(50, C.climax, 0.32); crash(C.climax, 0.34); let bar = 0;
   for (let t = C.climax; t < C.end - 0.01; t += BAR, bar++) {
-    const ch = PD[bar % 4], end = C.end;
-    strings(ch, t, Math.min(BAR, end - t) + 0.2, 0.16, 3600, 0.08, 1.0); strings(ch.map(m => m + 12), t, Math.min(BAR, end - t) + 0.2, 0.08, 4200, 0.12, 1.0);
-    for (let b = 0; b < 4; b++) { const tb = t + b * B; if (tb >= end) break; kick(tb, 0.6); tom(tb + (b % 2 ? 0 : B / 2), b % 2 ? 0.35 : 0.2); shaker(tb + B / 2, 0.045); bass(ch[0] - 12, tb, B * 0.45, 0.28); bass(ch[0] - 12, tb + B / 2, B * 0.4, 0.2); }
-    if (bar % 2 === 0) { motif(74, t, 0.2, B, 0); motif(74, t, 0.12, B, 12); MOTIF.forEach(([bb, iv]) => glock(74 + iv + 24, t + bb * B, 0.04)); }   // 주제 선율(장조)
+    const ch = PD[bar % 4], end = C.end, d = Math.min(BAR, end - t);
+    strings(ch, t, d + 0.2, 0.16, 3600, 0.08, 1.0); strings(ch.map(m => m + 12), t, d + 0.2, 0.08, 4200, 0.12, 1.0);
+    brass(ch.map(m => m - 12), t, d, 0.1, 0.12, 0.7, 2000);   // 금관 화음
+    ostinato(ch[0] + 12, t, d, 0.05, 4, 4200);                  // 현악 반복(16분음표)
+    taiko(t, 0.5);
+    for (let b = 0; b < 4; b++) { const tb = t + b * B; if (tb >= end) break; kick(tb, 0.5); shaker(tb + B / 2, 0.045); bass(ch[0] - 12, tb, B * 0.45, 0.28); bass(ch[0] - 12, tb + B / 2, B * 0.4, 0.2); }
+    if (bar % 2 === 0) { motif(74, t, 0.2, B, 0); motif(74, t, 0.12, B, 12); MOTIF.forEach(([bb, iv]) => glock(74 + iv + 24, t + bb * B, 0.04)); MOTIF.forEach(([bb, iv, len]) => brass([62 + iv], t + bb * B, len * B * 0.9, 0.07, 0.06, 0.4, 2600)); }   // 주제 선율(장조) — 금관이 함께
     else for (let e = 0; e < 8; e++) { const te = t + e * B / 2; if (te < end) piano(ch[[0, 1, 2, 3, 2, 3, 1, 2][e]] + 24, te, 0.06, 1.0); }
   } }
 
 // ⑦ 끝: 주제가 1-3-5-8로 풀리며 라장조 긴 화음
 { impact(C.end, 0.45); crash(C.end, 0.14); const fin = [38, 50, 57, 62, 66, 69, 74];
-  strings(fin, C.end, Math.max(1, C.total - C.end - 2.2), 0.13, 2800, 0.25, 2.0);
+  strings(fin, C.end, Math.max(1, C.total - C.end - 2.2), 0.13, 2800, 0.25, 2.0); brass([38, 50, 57, 62], C.end, Math.max(1, C.total - C.end - 2.4), 0.1, 0.5, 2.0, 1600);
   [[74, 0], [78, 1], [81, 2], [86, 3.2]].forEach(([m, b]) => { piano(m, C.end + 0.3 + b * 0.55, 0.14, 4); piano(m - 12, C.end + 0.3 + b * 0.55, 0.07, 4); });
   [86, 90, 93, 98].forEach((m, k) => glock(m, C.end + 2.4 + k * 0.16, 0.045)); bass(38, C.end, Math.max(1, C.total - C.end - 2), 0.22); }
 

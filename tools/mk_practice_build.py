@@ -56,7 +56,7 @@ for(const c of SPEC.cards){
  for(const [base,label,targets] of c.skips){const b=wf.checklist[idx(base)];(b.branchOptions=b.branchOptions||[]).push({label,action:'',targetItemIds:targets.map(t=>wf.checklist[idx(t)].itemId),selfSkip:false});}
  if(c.done){for(let i=0;i<c.done;i++){wf.checklist[i].completed=true;wf.checklist[i].completedAt=now;}wf.lastProgressAt=now;}
  for(const [t,name] of c.forms){const blob=await (await fetch('./tools/practice/'+encodeURIComponent(name))).blob();
-  const f=new File([blob],name,{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+  const f=new File([blob],name,{type:/\.hwpx$/i.test(name)?'application/hwp+zip':'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
   const h=await app.computeFileHash(f);const ex=await app.findDuplicateRepoDocument(f,h);const id=ex?ex.id:await app._createRepoDocumentRecord(f,h,null);
   const it=wf.checklist[idx(t)];it.linkedDocs=it.linkedDocs||[];if(!it.linkedDocs.includes(id))it.linkedDocs.push(id);}
  app.saveData();
@@ -65,7 +65,7 @@ for(const c of SPEC.cards){
   const res=await app.addLawLibraryFiles({type:'change',target:{files,value:''}});app._askLibraryDuplicate=window._askLibraryDuplicateKeep;
   const pk='project-'+c.id;app.checklistDetails[pk]=app.checklistDetails[pk]||{attachments:[],forms:[]};app.checklistDetails[pk].linkedLibraryDocs=res.map(r=>r.id).filter(Boolean);
   await app.dbManager.saveChecklistDetails(pk,app.checklistDetails[pk]);}
- for(const [t,name] of c.tipfiles){const blob=await drawFlow();await app.addTipFiles(c.id,idx(t),{files:[new File([blob],name,{type:'image/png'})],value:''},{noShrink:true});}
+ for(const [t,name] of c.tipfiles){const blob=/설명용 그림/.test(name)?await drawFlow():await (await fetch('./tools/practice/'+encodeURIComponent(name))).blob();await app.addTipFiles(c.id,idx(t),{files:[new File([blob],name,{type:'image/png'})],value:''},{noShrink:true});}
  out.push(c.title+': 줄 '+cl.length+' · 건너뛰기 '+c.skips.length+' · 서식 '+c.forms.length+' · 예시 '+c.tipfiles.length+' · 참고 자료 '+c.refs.length);
 }
 app.saveData();app.displayWorkflows();await W(600);
