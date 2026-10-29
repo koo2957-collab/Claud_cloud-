@@ -27,6 +27,7 @@ def click(expr): S.append({"pt": True, "js": P + "document.querySelectorAll('.to
 STUB = "window.__calls=[];app.callAIWithDocuments=app.callAI=async(p)=>{window.__calls.push(p);await W(300);return /바꾸지 말고/.test(p)?'" + q(KEEP) + "':'" + q(RS) + "'};"
 SETUP = ("document.querySelectorAll('.modal.show').forEach(m=>m.classList.remove('show'));$('welcomeModal')?.remove();app.checkBackupReminder=()=>{};localStorage.removeItem('showAiDraft');localStorage.removeItem('aiDraftWarned');"
          + ("" if LOCKED else "app.allData.provider='gemini';app.allData.geminiApiKey='TEST-KEY';app._syncAiOff?.();" + STUB) +
+         "app._wfHasProgress=()=>false;"   # 이 대본은 「시작 전 업무의 다시 정리」 — 진행 중 업무의 단계 고정은 mk_aiplus_test
          "app.allData.workflows=app.allData.workflows.filter(w=>w.id!==ID&&!/AI 정리본/.test(w.title||''));"
          "const cl=[['사건 접수','접수 대장에 적기'],['출석요구서 발송',''],['진술서 받기',''],['징계위원회 개최',''],['중복 항목','']].map(([t,tip])=>({text:t,indent:0,completed:false,...(tip?{tip:{type:'text',content:tip,saved:true}}:{})}));"
          "cl[0].completed=true;cl[0].completedAt=new Date().toISOString();app.allData.workflows.unshift({id:ID,type:'manual',title:'AI 편집 시험',checklist:cl,date:'2026. 10. 15.',createdAt:new Date().toISOString(),folderPath:''});cl.forEach(it=>app.ensureChecklistItemId(it));window.__ids=cl.map(x=>x.itemId);"
