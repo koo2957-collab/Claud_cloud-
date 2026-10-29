@@ -1733,6 +1733,9 @@
         .rep-pop-btns { display: flex; justify-content: flex-end; gap: 6px; margin-top: 8px; }
         .rep-pop-btns button { font: inherit; font-size: 0.8rem; border-radius: 6px; padding: 4px 14px; cursor: pointer; border: 1px solid var(--border-subtle); background: var(--white); color: var(--text-dark); }
         .rep-pop-btns .rep-pop-ok { background: #8b5cf6; border-color: #8b5cf6; color: #fff; font-weight: 700; }
+        /* 항목 창 처리결과 탭은 높이가 정해진 세로 flex — 안의 상자가 눌려 줄어들면(overflow:hidden인 원본 메모 상자는 0까지) 작성칸이 잘린다.
+           줄어들지 않게 하고 넘치면 탭 안에서 스크롤 */
+        [id^="checklist-panel-result-"] > * { flex-shrink: 0; }
         .rep-logs { margin: 0 0 12px; padding: 10px 12px; border: 1px solid color-mix(in srgb, #8b5cf6 25%, transparent); border-radius: 8px; background: color-mix(in srgb, #8b5cf6 3%, var(--white)); }
         .rep-logs-h { display: flex; align-items: center; gap: 4px; font-size: 0.8rem; font-weight: 700; color: var(--text-dark); margin-bottom: 6px; }
         .rep-logs-h b { color: #7c3aed; }
@@ -7956,6 +7959,7 @@
                 '체크리스트 편집에서 단계를 더하거나 빼고 [저장]해도 오른쪽 업무 절차의 진행률·단계 목록이 예전 모양으로 남던 것 고침',
                 '일하는 화면에서 업무 관리를 열어 지금 열린 업무를 지우면 지운 업무가 화면에 남던 것 → 목록으로 나옴 · 일하는 화면에서도 Ctrl+Z가 마지막 동작([실행 취소]·[되돌리기]와 같은 것)을 되돌림',
                 '업무 파일을 「복사하여 시작」으로 가져오면 처리결과 글은 비는데 처리결과 첨부 파일만 남던 것 → 첨부도 비움 (레퍼런스 [복사하여 시작]과 같게)',
+                '항목 창 처리결과 탭에서 처리결과 첨부가 늘거나 기록 목록이 있으면 위의 작성칸(원본 메모)이 눌려 잘리거나 사라지던 것 → 줄어들지 않고 탭 안에서 스크롤',
                 '「↻ 여러 번 하는 일」: 수사보고서처럼 업무 내내 되풀이하는 할 일은 오른쪽 클릭 「여러 번 하는 일로」 — 동그라미를 누를 때마다 날짜·내용이 한 줄씩 쌓이고(처음 기록하면 체크로 셈), 체크리스트 맨 위·업무 절차 패널에서 언제든 [+], 항목 창 처리결과 탭에서 기록 고치기·지우기, 진행상황 출력에 날짜별로 · 체크만 풀 때는 오른쪽 클릭 「체크 취소 (기록은 남김)」',
                 '(AI) 업무 파트너가 지금 할 일의 업무팁·처리결과·마감일·「지난번엔 이렇게」를 알고 답함 · 「그럼 2천만 원 넘으면?」처럼 이어 물으면 앞 질문도 함께 보고 조문을 찾음',
                 '(AI) 업무 파트너 답 모양이 질문에 맞게: 법령은 근거 조문 · 「지난번엔 어떻게 했나요?」는 이 PC의 다른 업무 처리결과(P번호, 누르면 그 처리결과) · 「처리결과 다듬어 줘」·「보고 문장 써 줘」는 글만 쓰고 아래 [처리결과에 넣기]·[보고서 의견에 넣기](넣은 뒤 [되돌리기])',
@@ -16945,7 +16949,7 @@
                     <div class="mat-head" style="flex-shrink:0;"><div class="mat-title">처리결과</div></div>
                     <textarea class="checklist-result-textarea" id="main-checklist-result-text-${workflowId}-${index}"
                               placeholder="조치한 내용을 입력하세요."
-                              style="flex:1;min-height:0;resize:none;" ${locked ? 'disabled' : ''}
+                              style="flex:1 0 auto;min-height:140px;resize:none;" ${locked ? 'disabled' : ''}
                               onchange="app.updateMainChecklistResult(${workflowId},${index},this.value)"
                               oninput="app._cimAutoSave(${workflowId},${index},'result',this)" onblur="app.saveMainChecklistResultOnBlur(${workflowId},${index},this).then(()=>app._cimMarkSaved())">${this.escapeHtml(item.result?.text || '')}</textarea>`;
 
