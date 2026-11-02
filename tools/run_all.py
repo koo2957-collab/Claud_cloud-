@@ -29,13 +29,13 @@ cdp('문제 보고·오류 기록', ['mk_problem_test.py'])
 if not QUICK:
     cdp('많은 자료(업무 300개)', ['mk_bigdata_test.py', '300'])
     for t in ['row', 'zoom', 'printwin', 'cltitle', 'skippanel', 'tip3', 'panel', 'skip', 'tip', 'icon', 'pick_panel', 'main8', 'report3', 'report', 'files',
-              'common', 'hold', 'practice', 'skipbtn', 'ctxmenu', 'wide', 'tip3box', 'me', 'safe', 'home', 'tipexclude', 'netlock', 'done']:
+              'common', 'hold', 'practice', 'skipbtn', 'ctxmenu', 'wide', 'tip3box', 'me', 'safe', 'home', 'tipexclude', 'netlock', 'done', 'livelaw', 'due']:
         cdp(t, [f'mk_{t}_test.py'])
     cdp('perf(72줄)', ['mk_perf_test.py'])
     for t in ['read', 'guideback', 'tabs', 'law', 'aiedit', 'aifill']:
         cdp(t + ' (배포판: AI 숨김)', [f'mk_{t}_test.py', 'locked'])
     # AI 허용판(가짜 AI)
-    for t in ['aifill', 'aifill2', 'docs', 'law', 'read', 'guideback', 'tabs', 'aisrc', 'aiedit', 'split', 'netlock']:
+    for t in ['aifill', 'aifill2', 'docs', 'law', 'read', 'guideback', 'tabs', 'aisrc', 'aiedit', 'split', 'netlock', 'livelaw', 'aiask', 'due']:
         cdp(t + ' (AI)', [f'mk_{t}_test.py'], app=AIF)
     cdp('왕복 (AI)', ['mk_roundtrip_test.py', 'ai'], app=AIF)
 if MATRIX:
