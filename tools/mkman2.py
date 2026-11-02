@@ -42,6 +42,8 @@ scene("00_seed",
  "const w=pw();{const na=w.checklist[px('예정가격 작성')];na.skipped=true;na.skipManual=true;na.skipReason='1인 견적 소액 수의계약 — 예정가격 작성 생략';}const done=['" + T_REQ + "','추정가격 정하기','거래실례가격 조사 (2곳 이상)'];done.forEach(t=>{const it=w.checklist[px(t)];it.completed=true;it.completedAt=new Date(Date.now()-864e5*(4-done.indexOf(t))).toISOString();});w.checklist[0].completed=true;w.checklist[0].completedAt=new Date(Date.now()-864e5).toISOString();"
  "w.checklist[px('추정가격 정하기')].result={text:'의자 20개·책상 10개 — 추정가격 14,300,000원 (부가세 별도)',summary:''};w.checklist[px('거래실례가격 조사 (2곳 이상)')].result={text:'조달청 가격정보 · ○○가구 · △△오피스 3곳 비교 — 최저 13,980,000원',summary:''};"
  "w.lastProgressAt=new Date().toISOString();w.deadline=D(26);"
+ # 할 일 마감(D-3) — 켤 때 알림·왼쪽 마감 임박에 「할 일 · 1인 견적서 받기」로 보임
+ "w.checklist[px('1인 견적서 받기')].deadline=D(3);"
  "app.saveData();app.displayWorkflows();" + W(900))
 # ── 0. 하루의 시작
 scene("01_main", "", "'.sidebar, #sidebarUrgent, .urgent-section'")
@@ -73,7 +75,13 @@ scene("17_work", "const r=row('금액 기준 확인');r&&r.querySelector('.check
 scene("18_result", "const ta=document.querySelector('.cl-peek .cl-result-input');const i0=px('금액 기준 확인 — 갈림길');ta&&await app.saveMainChecklistResultOnBlur(window.__pw,i0,ta);app.clearChecklistPick&&app.clearChecklistPick(window.__pw);" + W(300) +
  "const i=px('거래실례가격 조사 (2곳 이상)');await app.showChecklistItemModal(window.__pw,i,'result');" + W(700) +
  "const sh=document.getElementById('rf-shrink-'+window.__pw+'-'+i);if(sh)sh.checked=false;await app.addResultFiles(window.__pw,i,{files:[new File(['%PDF-1.4 '+'0'.repeat(150000)],'가격 조사표 (3곳 비교).pdf',{type:'application/pdf'}),new File([await img('조달청 가격정보',['사무용 의자 (메시형)','단가  172,000원 ~ 189,000원','조회일  2026. 10. 13.'],'#1e3a8a')],'조달청 가격정보 화면.jpg',{type:'image/jpeg'})],value:''});" + W(1300), "'#cimOverlay > div'")
-scene("19_formats", "app.closeChecklistItemModal();" + W(300) + "const i=px('배제사유 확인 · 각서 받기');await app.showChecklistItemModal(window.__pw,i,'formats');" + W(700), "'#cimOverlay .mat-head'")
+# 여러 번 하는 일(↻): 분할 납품이라 「납품 검사」를 여러 번 — 기록 둘 + 세 번째 기록 작은 창
+scene("18b_repeat", "app.closeChecklistItemModal();" + W(300) + "const i=px('납품 검사 (업체 참관)');app.setRepeat(window.__pw,i,true);" + W(300) +
+ "const id=app.ensureChecklistItemId(pw().checklist[i]);app.addRepeatLog(window.__pw,id,D(-6),'1차분 의자 8개 검사 — 이상 없음');app.addRepeatLog(window.__pw,id,D(-2),'2차분 의자 6개 검사 — 1개 교환 요청');" + W(300) +
+ "app.toggleStageOpen(window.__pw,px('납품·검사'));" + W(700) + "const r=row('납품 검사');r&&r.scrollIntoView({block:'center'});" + W(300) +
+ "const c=r&&r.querySelector('.checklist-checkbox, .cl-check, input[type=checkbox], .item-check');app.openRepeatLog(window.__pw,i,c||r);" + W(400) +
+ "const ta=document.querySelector('#repLogPop .rep-pop-text');if(ta)ta.value='3차분 의자 6개 검사 — 이상 없음';", "'#repLogPop'")
+scene("19_formats", "app._repClosePop&&app._repClosePop();app.toggleStageOpen(window.__pw,px('납품·검사'));" + W(400) + "app.closeChecklistItemModal();" + W(300) + "const i=px('배제사유 확인 · 각서 받기');await app.showChecklistItemModal(window.__pw,i,'formats');" + W(700), "'#cimOverlay .mat-head'")
 # 지금 할 일(1인 견적서 받기)에 예시를 넣어 업무 절차 패널 썸네일
 scene("17b_thumbs", "app.closeChecklistItemModal();" + W(300) + "await app.addTipFiles(window.__pw,px('금액 기준 확인 — 갈림길'),{files:[new File([await img('수의계약 금액 기준',['2천만원 이하  1인 견적 가능','2천만원 초과  2인 이상 견적','200만원 미만  견적 생략 가능'],'#7c3aed')],'금액 기준 요약표.jpg',{type:'image/jpeg'}),new File(['%PDF-1.4 '+'0'.repeat(60000)],'추정가격 산정 예시.pdf',{type:'application/pdf'})],value:''});" + W(400) + "app.closeChecklistItemModal();const i=px('1인 견적서 받기');await app.addTipFiles(window.__pw,i,{files:[new File([await img('견적서 작성례',['품명  사무용 의자 (메시형)','수량  20개   단가  178,000원','견적일  2026. 11. 3.'],'#b91c1c')],'견적서 작성례.jpg',{type:'image/jpeg'}),new File([await img('견적 요청 메일',['받는 곳  ○○가구','제목  사무용 의자 견적 요청','회신  10. 24.까지'],'#065f46')],'견적 요청 메일 예시.jpg',{type:'image/jpeg'})],value:''});" + W(500) + "app.closeChecklistItemModal();app.refreshAIPanelDashboardIfNeeded();" + W(900), "'.proc-thumbs'")
 scene("17c_pick", "app.toggleStageOpen(window.__pw,px('계약'));" + W(500) + "app.toggleChecklistPeek(window.__pw,px('배제사유 확인 · 각서 받기'));" + W(900), "'.proc-step-row.is-picked'")

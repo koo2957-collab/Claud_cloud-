@@ -30,7 +30,8 @@ out = os.path.join('배포', root + '.zip')
 with zipfile.ZipFile(out, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as z:
     z.write('index.html', f'{root}/업무내비게이터.html')
     z.writestr(f'{root}/읽어보기.txt', readme.replace('\n', '\r\n').encode('utf-8-sig'))
-    for d, _, fs in os.walk('사용설명서'):
+    for d, ds, fs in os.walk('사용설명서'):
+        ds[:] = [x for x in ds if x != 'AI허용판']   # 배포판(AI 차단)에는 AI 허용판 설명서를 넣지 않음
         for f in sorted(fs):
             if f.endswith('.mp4'): continue   # 영상은 따로
             p = os.path.join(d, f)

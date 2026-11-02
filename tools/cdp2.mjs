@@ -31,7 +31,8 @@ try {
   await send('Runtime.enable'); await send('Page.enable'); await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 810, deviceScaleFactor: 4/3, mobile: false }); await send('Emulation.setFocusEmulationEnabled', { enabled: true });
   await send('Page.navigate', { url: 'file:///' + file.replace(/\\/g, '/') });
   await sleep(4000);
-  const steps = JSON.parse(fs.readFileSync(path.join(dir, 'steps.json'), 'utf8'));
+  // STEPS=steps_ai.json: AI 허용판 설명서 장면(mkman_ai.py) — 기본은 steps.json(mkman2.py)
+  const steps = JSON.parse(fs.readFileSync(path.join(dir, process.env.STEPS || 'steps.json'), 'utf8'));
   for (const s of steps) {
     if (s.wait) await sleep(s.wait);
     if (s.js) console.log('>', s.label || '', '=>', JSON.stringify(await ev(s.js)));

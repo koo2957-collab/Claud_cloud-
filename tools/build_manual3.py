@@ -1,16 +1,28 @@
 # 사용 설명서 만들기 (v4 · 기능 하나 = A4 한 쪽)
-#   python build_manual3.py ../사용설명서        → 업무내비게이터_사용설명서.html + img/
+#   python build_manual3.py ../사용설명서        → 업무내비게이터_사용설명서.html + img/  (오프라인판)
+#   python build_manual3.py ../사용설명서/AI허용판 --ai → AI업무내비게이터_사용설명서.html + img/  (오프라인판 + AI 장 둘)
 #   node mk_manual_pdf.mjs                        → 업무내비게이터_사용설명서.pdf (쪽 넘침 검사 포함)
 # 내용은 manual_data3.py, 사진·강조 위치는 cdp2.mjs 촬영 결과(man2/*.png · man2_out.txt)
 import json, os, re, sys, html
 from PIL import Image   # pip install pillow
 here = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, here)
-from manual_data3 import CHAPTERS, KEYS, FAQ, TERMS
+from manual_data3 import CHAPTERS, KEYS, FAQ, TERMS, AI_CHAPTERS, AI_FAQ, AI_TERMS
+AI = '--ai' in sys.argv
+args = [a for a in sys.argv[1:] if not a.startswith('--')]
+if AI:   # 오프라인판 그대로 + 맨 뒤 AI 장 · 「AI 단추가 안 보여요」 자리에 AI 질문들 · AI 용어
+    CHAPTERS = CHAPTERS + AI_CHAPTERS
+    _k = next(i for i, (q, a) in enumerate(FAQ) if q.startswith('AI 단추'))
+    FAQ = FAQ[:_k] + AI_FAQ + FAQ[_k + 1:]
+    TERMS = TERMS + AI_TERMS
+EDITION = 'AI 허용판' if AI else '오프라인판'
+PRODUCT = 'AI 업무 내비게이터' if AI else '업무 내비게이터'   # AI판 이름은 「AI 업무 내비게이터 사용 설명서」(2026-11-02 사용자)
+OUT_NAME = ('AI업무내비게이터' if AI else '업무내비게이터') + '_사용설명서.html'
+AI_CH = f'{len(CHAPTERS) - len(AI_CHAPTERS) + 1}~{len(CHAPTERS)}장' if AI else ''
 
 _m = re.search(r"const APP_VERSION = '([^']+)'", open(os.path.join(here, '..', 'index.html'), encoding='utf-8').read())
 APP_VER = _m.group(1) if _m else ''
-out_dir = sys.argv[1] if len(sys.argv) > 1 else os.path.join(here, '..', '사용설명서')
+out_dir = args[0] if args else os.path.join(here, '..', '사용설명서')
 img_dir = os.path.join(out_dir, 'img')
 os.makedirs(img_dir, exist_ok=True)
 esc = html.escape
@@ -19,7 +31,7 @@ made = {}   # 만든 사진 파일 → 자른 자리
 # ── 강조 위치 (촬영 결과, 1440×810 화면 기준) ──
 SW, SH = 1440, 810
 hl = {}
-for line in open(os.path.join(here, 'man2_out.txt'), encoding='utf-8'):
+for line in [l for f in ('man2_out.txt', 'man2ai_out.txt') if os.path.exists(os.path.join(here, f)) for l in open(os.path.join(here, f), encoding='utf-8')]:   # AI 장면은 man2ai_out.txt
     m = re.match(r'> (\S+) => "(.*)"\s*$', line)
     if m:
         try: hl[m.group(1)] = json.loads(json.loads('"' + m.group(2) + '"')).get('hl')
@@ -91,7 +103,7 @@ for (ci, fi, t, pid) in feat_pages:
     pno[pid] = p; p += 1
 # 부록 쪽 나눔(넘치면 여기 숫자를 고침): 단축키 묶음 / 질문 / 용어
 KEY_SPLIT = [[0, 1, 2], [3, 4]]
-FAQ_SPLIT = [FAQ[:5], FAQ[5:]]
+FAQ_SPLIT = [FAQ[k:k + 5] for k in range(0, len(FAQ), 5)]
 appx_first = {}
 appx_first['keys'] = p; p += len(KEY_SPLIT)
 appx_first['faq'] = p; p += len(FAQ_SPLIT)
@@ -108,11 +120,11 @@ title_of.update({'keys': '마우스와 단축키', 'faq': '자주 묻는 질문'
 # 표지
 add('cover', f'''<div class="cover">
   <div class="cv-top">소방 공무원을 위한 업무 관리 프로그램</div>
-  <h1>업무 내비게이터<br><span>사용 설명서</span></h1>
-  <div class="cv-ver">v{esc(APP_VER)} · 2026. 10.</div>
+  <h1>{PRODUCT}<br><span>사용 설명서</span></h1>
+  <div class="cv-ver">v{esc(APP_VER)} · 2026. 11. · <b>{EDITION}</b></div>
   <div class="cv-shot">{shot_html("01_main", "첫 화면", "full", mark=False)}</div>
   <ul class="cv-pts"><li>업무를 <b>단계와 할 일</b> 체크리스트로</li><li>일하면서 <b>처리결과 · 업무팁 · 서식</b>을 쌓아</li><li>다음 담당자에게 <b>그대로 물려줍니다</b></li></ul>
-  <div class="cv-foot">설치 없이 · 서버 없이 · 이 PC 안에만 저장</div>
+  <div class="cv-foot">설치 없이 · 서버 없이 · 이 PC 안에만 저장{(' · AI 기능은 ' + AI_CH) if AI else ''}</div>
 </div>''', pid='cover')
 
 # 목차
@@ -154,7 +166,7 @@ add('front', f'''<h1 class="pt">이 설명서 보는 법</h1>
  <li>프로그램은 HTML 파일 하나입니다. <b>엣지</b>나 <b>크롬</b>으로 열면 바로 쓸 수 있고, 설치할 것이 없습니다.</li>
  <li>자료는 서버가 아니라 <b>이 PC의 브라우저 안</b>에만 저장됩니다. 늘 같은 브라우저로 여세요.</li>
  <li>사진은 프로그램 안에 들어 있는 <b>연습 업무</b>(가상 자료)로 찍었습니다. 「연습 업무 넣기」({ref("39_practice")})로 똑같이 따라 해 볼 수 있습니다.</li>
- <li>AI 기능은 이 설명서에서 다루지 않습니다.</li>
+ <li>{('이 설명서는 <b>AI 허용판</b>입니다. 오프라인판과 같은 내용에 AI 기능(' + AI_CH + ')을 더했습니다. 앞 장의 사진은 오프라인판 화면이라 AI 단추가 보이지 않는 곳이 있습니다.') if AI else '이 설명서는 <b>오프라인판</b>입니다. AI 기능은 다루지 않습니다(AI 허용판 설명서에 있음).'}</li>
 </ul>''', '처음에', 'howto')
 
 # 빠른 시작
@@ -217,7 +229,7 @@ used = made
 # ── HTML ──
 body = []
 for i, pg in enumerate(pages, 1):
-    head = '' if pg['kind'] == 'cover' else f'<div class="ph"><span>업무 내비게이터 사용 설명서</span><span>{esc(pg["chap"])}</span></div>'
+    head = '' if pg['kind'] == 'cover' else f'<div class="ph"><span>{PRODUCT} 사용 설명서{"" if AI else " · " + EDITION}</span><span>{esc(pg["chap"])}</span></div>'
     foot = '' if pg['kind'] == 'cover' else f'<div class="pf">{i}</div>'
     pid = f' id="p-{pg["id"]}"' if pg['id'] else ''
     body.append(f'<section class="pg pg-{pg["kind"]}"{pid}>{head}<div class="pb">{pg["body"]}</div>{foot}</section>')
@@ -315,10 +327,10 @@ kbd { display:inline-block; padding:0 1.4mm; border:.25mm solid #cbd5e1; border-
 '''
 page = f'''<!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>업무 내비게이터 사용 설명서</title>
+<title>{PRODUCT} 사용 설명서{"" if AI else " (" + EDITION + ")"}</title>
 <style>{CSS}</style></head><body>
 <div class="topbar"><a href="#p-toc">목차</a><a href="#p-quick">5분 만에 시작하기</a><a href="#p-faq">자주 묻는 질문</a></div>
 {''.join(body)}
 </body></html>'''
-open(os.path.join(out_dir, '업무내비게이터_사용설명서.html'), 'w', encoding='utf-8', newline='\r\n').write(page)
+open(os.path.join(out_dir, OUT_NAME), 'w', encoding='utf-8', newline='\r\n').write(page)
 print('pages', len(pages), 'features', len(feat_pages), 'images', len(used))
