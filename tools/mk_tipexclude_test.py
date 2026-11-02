@@ -18,7 +18,7 @@ S.append({"clickpt": 1, "wait": 2500})
 step("A [내보내기] → 묻지 않고 저장 · 알림에 예시·사진 개수와 [빼고 다시 저장]", "const f=window.__files[0];const p=JSON.parse(f.t);return '저장 수='+window.__files.length+' 파일='+f.n+' | 예시·사진 들어감='+tips(p)+' | 알림='+toast().slice(-80)+' | 단추='+!!act()")
 pt("const r=act().getBoundingClientRect();return JSON.stringify([r.left+r.width/2,r.top+r.height/2])")
 S.append({"clickpt": 1, "wait": 2500})
-step("B [예시·사진 빼고 다시 저장] → 두 번째 파일에는 예시·사진 없음", "const f=window.__files[1];const p=JSON.parse(f.t);const keep=Object.keys(p.attachmentsData||{}).length;"
+step("B [예시·사진 빼고 다시 저장] → 두 번째 파일에는 예시·사진 없음", "for(let k=0;k<60&&window.__files.length<2;k++)await W(250);const f=window.__files[1];const p=JSON.parse(f.t);const keep=Object.keys(p.attachmentsData||{}).length;"
      "return '저장 수='+window.__files.length+' | 예시·사진='+tips(p)+' | 서식·법령은 그대로='+(p.repoDocumentsData.files.length)+'/'+(p.lawLibraryData.files.length)+' | 업무팁 글은 그대로='+p.workflows[0].checklist.filter(i=>i.tip&&i.tip.content).length+' | 알림='+toast().slice(-40)+' | 또 단추='+!!act()")
 step("C 이 PC의 예시·사진은 그대로", "const k=Object.keys(app.checklistDetails).filter(k=>k.startsWith(buy().id+'-t-'));return '남은 예시='+k.reduce((n,x)=>n+(app.checklistDetails[x].attachments||[]).length,0)")
 step("D 예시·사진이 없는 업무는 단추 없음", "const rep=app.allData.workflows.find(w=>w.isPractice&&!w.isDeleted&&w.title.includes('월간'));await app.exportMultipleWorkflowPackages([rep.id]);await W(800);return '알림='+toast().slice(0,40)+' | 단추='+!!act()")

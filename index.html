@@ -5016,6 +5016,7 @@
         .rs-body { flex: 1; min-height: 0; overflow-y: auto; padding: 14px 20px; }
         .rs-foot { display: flex; align-items: center; justify-content: flex-end; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--border-light); }
         .rs-foot .rs-note { flex: 1; font-size: 0.76rem; color: var(--text-muted); }
+        .rs-dedup { font-weight: 600; color: #059669; }
         .rs-sec { margin-bottom: 14px; }
         .rs-lib-add { margin-left: 10px; font-weight: 600; }
         .rs-reopen { margin: 0 0 10px; padding: 7px 10px; border-radius: 7px; background: rgba(245,158,11,0.12); color: #92400e; font-size: 0.8rem; }
@@ -7957,6 +7958,7 @@
         const APP_RELEASE_DATE = '2026-10-14';
         const APP_RELEASE_NOTES = [
             { version: '1.5.7', date: '2026-10-14', notes: [
+                '(AI) AI 업무팁 중복 줄이기(AI로 채우기·AI 편집 세 칸): 단계 업무팁(단계 공통)에 이미 있는 줄 · 같은 단계 여러 할 일에 같은 줄은 프로그램이 걸러 단계에 한 번만 · 같은 근거 조문도 단계에 한 번 · 검토 화면에 「같은 내용 n줄 뺌 · n줄은 단계 공통으로」 · AI에게도 단계 공통 규칙과 줄 수(놓치기 쉬운 것 2줄·요령 3줄)를 알려 줌 · 「같은 뜻」 판단에서 숫자가 다르면 다른 줄(예전엔 「시행령 제25조」와 「제30조」를 같은 근거로 보고 빼던 것)',
                 '할 일 마감 알림: 켤 때 알림·왼쪽 「마감 임박」에 업무 이름 아래 「할 일 · 이름 외 n개」(마우스를 올리면 전부) · 업무 마감과 같은 날이어도 할 일이 묻히지 않음 · 누르면 그 할 일 줄까지 데려감 · 접힌 단계 줄에 그 안 할 일 마감 「할 일 D-1」',
                 '(AI) AI 길잡이 「법령·매뉴얼 점검」이 어디서 찾았는지 사실대로: 「연결한 자료 없음 · 법령·매뉴얼 전체에서 찾음」 / 「연결 자료 n개 + 전체에서」 · 연결 안 된 자료의 근거는 점선 + [＋ 자료 연결](한 번 누르면 이 업무 참고 자료, [실행 취소]) · 연결 안 된 자료는 더 꼭 맞는 조문만 보임',
                 '길잡이: 할 일 제목이 길면 「가」·⤢·✕ 단추가 창 밖으로 밀려 누를 수 없던 것 수정 — 긴 제목은 「…」로 줄고 마우스를 올리면 전체 제목',
@@ -18060,7 +18062,7 @@
                     ${lostList.length ? `<div class="rs-lost"><div class="rs-sec-t" style="color:#b91c1c;">새 체크리스트에 없는 원래 항목 ${lostList.length}개<small>고르면 사본 맨 끝에 그대로 넣습니다</small></div>${lostRows}</div>` : ''}
                     ${st.branches.length ? `<div class="aip-sub-head" style="border:none;padding-left:0;">건너뛰기 버튼 후보 ${st.branches.length}개<span>AI가 찾은 갈림길 — 처음부터 골라 둠 · 맞지 않으면 푸세요</span></div><div class="aip-list">${brs}</div>` : ''}
                     ${st.wantTips || st.wantBasis ? `<div class="aip-opts" style="border:none;padding-left:0;">${st.wantTips ? `<label><input type="checkbox" ${st.useTips ? 'checked' : ''} onchange="app._aiRs.useTips=this.checked;app._aiRsRender()"> 새 업무팁 넣기 (끄면 원래 업무팁 그대로)</label>` : ''}${st.wantBasis ? `<label><input type="checkbox" ${st.useBasis ? 'checked' : ''} onchange="app._aiRs.useBasis=this.checked;app._aiRsRender()"> 근거 넣기</label>` : ''}</div>` : ''}`;
-                foot.innerHTML = `<span class="rs-note">편집 중 체크리스트에 넣습니다 · 원래 항목의 서식·예시는 따라감 · [저장]해야 반영${st.docNote ? ` · ${esc(st.docNote)}` : ''}</span>
+                foot.innerHTML = `<span class="rs-note">편집 중 체크리스트에 넣습니다 · 원래 항목의 서식·예시는 따라감 · [저장]해야 반영${this._aiDedupNote(st.dedup) ? ` · <b class="rs-dedup">${this._aiDedupNote(st.dedup)}</b>` : ''}${st.docNote ? ` · ${esc(st.docNote)}` : ''}</span>
                     <button type="button" class="btn btn-secondary" onclick="app._aiRsClose()">버리기</button>
                     <button type="button" class="btn btn-secondary" onclick="app._aiRsStart()">다시 정리</button>
                     <button type="button" class="btn btn-primary" id="aiRsApplyBtn" onclick="app._aiRsApply()" ${st.sel.size ? '' : 'disabled'}>고른 것을 체크리스트에 넣기 (${st.sel.size + st.keepOld.size}줄${st.bsel.size ? ` · 건너뛰기 ${st.bsel.size}` : ''})</button>`;
@@ -18209,7 +18211,7 @@
                 body.innerHTML = `
                     ${idx.length ? `<div class="rs-col"><div class="rs-col-h">더할 내용 — 항목 ${idx.length}개<span>체크리스트 항목은 그대로 · 원래 업무팁은 지우지 않고 없는 것만 더함</span><button type="button" class="aip-link" onclick="app._aiRsKeepAll()">${idx.every(i => st.sel.has(i)) ? '모두 풀기' : '모두 고르기'}</button></div><div class="aip-list">${rows}</div></div>` : (st.wantTips || st.wantBasis ? '<div class="rs-empty">AI가 더할 업무팁·근거를 찾지 못했습니다.</div>' : '')}
                     ${st.branches.length ? `<div class="aip-sub-head" style="border:none;padding-left:0;">건너뛰기 버튼 추천 ${st.branches.length}개<span>AI가 찾은 갈림길 — 처음부터 골라 둠 · 맞지 않으면 푸세요</span></div><div class="aip-list">${brs}</div>` : (st.wantBranch ? '<div class="rs-empty">건너뛰기 버튼으로 할 만한 갈림길을 찾지 못했습니다.</div>' : '')}`;
-                foot.innerHTML = `<span class="rs-note">편집 중 체크리스트에 넣습니다 · [저장]해야 반영${st.docNote ? ` · ${esc(st.docNote)}` : ''}</span>
+                foot.innerHTML = `<span class="rs-note">편집 중 체크리스트에 넣습니다 · [저장]해야 반영${this._aiDedupNote(st.dedup) ? ` · <b class="rs-dedup">${this._aiDedupNote(st.dedup)}</b>` : ''}${st.docNote ? ` · ${esc(st.docNote)}` : ''}</span>
                     <button type="button" class="btn btn-secondary" onclick="app._aiRsClose()">버리기</button>
                     <button type="button" class="btn btn-secondary" onclick="app._aiRsStart()">다시 만들기</button>
                     <button type="button" class="btn btn-primary" id="aiRsApplyBtn" onclick="app._aiRsApply()" ${n ? '' : 'disabled'}>고른 것을 체크리스트에 넣기 (${[st.sel.size ? `업무팁·근거 ${st.sel.size}` : '', st.bsel.size ? `건너뛰기 ${st.bsel.size}` : ''].filter(Boolean).join(' · ') || 0})</button>`;
@@ -18268,7 +18270,7 @@
                 if (st.mode === 'keep') return this._aiRsPromptKeep(st);
                 if (st.mode === 'add') return this._aiRsPromptAdd(st);
                 if (st.locked) return this._aiRsPromptLocked(st);
-                const lines = st.old.map(o => `${o.oid} | ${o.indent ? '할 일' : '단계'} | ${o.text}${o.tip ? ` | 업무팁: ${this._aiTipNumbered(o.tip)}` : ''}${o.fmt.length ? ` | 서식: ${o.fmt.join(', ')}` : ''}`).join('\n');
+                const lines = st.old.map(o => `${o.oid} | ${o.indent ? '할 일' : '단계'} | ${o.text}${o.tip ? ` | ${o.indent ? '' : '단계 공통 '}업무팁: ${this._aiTipNumbered(o.tip)}` : ''}${o.fmt.length ? ` | 서식: ${o.fmt.join(', ')}` : ''}`).join('\n');
                 const hasFiles = st.files.some(f => f.on && f.kind !== 'none');
                 return `다음은 공무원 업무 체크리스트입니다. 지금 작성 방식(단계 → 그 단계에서 할 일)에 맞게 다시 정리해 주세요.
 [업무 제목] ${st.title}
@@ -18288,7 +18290,8 @@ ${this._aiStructRules()}
 ${st.wantTips ? `5. 업무팁(꼭 필요한 항목에만). 원래 업무팁([1] [2]… 번호가 붙은 줄)과 뜻이 같은 내용은 새로 쓰지 않습니다:
    - edits: 원래 줄을 더 정확하게 고칠 때만 [{"n":줄 번호,"text":"고친 글"}] (첫 번째 from 항목의 업무팁 기준)
    - warn: 원래 업무팁에 없는, 틀리면 문제가 되는 기한·요건·자주 하는 실수 (한 줄에 하나)
-   - tip: 원래 업무팁에 없는 하는 방법·요령 (짧게 1~3줄)` : '5. warn·tip·edits는 비웁니다.'}
+   - tip: 원래 업무팁에 없는 하는 방법·요령 (짧게 1~3줄)
+${this._aiNoDupRule()}` : '5. warn·tip·edits는 비웁니다.'}
 ${st.wantBasis ? `   - basis: 붙인 참고 자료에 실제로 있는 조문·지침만, 「문서 이름 제n조」처럼(문서 이름은 자료 이름 그대로). 자료에 없으면 빈 배열 — 지어내지 마세요.` : '   - basis는 비웁니다.'}
 ${st.wantBranch ? `6. 조건에 따라 어떤 항목을 하지 않아도 되는 갈림길이 분명할 때만 branches에 넣습니다. at = 판단하는 새 항목 번호, label = 짧은 조건 이름, skip = 그 조건이면 하지 않아도 되는 새 항목 번호들. 번호는 새 items 배열에서 0부터. 확실하지 않으면 빈 배열.` : '6. branches는 빈 배열.'}
 다음 JSON 형식으로만 응답하세요. 다른 글은 넣지 마세요:
@@ -18298,7 +18301,7 @@ ${st.wantBranch ? `6. 조건에 따라 어떤 항목을 하지 않아도 되는 
             _aiRsPromptLocked(st) {
                 const stages = st.old.filter(o => !o.indent);
                 const tasksOf = so => { const out = []; for (let j = st.old.indexOf(so) + 1; j < st.old.length && st.old[j].indent; j++) out.push(st.old[j]); return out; };
-                const line = o => `${o.oid} | ${o.indent ? '할 일' : '단계'} | ${o.text}${o.done ? ' (끝냄)' : ''}${o.tip ? ` | 업무팁: ${this._aiTipNumbered(o.tip)}` : ''}${o.fmt.length ? ` | 서식: ${o.fmt.join(', ')}` : ''}`;
+                const line = o => `${o.oid} | ${o.indent ? '할 일' : '단계'} | ${o.text}${o.done ? ' (끝냄)' : ''}${o.tip ? ` | ${o.indent ? '' : '단계 공통 '}업무팁: ${this._aiTipNumbered(o.tip)}` : ''}${o.fmt.length ? ` | 서식: ${o.fmt.join(', ')}` : ''}`;
                 const target = st.scope ? stages.filter(x => x.oid === st.scope) : stages;
                 const scopeName = st.scope ? (stages.find(x => x.oid === st.scope) || {}).text || '' : '';
                 const hasFiles = st.files.some(f => f.on && f.kind !== 'none');
@@ -18312,7 +18315,8 @@ ${this._aiStructRules()}
 1. 단계 이름·순서·개수는 바꾸지 않습니다. stages의 id에는 위 단계 번호(o…)를 그대로 씁니다.
 2. 각 단계의 tasks에 그 단계의 할 일을 순서대로 적습니다. 원래 할 일은 빠뜨리지 말고(끝낸 것은 이름을 거의 그대로), 여러 일이 묶였으면 나누고, 꼭 필요한 일이 빠졌으면 더합니다. from = 원래 할 일 번호(새로 더하면 빈 배열), change = 유지·수정·추가, note = 바꾼 까닭 한 줄(유지는 비움).
 3. 빼야 할 원래 할 일은 removed에 번호와 까닭. 되도록 빼지 말고 합치세요.
-${st.wantTips ? `4. 업무팁(꼭 필요한 곳에만, 단계 자체의 업무팁은 stages의 warn·tip·edits에). 원래 업무팁([1] [2]… 번호가 붙은 줄)과 뜻이 같은 내용은 새로 쓰지 않습니다. 원래 줄을 고칠 때만 edits [{"n":줄 번호,"text":"고친 글"}](첫 번째 from 항목 기준), 없는 내용만 warn(한 줄에 하나)·tip(1~3줄).` : '4. warn·tip·edits는 비웁니다.'}
+${st.wantTips ? `4. 업무팁(꼭 필요한 곳에만, 단계 자체의 업무팁은 stages의 warn·tip·edits에). 원래 업무팁([1] [2]… 번호가 붙은 줄)과 뜻이 같은 내용은 새로 쓰지 않습니다. 원래 줄을 고칠 때만 edits [{"n":줄 번호,"text":"고친 글"}](첫 번째 from 항목 기준), 없는 내용만 warn(한 줄에 하나)·tip(1~3줄).
+${this._aiNoDupRule()}` : '4. warn·tip·edits는 비웁니다.'}
 ${st.wantBasis ? '5. basis: 붙인 참고 자료에 실제로 있는 조문·지침만 「문서 이름 제n조」처럼. 없으면 빈 배열 — 지어내지 마세요.' : '5. basis는 비웁니다.'}
 ${st.wantBranch ? '6. 조건에 따라 어떤 할 일을 하지 않아도 되는 갈림길이 분명할 때만 branches에(at·skip은 원래 번호 o…만).' : '6. branches는 빈 배열.'}
 다음 JSON 형식으로만 응답하세요. 다른 글은 넣지 마세요:
@@ -18354,10 +18358,11 @@ ${st.wantBranch ? '6. 조건에 따라 어떤 할 일을 하지 않아도 되는
                     const skip = [...new Set(((b && b.skip) || []).map(x => idxOf(String(x))).filter(x => x >= 0 && x !== at))];
                     if (at >= 0 && label && skip.length) branches.push({ at, label, skip });
                 });
-                return { items, branches, removed, ok: !!data };
+                const dedup = this._aiTipDedupe(items, { oldTip: i => (items[i].from || []).map(o => (st.oldById.get(o) || {}).tip || '').join('\n') });
+                return { items, branches, removed, ok: !!data, dedup };
             }
             _aiRsPromptKeep(st) {
-                const lines = st.old.map(o => `${o.oid} | ${o.indent ? '할 일' : '단계'} | ${o.text}${o.tip ? ` | 지금 업무팁: ${this._aiTipNumbered(o.tip)}` : ''}${o.fmt.length ? ` | 서식: ${o.fmt.join(', ')}` : ''}`).join('\n');
+                const lines = st.old.map(o => `${o.oid} | ${o.indent ? '할 일' : '단계'} | ${o.text}${o.tip ? ` | ${o.indent ? '지금' : '단계 공통'} 업무팁: ${this._aiTipNumbered(o.tip)}` : ''}${o.fmt.length ? ` | 서식: ${o.fmt.join(', ')}` : ''}`).join('\n');
                 const want = [st.wantTips ? '업무팁(놓치기 쉬운 것·요령)' : '', st.wantBasis ? '근거' : '', st.wantBranch ? '건너뛰기 버튼 추천' : ''].filter(Boolean).join(' · ');
                 return `다음은 공무원 업무 체크리스트입니다. 체크리스트(항목 이름·순서·단계/할 일)는 바꾸지 말고, ${want}만 만들어 주세요.
 [업무 제목] ${st.title}
@@ -18365,7 +18370,8 @@ ${st.wantBranch ? '6. 조건에 따라 어떤 할 일을 하지 않아도 되는
 ${lines}
 【규칙】
 1. items에는 더할 것이 있는 항목만 넣고 id에 원래 번호(o0 …)를 적습니다. 이름은 적지 않습니다.
-${st.wantTips ? `2. warn: 틀리면 문제가 되는 기한·요건·자주 하는 실수(한 줄에 하나), tip: 하는 방법·요령(짧게 1~3줄). 지금 업무팁([1] [2]… 번호가 붙은 줄)과 뜻이 같은 내용은 되풀이하지 않습니다. 원래 줄을 더 정확하게 고칠 때만 edits [{"n":줄 번호,"text":"고친 글"}]. 꼭 필요한 항목에만.` : '2. warn·tip은 비웁니다.'}
+${st.wantTips ? `2. warn: 틀리면 문제가 되는 기한·요건·자주 하는 실수(한 줄에 하나), tip: 하는 방법·요령(짧게 1~3줄). 지금 업무팁([1] [2]… 번호가 붙은 줄)과 뜻이 같은 내용은 되풀이하지 않습니다. 원래 줄을 더 정확하게 고칠 때만 edits [{"n":줄 번호,"text":"고친 글"}]. 꼭 필요한 항목에만.
+${this._aiNoDupRule()}` : '2. warn·tip은 비웁니다.'}
 ${st.wantBasis ? `3. basis: 붙인 참고 자료에 실제로 있는 조문·지침만, 「문서 이름 제n조」처럼(문서 이름은 자료 이름 그대로). 자료에 없으면 빈 배열 — 지어내지 마세요.` : '3. basis는 비웁니다.'}
 ${st.wantBranch ? `4. 조건에 따라 어떤 항목을 하지 않아도 되는 갈림길이 분명할 때만 branches에 넣습니다. at = 판단하는 항목 번호(o…), label = 짧은 조건 이름, skip = 그 조건이면 하지 않아도 되는 항목 번호들(o…). 확실하지 않으면 빈 배열.` : '4. branches는 빈 배열.'}
 다음 JSON 형식으로만 응답하세요. 다른 글은 넣지 마세요:
@@ -18399,7 +18405,8 @@ ${st.wantBranch ? `4. 조건에 따라 어떤 항목을 하지 않아도 되는 
                     const skip = [...new Set(((b && b.skip) || []).map(x => pos.get(String(x))).filter(x => x != null && x !== at))];
                     if (at != null && label && skip.length) branches.push({ at, label, skip });
                 });
-                return { items, branches, removed: [], ok: !!data };
+                const dedup = this._aiTipDedupe(items, { oldTip: i => st.old[i].tip || '' });
+                return { items, branches, removed: [], ok: !!data, dedup };
             }
             _aiRsParse(response, st) {
                 if (st.mode === 'keep') return this._aiRsParseKeep(response, st);
@@ -18420,7 +18427,8 @@ ${st.wantBranch ? `4. 조건에 따라 어떤 항목을 하지 않아도 되는 
                     it.note = String(r.note || '').trim();
                 });
                 const removed = (data && Array.isArray(data.removed) ? data.removed : []).map(r => ({ oid: String(r && (r.id ?? r.oid)), reason: String((r && r.reason) || '').trim() })).filter(r => st.oldById.has(r.oid));
-                return { items: base.items, branches: base.branches, removed };
+                const items = base.items, dedup = this._aiTipDedupe(items, { oldTip: i => (items[i].from || []).map(o => (st.oldById.get(o) || {}).tip || '').join('\n') });
+                return { items, branches: base.branches, removed, dedup };
             }
             async _aiRsStart() {
                 const st = this._aiRs;
@@ -18588,7 +18596,7 @@ ${st.wantBranch ? `4. 조건에 따라 어떤 항목을 하지 않아도 되는 
 
             // ── 「빠진 할 일 더하기」: 원래 줄(이름·순서·업무팁·체크)은 하나도 바꾸지 않고, 새 할 일만 알맞은 자리에 끼워 넣음 ──
             _aiRsPromptAdd(st) {
-                const line = o => `${o.oid} | ${o.indent ? '할 일' : '단계'} | ${o.text}${o.done ? ' (끝냄)' : ''}${o.tip ? ` | 업무팁: ${o.tip.replace(/\n/g, ' / ')}` : ''}${o.fmt.length ? ` | 서식: ${o.fmt.join(', ')}` : ''}`;
+                const line = o => `${o.oid} | ${o.indent ? '할 일' : '단계'} | ${o.text}${o.done ? ' (끝냄)' : ''}${o.tip ? ` | ${o.indent ? '' : '단계 공통 '}업무팁: ${o.tip.replace(/\n/g, ' / ')}` : ''}${o.fmt.length ? ` | 서식: ${o.fmt.join(', ')}` : ''}`;
                 const scopeName = st.scope ? st.scopeName : '';
                 const hasFiles = st.files.some(f => f.on && f.kind !== 'none');
                 const hasTasks = st.old.some(o => o.indent);
@@ -18603,7 +18611,7 @@ ${this._aiStructRules()}
 2. after = 새 할 일 바로 앞에 올 원래 항목 번호(o…). 단계 번호를 적으면 그 단계의 첫 할 일이 됩니다. 새 단계는 만들지 않습니다.${st.scope ? ` after에는 「${scopeName}」 단계와 그 할 일의 번호만 씁니다.` : ''}
 3. 할 일 한 줄에는 따로 끝내고 따로 체크할 수 있는 일 하나만 씁니다.${hasTasks ? '' : ' (이 체크리스트는 단계만 있으므로 새 줄도 같은 높이로 들어갑니다)'}
 4. why: 왜 필요한지 한 줄(예: 「기준 자료 제7조의 검수 절차가 빠짐」).
-${st.wantTips ? '5. 새 할 일의 업무팁(꼭 필요할 때만): warn = 틀리면 문제가 되는 기한·요건(한 줄에 하나), tip = 하는 요령(짧게 1~3줄).' : '5. warn·tip은 비웁니다.'}
+${st.wantTips ? `5. 새 할 일의 업무팁(꼭 필요할 때만): warn = 틀리면 문제가 되는 기한·요건(한 줄에 하나), tip = 하는 요령(짧게 1~3줄).\n${this._aiNoDupRule(false)}` : '5. warn·tip은 비웁니다.'}
 ${st.wantBasis ? '6. basis: 붙인 참고 자료에 실제로 있는 조문·지침만 「문서 이름 제n조」처럼. 없으면 빈 배열 — 지어내지 마세요.' : '6. basis는 비웁니다.'}
 ${st.wantBranch ? `7. 조건에 따라 어떤 할 일을 하지 않아도 되는 갈림길이 분명할 때만 branches에 넣습니다. at = 판단하는 항목 번호, label = 짧은 조건 이름, skip = 그 조건이면 하지 않아도 되는 할 일 번호들. 번호는 원래 항목(o…) 또는 새 할 일의 id(n1, n2 …). 「(끝냄)」 항목은 skip에 넣지 않습니다.${st.scope ? ` 「${scopeName}」 단계 안의 번호만 씁니다.` : ''} 확실하지 않으면 빈 배열.\n` : ''}다음 JSON 형식으로만 응답하세요. 다른 글은 넣지 마세요:
 ${st.wantBranch ? '{"adds":[{"id":"n1","after":"o2","text":"","why":"","warn":[],"tip":"","basis":[],"src":""}],"branches":[{"at":"o2","label":"","skip":["n1"]}]}' : '{"adds":[{"after":"o2","text":"","why":"","warn":[],"tip":"","basis":[],"src":""}]}'}`.trim();
@@ -18657,7 +18665,8 @@ ${st.wantBranch ? '{"adds":[{"id":"n1","after":"o2","text":"","why":"","warn":[]
                     const skip = [...new Set(((b && b.skip) || []).map(idxOf).filter(x => x >= 0 && x !== at && !doneAt(x) && scopeOk(x)))];
                     if (at >= 0 && scopeOk(at) && label && skip.length) branches.push({ at, label, skip });
                 });
-                return { items, branches, removed: [], ok: !!data };
+                const dedup = this._aiTipDedupe(items, { oldTip: i => items[i].fixed ? (st.oldById.get(items[i].from[0]) || {}).tip || '' : '', hoist: () => false });
+                return { items, branches, removed: [], ok: !!data, dedup };
             }
             _aiRsRenderAdd(body, foot) {
                 const st = this._aiRs, esc = v => this.escapeHtml(String(v ?? ''));
@@ -18692,7 +18701,7 @@ ${st.wantBranch ? '{"adds":[{"id":"n1","after":"o2","text":"","why":"","warn":[]
                     ${nNew ? `<div class="rs-col"><div class="rs-col-h">새 할 일 ${nNew}개<span>마우스를 올리면 근거 · 이름은 두 번 눌러 고치기</span><button type="button" class="aip-link" onclick="app._aiRsAddAll()">${allOn ? '모두 풀기' : '모두 고르기'}</button></div><div class="aip-list">${rows}</div></div>`
                         : '<div class="rs-empty">AI가 빠진 할 일을 찾지 못했습니다 — 체크리스트가 이미 충분하거나, 기준 자료를 넣으면 더 잘 찾습니다.</div>'}
                     ${st.branches.length ? `<div class="aip-sub-head" style="border:none;padding-left:0;">건너뛰기 버튼 추천 ${st.branches.length}개<span>AI가 찾은 갈림길 — 처음부터 골라 둠 · 맞지 않으면 푸세요</span></div><div class="aip-list">${brs}</div>` : ''}`;
-                foot.innerHTML = `<span class="rs-note">편집 중 체크리스트에 넣습니다 · [저장]해야 반영${st.docNote ? ` · ${esc(st.docNote)}` : ''}</span>
+                foot.innerHTML = `<span class="rs-note">편집 중 체크리스트에 넣습니다 · [저장]해야 반영${this._aiDedupNote(st.dedup) ? ` · <b class="rs-dedup">${this._aiDedupNote(st.dedup)}</b>` : ''}${st.docNote ? ` · ${esc(st.docNote)}` : ''}</span>
                     <button type="button" class="btn btn-secondary" onclick="app._aiRsClose()">버리기</button>
                     <button type="button" class="btn btn-secondary" onclick="app._aiRsStart()">다시 찾기</button>
                     <button type="button" class="btn btn-primary" id="aiRsApplyBtn" onclick="app._aiRsApply()" ${st.sel.size || st.bsel.size ? '' : 'disabled'}>고른 것 넣기 (${nPick})</button>`;
@@ -18828,6 +18837,7 @@ ${st.wantBranch ? '{"adds":[{"id":"n1","after":"o2","text":"","why":"","warn":[]
                     const nz = t => String(t || '').replace(/\s+/g, '');
                     const have = new Set(this._aiFillExistingTexts().map(nz));
                     parsed.items.forEach(it => { it.dup = have.has(nz(it.text)); });
+                    parsed.dedup = this._aiTipDedupe(parsed.items, { hoist: i => !parsed.items[i].dup });   // 같은 업무팁은 한 번만 · 여러 할 일에 같은 줄은 단계 공통으로
                     if (!parsed.items.length) {
                         this.showToast('error', '⚠️', 'AI가 체크리스트를 만들지 못했습니다. 업무 내용을 더 자세히 적어 보세요.');
                         return;
@@ -18874,6 +18884,7 @@ ${this._aiStructRules()}
 4. 업무팁은 꼭 필요한 항목에만 씁니다(없으면 비움).
    - warn: 틀리면 문제가 되는 기한·요건·자주 하는 실수 (한 줄에 하나)
    - tip: 하는 방법·요령 (짧게 1~3줄)
+${this._aiNoDupRule()}
    - basis: 넣은 자료에 실제로 있는 조문·지침만, 「문서 이름 제n조」처럼(문서 이름은 위 자료 이름 그대로). 파일로 붙은 PDF는 쪽 번호까지(예: "지방계약법 시행령 제30조 (3쪽)"), 글로 붙인 문서는 문서 이름과 조문만. 문서에 없으면 빈 배열 — 지어내지 마세요.
 5. 조건에 따라 어떤 항목을 하지 않아도 되는 갈림길이 수기 내용이나 문서에 분명히 있을 때만 branches에 넣습니다.
    at = 그 판단을 하는 항목 번호, label = 짧은 조건 이름(예: "2천만원 이하"), skip = 그 조건이면 하지 않아도 되는 항목 번호들.
@@ -18988,7 +18999,7 @@ ${this._aiStructRules()}
                 const nTip = st.items.filter((it, i) => st.sel.has(i) && it.tipText).length;
                 const existing = this._aiFillExistingRows();
                 box.innerHTML = `
-                    <div class="aip-head"><b>AI가 만든 절차 ${st.items.length}개</b><span>${st.baseName ? `기준 자료 「${esc(st.baseName)}」${st.supCount ? ` · 보충 자료 ${st.supCount}개${st.nSup ? `(할 일 ${st.nSup}개 보탬)` : ''}` : ''} · ` : ''}${st.packNote ? esc(st.packNote) + ' · ' : ''}이름은 두 번 눌러 고치고 단계마다 [↻ 다시] · 넣을 것을 고르세요 · 넣은 뒤에도 고칠 수 있고 [되돌리기]가 됩니다</span><button type="button" class="aip-link" onclick="app._aiFillAll()">${st.sel.size === st.items.length ? '모두 풀기' : '모두 고르기'}</button></div>
+                    <div class="aip-head"><b>AI가 만든 절차 ${st.items.length}개</b><span>${this._aiDedupNote(st.dedup) ? `<b class="rs-dedup">${this._aiDedupNote(st.dedup)}</b> · ` : ''}${st.baseName ? `기준 자료 「${esc(st.baseName)}」${st.supCount ? ` · 보충 자료 ${st.supCount}개${st.nSup ? `(할 일 ${st.nSup}개 보탬)` : ''}` : ''} · ` : ''}${st.packNote ? esc(st.packNote) + ' · ' : ''}이름은 두 번 눌러 고치고 단계마다 [↻ 다시] · 넣을 것을 고르세요 · 넣은 뒤에도 고칠 수 있고 [되돌리기]가 됩니다</span><button type="button" class="aip-link" onclick="app._aiFillAll()">${st.sel.size === st.items.length ? '모두 풀기' : '모두 고르기'}</button></div>
                     <div class="aip-list">${rows}</div>
                     ${st.branches.length ? `<div class="aip-sub-head">건너뛰기 버튼 후보 ${st.branches.length}개<span>AI가 찾은 갈림길 — 처음부터 골라 둠 · 맞지 않으면 푸세요</span></div><div class="aip-list">${brs}</div>` : ''}
                     <div class="aip-opts">
@@ -47133,6 +47144,9 @@ ${this._aiPracticeExample()}`;
             };
             const A = nz(a), B = nz(b);
             if (!A || !B) return false;
+            // 숫자(기한·금액·조문 번호)가 다르면 다른 줄 — 「시행령 제25조」와 「제30조」를 앞부분이 같다고 한 줄로 보던 것 (쪽 번호는 빼고 봄)
+            const num = t => (String(t || '').replace(/\(\s*\d+\s*쪽\s*\)/g, '').match(/\d+/g) || []).join(',');
+            if (num(a) !== num(b)) return false;
             if (A === B || (Math.min(A.length, B.length) >= 4 && (A.includes(B) || B.includes(A)))) return true;
             let k = 0; while (k < A.length && k < B.length && A[k] === B[k]) k++;
             if (k >= 4 && k >= 0.7 * Math.min(A.length, B.length)) return true;
@@ -47141,6 +47155,75 @@ ${this._aiPracticeExample()}`;
             const x = bg(A), y = bg(B);
             let inter = 0; x.forEach((n, g) => { inter += Math.min(n, y.get(g) || 0); });
             return 2 * inter / (A.length - 1 + B.length - 1) >= 0.6;
+        };
+        // 중복 거르기용 같은 줄 — 뜻이 같아도 숫자(기한·금액·조문 번호)가 다르면 다른 줄 · 근거는 조문 이름이 같을 때만(쪽 번호는 빼고 봄)
+        WorkflowManager.prototype._tipDupLine = function(a, b, basis) {
+            if (!basis) return this._tipSame(a, b);   // _tipSame도 숫자가 다르면 다른 줄
+            const page = /\(\s*\d+\s*쪽\s*\)/g;
+            const num = t => (String(t || '').replace(page, '').match(/\d+/g) || []).join(',');
+            if (num(a) !== num(b)) return false;
+            const nz = t => String(t || '').replace(/^\s*(?:근거\s*[:：]|⚖️?)\s*/, '').replace(page, '').replace(/[\s.,·:;()「」“”"'~\-–\[\]]/g, '');
+            const A = nz(a), B = nz(b);
+            return !!A && !!B && (A === B || A.includes(B) || B.includes(A));
+        };
+        // AI가 쓴 업무팁 중복 거르기 — 단계 업무팁은 그 단계 할 일 모두에 보이므로(단계 공통)
+        //  ① 할 일의 새 줄이 단계 업무팁(원래·새것)과 같으면 뺌 · 한 줄 안에서 놓치기 쉬운 것과 같은 요령 줄도 뺌
+        //  ② 같은 단계의 할 일 2개 이상(원래 업무팁 포함)에 같은 새 줄이 있으면 단계에 한 번만 넣고 할 일에서는 뺌
+        //     단계에 넣을 수 없는 화면(빠진 할 일 더하기 — 원래 줄은 손대지 않음)은 처음 한 번만 남김
+        // items: [{indent, warn[], tip, basis[], src}] · oldTip(i): 그 줄의 원래 업무팁 · hoist(i): 단계 i에 모아도 되는지
+        // 보충 자료 때문에 더한 할 일의 출처(src) 근거는 그 할 일에 둠 · 돌려줌 {drop: 뺀 줄, moved: 단계 공통으로 모은 줄}
+        WorkflowManager.prototype._aiTipDedupe = function(items, { oldTip = () => '', hoist = () => true } = {}) {
+            let drop = 0, moved = 0;
+            const CATS = ['warn', 'tip', 'basis'];
+            const get = (it, c) => c === 'tip' ? String(it.tip || '').split('\n').map(x => x.trim()).filter(Boolean) : (it[c] || []);
+            const put = (it, c, arr) => { if (c === 'tip') it.tip = arr.join('\n'); else it[c] = arr; };
+            const filt = (it, c, keep) => { const a = get(it, c), b = a.filter(keep); if (b.length !== a.length) put(it, c, b); return a.length - b.length; };
+            const eq = c => (a, b) => this._tipDupLine(a, b, c === 'basis');
+            const isSrc = (it, c, l) => c === 'basis' && !!it.src && this._tipDupLine(l, it.src, true);
+            const oldOf = i => { const x = splitTipSections(oldTip(i) || ''); return { txt: [...x.warn, ...String(x.body || '').split('\n').map(y => y.trim()).filter(Boolean)], basis: x.basis }; };
+            const oldL = (i, c) => oldOf(i)[c === 'basis' ? 'basis' : 'txt'];
+            const pool = (i, c) => c === 'basis' ? [...get(items[i], 'basis'), ...oldL(i, c)] : [...get(items[i], 'warn'), ...get(items[i], 'tip'), ...oldL(i, c)];
+            // 한 줄 안: 같은 줄 두 번 · 놓치기 쉬운 것과 같은 요령 줄
+            items.forEach(it => {
+                CATS.forEach(c => { const seen = []; drop += filt(it, c, l => { if (seen.some(x => eq(c)(x, l))) return false; seen.push(l); return true; }); });
+                drop += filt(it, 'tip', l => !get(it, 'warn').some(w => eq('tip')(w, l)));
+            });
+            const groups = []; let g = null;
+            items.forEach((it, i) => { if (!it.indent) groups.push(g = { s: i, t: [] }); else { if (!g) groups.push(g = { s: -1, t: [] }); g.t.push(i); } });
+            groups.forEach(({ s, t }) => {
+                if (!t.length) return;
+                // ① 단계 업무팁에 이미 있는 줄
+                if (s >= 0) t.forEach(i => CATS.forEach(c => { const have = pool(s, c); drop += filt(items[i], c, l => isSrc(items[i], c, l) || !have.some(x => eq(c)(x, l))); }));
+                // ② 할 일끼리 같은 줄
+                const up = s >= 0 && hoist(s);
+                CATS.forEach(c => {
+                    const cand = [];
+                    t.forEach(i => get(items[i], c).forEach(l => { if (!isSrc(items[i], c, l) && !cand.some(x => eq(c)(x, l))) cand.push(l); }));
+                    cand.forEach(l => {
+                        const has = (i, arr) => arr.some(x => eq(c)(x, l));
+                        const whoNew = t.filter(i => get(items[i], c).some(x => !isSrc(items[i], c, x) && eq(c)(x, l)));
+                        const whoOld = t.filter(i => !whoNew.includes(i) && has(i, oldL(i, c)));
+                        if (whoNew.length + whoOld.length < 2) return;
+                        const keep = up ? [] : (whoOld.length ? [] : [whoNew[0]]);
+                        whoNew.filter(i => !keep.includes(i)).forEach(i => filt(items[i], c, x => isSrc(items[i], c, x) || !eq(c)(x, l)));
+                        if (up) { if (!has(s, pool(s, c))) put(items[s], c, [...get(items[s], c), l]); moved++; }
+                        else drop += whoNew.length - keep.length;
+                    });
+                });
+            });
+            items.forEach(it => { if ('tipText' in it) it.tipText = this._tip3Combine(it.warn.join('\n'), it.tip, it.basis.join('\n')); });
+            return { drop, moved };
+        };
+        WorkflowManager.prototype._aiDedupNote = function(d) {
+            if (!d) return '';
+            return [d.drop ? `같은 내용 ${d.drop}줄 뺌` : '', d.moved ? `여러 할 일에 같은 ${d.moved}줄은 단계 공통으로` : ''].filter(Boolean).join(' · ');
+        };
+        WorkflowManager.prototype._aiDedupAdd = function(a, b) { return { drop: ((a && a.drop) || 0) + ((b && b.drop) || 0), moved: ((a && a.moved) || 0) + ((b && b.moved) || 0) }; };
+        // AI에 보내는 중복 규칙 — canStage: 단계 업무팁에도 쓸 수 있는 화면
+        WorkflowManager.prototype._aiNoDupRule = function(canStage = true) {
+            return canStage
+                ? '   - 단계(indent 0)의 업무팁은 그 단계 할 일 모두에 함께 보입니다(단계 공통). 같은 단계 여러 할 일에 해당하는 내용·근거는 단계에 한 번만 쓰고 할 일에는 되풀이하지 않습니다. 단계 업무팁·다른 할 일 업무팁과 같은 뜻도 다시 쓰지 않습니다.\n   - 항목 하나에 warn은 2줄, tip은 3줄까지.'
+                : '   - 새 할 일에는 그 단계의 「단계 공통 업무팁」(그 단계 할 일 모두에 보임)·다른 할 일 업무팁과 같은 뜻을 다시 쓰지 않습니다. warn은 2줄, tip은 3줄까지.';
         };
         // AI 답의 edits([{n, text}]) 읽기
         WorkflowManager.prototype._aiEditsOf = function(v) {
@@ -47240,7 +47323,7 @@ ${packText || ''}
 ${this._aiStructRules()}
 【규칙】
 1. 이 단계 이름에 맞는 할 일을 순서대로 2~6개. 지금 할 일 중 좋은 것은 살리고, 묶인 일은 나누고, 빠진 일은 더합니다.${withFrom ? '\n2. from = 바탕이 된 지금 할 일의 괄호 번호(o…), 새로 만든 할 일이면 빈 배열.' : ''}
-3. ${wantTips ? 'warn(틀리면 문제가 되는 기한·요건, 한 줄에 하나)·tip(요령 1~3줄)은 꼭 필요한 할 일에만.' : 'warn·tip은 비웁니다.'} ${wantBasis ? 'basis는 붙인 자료에 실제로 있는 조문만 「문서 이름 제n조」처럼.' : 'basis는 비웁니다.'} 보충 자료 때문에 더한 할 일은 src에 「문서 이름 제n조」.
+3. ${wantTips ? 'warn(틀리면 문제가 되는 기한·요건, 한 줄에 하나, 2줄까지)·tip(요령 1~3줄)은 꼭 필요한 할 일에만. 여러 할 일에 같은 내용을 되풀이하지 않습니다.' : 'warn·tip은 비웁니다.'} ${wantBasis ? 'basis는 붙인 자료에 실제로 있는 조문만 「문서 이름 제n조」처럼.' : 'basis는 비웁니다.'} 보충 자료 때문에 더한 할 일은 src에 「문서 이름 제n조」.
 다음 JSON 형식으로만 응답하세요:
 {"tasks":[{"text":"","from":[],"warn":[],"tip":"","basis":[],"src":""}]}`.trim();
         };
@@ -47308,8 +47391,9 @@ ${this._aiStructRules()}
                     return { text: String(t.text).trim(), indent: 1, warn, tip, basis, src: String(t.src || '').trim(), edits: [], tipText: this._tip3Combine(warn.join('\n'), tip, basis.join('\n')) };
                 });
                 if (!tasks.length) { this.showToast('error', '⚠️', 'AI가 할 일을 만들지 못했습니다. 다시 해 보세요.'); return; }
-                if (st.srcs) tasks.forEach(t => { t.bmarks = t.basis.map(l => this._aiBasisCheck(l, st.srcs)); });
                 this._aiReplaceStageTasks(st, i, tasks);
+                st.dedup = this._aiDedupAdd(st.dedup, this._aiTipDedupe(st.items, { hoist: k => !st.items[k].dup }));
+                if (st.srcs) st.items.forEach(t => { t.bmarks = t.basis.map(l => this._aiBasisCheck(l, st.srcs)); });
                 this.showToast('success', '↻', `「${st.items[i].text}」 단계의 할 일을 다시 만들었습니다 (${tasks.length}개)`);
             } catch (e) { this.showToast('error', '❌', 'AI 생성 실패: ' + e.message); }
             finally { if (this._aiFillState === st) { st.redoing = null; this._aiFillPreviewRender(); } }
@@ -47334,12 +47418,13 @@ ${this._aiStructRules()}
                     return { text: String(t.text).trim(), indent: 1, warn: L(t.warn), tip: String(t.tip || '').trim(), basis: L(t.basis), src: String(t.src || '').trim(), edits: [], from, change: from.length ? '수정' : '추가', note: '단계 할 일 다시 만듦' };
                 });
                 if (!tasks.length) { this.showToast('error', '⚠️', 'AI가 할 일을 만들지 못했습니다. 다시 해 보세요.'); return; }
-                if (st.srcs) tasks.forEach(t => { t.bmarks = t.basis.map(l => this._aiBasisCheck(l, st.srcs)); });
                 // 이 단계에 있던 원래 할 일 중 새 답이 빠뜨린 것은 그 단계 안에 그대로
                 const used = new Set(tasks.flatMap(t => t.from));
                 const before = [...new Set(cur.flatMap(c => c.from || []))];
                 before.filter(o => !used.has(o) && st.oldById.has(o)).forEach(o => { const x = st.oldById.get(o); tasks.push({ text: x.text, indent: 1, from: [o], change: '유지', note: 'AI가 다루지 않은 원래 할 일 — 그대로 둠', warn: [], tip: '', basis: [], edits: [], src: '' }); });
                 this._aiReplaceStageTasks(st, i, tasks);
+                st.dedup = this._aiDedupAdd(st.dedup, this._aiTipDedupe(st.items, { oldTip: k => (st.items[k].from || []).map(o => (st.oldById.get(o) || {}).tip || '').join('\n') }));
+                if (st.srcs) st.items.forEach(t => { t.bmarks = t.basis.map(l => this._aiBasisCheck(l, st.srcs)); });
                 this.showToast('success', '↻', `「${st.items[i].text}」 단계의 할 일을 다시 만들었습니다 (${tasks.length}개)`);
             } catch (e) { this.showToast('error', '❌', 'AI 정리 실패: ' + e.message); }
             finally { if (this._aiRs === st) { st.redoing = null; this._aiRsRender(); } }

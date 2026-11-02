@@ -21,7 +21,7 @@ os.makedirs(os.path.join(here, '_ra'), exist_ok=True)
 
 # (이름, 대본 만들기 [파일, 인자...], 앱, 추가 환경)
 T = []
-def cdp(name, gen, app=IDX, env=None, timeout=1500): T.append(('cdp3', name, gen, app, env or {}, timeout))
+def cdp(name, gen, app=IDX, env=None, timeout=1500, steps='steps3.json'): T.append(('cdp3', name, gen, app, env or {}, timeout, steps))   # steps: 대본이 쓰는 파일
 cdp('전체 기능(16부)', ['mk_full_test.py', 'all'], timeout=2700)
 cdp('추천 1~4', ['mk_reco_test.py'])
 cdp('왕복(새로 고침·되돌리기·내보내기·백업)', ['mk_roundtrip_test.py'])
@@ -35,9 +35,15 @@ if not QUICK:
     for t in ['read', 'guideback', 'tabs', 'law', 'aiedit', 'aifill']:
         cdp(t + ' (배포판: AI 숨김)', [f'mk_{t}_test.py', 'locked'])
     # AI 허용판(가짜 AI)
-    for t in ['aifill', 'aifill2', 'docs', 'law', 'read', 'guideback', 'tabs', 'aisrc', 'aiedit', 'split', 'netlock', 'livelaw', 'aiask', 'due', 'aibranch']:
+    for t in ['aifill', 'aifill2', 'docs', 'law', 'read', 'guideback', 'tabs', 'aisrc', 'aiedit', 'split', 'netlock', 'livelaw', 'aiask', 'due', 'aibranch', 'dedup']:
         cdp(t + ' (AI)', [f'mk_{t}_test.py'], app=AIF)
     cdp('왕복 (AI)', ['mk_roundtrip_test.py', 'ai'], app=AIF)
+    # 따로 대본 파일을 쓰는 시험 · 2026-11-02 run_all에 보탬
+    for t in ['editsel', 'live', 'repeat']:
+        cdp(t, [f'mk_{t}_test.py'], steps={'live': 'steps_live.json', 'repeat': 'steps_repeat.json'}.get(t, 'steps3.json'))
+    for t in ['addmode', 'aiplus', 'models', 'livetts', 'quota', 'stream', 'partner']:
+        cdp(t + ' (AI)', [f'mk_{t}_test.py'], app=AIF, steps='steps_partner.json' if t == 'partner' else 'steps3.json')
+    cdp('livetts (배포판: 웹소켓 막힘)', ['mk_livetts_test.py', 'locked'])
 if MATRIX:
     cdp('전체 기능 · 노트북 1366×768', ['mk_full_test.py', 'all'], env={'VW': '1366', 'VH': '768'}, timeout=2700)
     cdp('전체 기능 · 다크 모드', ['mk_full_test.py', 'all'], env={'DARK': '1'}, timeout=2700)
@@ -64,19 +70,19 @@ def judge(out, rc, timed_out):
     sc = [l for l in out.splitlines() if l.startswith('SELFCHECK')]
     logs = []
     m = re.search(r'^LOGS[^:]*:(.*)', out, re.M | re.S)
-    if m: logs = [l for l in m.group(1).splitlines() if l.strip() and ('EXC' in l or 'ERR' in l) and 'favicon' not in l and not re.search(r'시험 오류|시험 거부|외부 통신 막음|시험: 외부 통신', l)]
+    if m: logs = [l for l in m.group(1).splitlines() if l.strip() and ('EXC' in l or 'ERR' in l) and 'favicon' not in l and not re.search(r'시험 오류|시험 거부|외부 통신 막음|시험: 외부 통신|AI 응답 오류: Error: 답(이 1분 동안 오지 않아|을 받는 중에 30초 동안 끊겼)', l)]
     crash = rc != 0 or timed_out or ('LOGS' not in out and 'MONKEY 결과' not in out and 'OLDFILES 결과' not in out)
     problems = errs + bad + sc + logs + (['실행기가 끝까지 가지 못함(비정상 종료·시간 초과)' + (' · ' + out.strip().splitlines()[-1][:200] if out.strip() else '')] if crash else [])
     return steps, problems
 
 def run_cdp(t, slot):
-    _, name, gen, app, env, timeout = t
+    _, name, gen, app, env, timeout, stf = t
     sf = f'_ra/{re.sub(r"[^0-9A-Za-z가-힣]+", "_", name)}.json'
     with gen_lock:
         g = subprocess.run([sys.executable, gen[0], *gen[1:]], cwd=here, capture_output=True, text=True, encoding='utf-8', errors='replace')
         if g.returncode != 0:
             return (name, 0, ['대본 만들기 실패: ' + (g.stderr or g.stdout)[-300:]], 0)
-        shutil.copyfile(os.path.join(here, 'steps3.json'), os.path.join(here, sf))
+        shutil.copyfile(os.path.join(here, stf), os.path.join(here, sf))
     e = dict(os.environ, SELFCHECK='1', STEPS=sf, CDP_PORT='auto', CDP_PROF=f'chrome-ra-{slot}', **env)
     t0 = time.time(); to = False
     try:

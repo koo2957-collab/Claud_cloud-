@@ -1,7 +1,7 @@
 # 참고 자료 형식 넓히기 시험 대본 → steps3.json  (AI 허용판 `ai_test .html`로 실행, 가짜 AI가 받은 글·파일을 기록)
 # AI로 다시 정리: 연결된 DOCX·HWPX는 「글만 읽음」, PDF는 「파일 그대로」, 예전 HWP는 「못 읽음」(흐림·까닭) → 글은 요청에 붙고 파일은 PDF만
 # AI로 체크리스트 채우기: DOCX·HWPX 첨부 가능, HWP는 까닭 알림 → 글로 붙여 보냄
-# 준비: tools/_tmp_docs/ 에 「징계 규정.hwpx」「옛 규정.hwp」(파이썬으로 만듦), tools/practice/ 의 DOCX·PDF 사용
+# 준비: tools/_tmp_docs/ 에 「징계 규정.hwpx」「옛 규정.hwp」(파이썬으로 만듦), 「각서(수의계약 배제사유).docx」도 만듦, tools/practice/ 의 PDF 사용
 # 실행: (tools 폴더에서) python mk_docs_test.py && node cdp3.mjs "<저장소>/ai_test .html"
 import json, os
 HERE = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/')
@@ -11,8 +11,13 @@ os.makedirs(HERE + '/_tmp_docs', exist_ok=True)
 with zipfile.ZipFile(HERE + '/_tmp_docs/징계 규정.hwpx', 'w', zipfile.ZIP_DEFLATED) as z:
     z.writestr(zipfile.ZipInfo('mimetype'), 'application/hwp+zip')
     z.writestr('Contents/section0.xml', '<?xml version="1.0" encoding="UTF-8"?><hs:sec xmlns:hs="http://www.hancom.co.kr/hwpml/2011/section" xmlns:hp="http://www.hancom.co.kr/hwpml/2011/paragraph"><hp:p><hp:run><hp:t>제12조(진술 기회) 진술 기회는 </hp:t><hp:t>10일 이상 주어야 한다.</hp:t></hp:run></hp:p><hp:p><hp:run><hp:tbl><hp:tr><hp:tc><hp:subList><hp:p><hp:run><hp:t>표 안 글: 출석 통지 5일 전</hp:t></hp:run></hp:p></hp:subList></hp:tc></hp:tr></hp:tbl></hp:run></hp:p></hs:sec>')
+# DOCX도 여기서 만듦 (연습 서식이 HWPX로 바뀌어 practice/의 .docx가 없어짐)
+with zipfile.ZipFile(HERE + '/_tmp_docs/각서(수의계약 배제사유).docx', 'w', zipfile.ZIP_DEFLATED) as z:
+    z.writestr('[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>')
+    z.writestr('_rels/.rels', '<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>')
+    z.writestr('word/document.xml', '<?xml version="1.0" encoding="UTF-8"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p><w:r><w:t>각서 — 징계 절차에서 진술 기회를 포기한다는 각서입니다.</w:t></w:r></w:p><w:p><w:r><w:t>징계 접수 뒤 진술 기회 부여와 출석 통지 절차를 따릅니다.</w:t></w:r></w:p></w:body></w:document>')
 open(HERE + '/_tmp_docs/옛 규정.hwp', 'wb').write(bytes.fromhex('d0cf11e0a1b11ae1') + bytes(120))
-FILES = [(HERE + '/practice/각서(수의계약 배제사유).docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'),
+FILES = [(HERE + '/_tmp_docs/각서(수의계약 배제사유).docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'),
          (HERE + '/_tmp_docs/징계 규정.hwpx', ''),
          (HERE + '/_tmp_docs/옛 규정.hwp', ''),
          (HERE + '/practice/지방계약법 시행령(2026.6.3. 시행).pdf', 'application/pdf')]
@@ -34,12 +39,12 @@ step("준비: 업무 + 참고 자료 4개(DOCX·HWPX·HWP·PDF)를 법령·매�
      "return '연결='+ids.length+' | HWPX 글='+JSON.stringify(hw)+' | DOCX 글 앞='+JSON.stringify((dx||'').slice(0,30))+' | HWP 글='+old")
 step("A AI로 다시 정리 창: 형식 표시", "await app.openAiRestructure(ID);await W(500);const rows=[...document.querySelectorAll('#aiRsModal .rs-sec')[0].querySelectorAll('label')];return rows.map(l=>l.textContent.replace(/\\s+/g,' ').trim()+(l.querySelector('input').disabled?'(흐림)':l.querySelector('input').checked?'☑':'☐')).join(' / ')")
 S.append({"shot": "docs_setup.png"})
-step("B 정리 시작 → 글은 요청에, 파일은 PDF만", STUB + "await app._aiRsStart();await W(400);const c=window.__calls[0];return 'AI에 보낸 파일='+JSON.stringify(c.f)+' | 요청 글에 DOCX='+c.p.includes('### 문서: 각서(수의계약 배제사유).docx')+' HWPX='+c.p.includes('10일 이상 주어야 한다')+' 표 안 글='+c.p.includes('출석 통지 5일 전')+' HWP='+c.p.includes('옛 규정.hwp')+' | 근거 규칙(조문)='+c.p.includes('문서 이름과 조문만')+' | 비교 화면='+!!document.querySelector('#aiRsModal .rs-cols')")
+step("B 정리 시작 → 글은 요청에, 파일은 PDF만", STUB + "await app._aiRsStart();await W(400);const c=window.__calls[0];return 'AI에 보낸 파일='+JSON.stringify(c.f)+' | 요청 글에 DOCX='+c.p.includes('각서(수의계약 배제사유).docx')+' HWPX='+c.p.includes('10일 이상 주어야 한다')+' 표 안 글='+c.p.includes('출석 통지 5일 전')+' HWP='+c.p.includes('옛 규정.hwp')+' | 근거 규칙(조문)='+c.p.includes('이 자료에 있는 것만')+' | 비교 화면='+!!document.querySelector('#aiRsModal .rs-cols')")
 step("C 창 닫기", "app._aiRsClose();return 'ok'")
 # AI로 체크리스트 채우기
 step("D AI로 채우기: DOCX·HWPX·HWP 첨부", "app.openModal('manualModal');await W(800);app.updateManualAiFillButtonState();$('manualProjectName').value='형식 시험';app._nwGo(2);await W(400);app._toggleManualAiSection();await W(200);const inp=$('manualDocUpload');const dt=new DataTransfer();for(const [u,t] of " + json.dumps(FILES[:3], ensure_ascii=False) + "){dt.items.add(await load(u,t));}inp.files=dt.files;inp.dispatchEvent(new Event('change',{bubbles:true}));await W(1500);return '받은 파일='+app.uploadedFiles.map(f=>f.name).join(',')+' | 첨부 칸 accept='+inp.accept+' | 안내='+$('docDropZone').textContent.replace(/\\s+/g,' ').trim().slice(0,60)")
 step("D2 HWP는 까닭 알림", "return '알림 기록='+((app._notifyLog||[]).slice(-3).map(n=>n.message||n.body||'').join(' / ')||toast())")
-step("E AI로 채우기 → 글로 붙여 보냄", STUB + "$('manualContent').value='징계 절차';await app.fillChecklistWithAI();await W(400);const c=window.__calls[0];return 'AI에 보낸 파일='+JSON.stringify(c.f)+' | 요청 글에 DOCX='+c.p.includes('### 문서: 각서')+' HWPX='+c.p.includes('10일 이상 주어야 한다')+' | 미리 보기='+!$('aiFillPreview').hidden")
+step("E AI로 채우기 → 글로 붙여 보냄", STUB + "$('manualContent').value='징계 절차';await app.fillChecklistWithAI();await W(400);const c=window.__calls[0];return 'AI에 보낸 파일='+JSON.stringify(c.f)+' | 요청 글에 DOCX='+c.p.includes('각서(수의계약 배제사유).docx')+' HWPX='+c.p.includes('10일 이상 주어야 한다')+' | 미리 보기='+!$('aiFillPreview').hidden")
 step("정리", "app._aiFillPreviewClose();app.closeModal?.('manualModal');app.uploadedFiles=[];app.allData.workflows=app.allData.workflows.filter(w=>w.id!==ID&&!/형식 시험/.test(w.title||''));app._allowMassDelete=true;await app.saveDataImmediate();return 'ok'")
 out = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'steps3.json')
 json.dump(S, open(out, 'w', encoding='utf-8'), ensure_ascii=False, indent=0)
