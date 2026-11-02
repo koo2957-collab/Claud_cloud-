@@ -35,7 +35,7 @@ if not QUICK:
     for t in ['read', 'guideback', 'tabs', 'law', 'aiedit', 'aifill']:
         cdp(t + ' (배포판: AI 숨김)', [f'mk_{t}_test.py', 'locked'])
     # AI 허용판(가짜 AI)
-    for t in ['aifill', 'aifill2', 'docs', 'law', 'read', 'guideback', 'tabs', 'aisrc', 'aiedit', 'split', 'netlock', 'livelaw', 'aiask', 'due']:
+    for t in ['aifill', 'aifill2', 'docs', 'law', 'read', 'guideback', 'tabs', 'aisrc', 'aiedit', 'split', 'netlock', 'livelaw', 'aiask', 'due', 'aibranch']:
         cdp(t + ' (AI)', [f'mk_{t}_test.py'], app=AIF)
     cdp('왕복 (AI)', ['mk_roundtrip_test.py', 'ai'], app=AIF)
 if MATRIX:

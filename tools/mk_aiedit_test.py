@@ -44,7 +44,7 @@ else:
     step("A2 누름 → AI 편집 창", "await W(500);return '제목='+tx(M().querySelector('h3'))+' | 안내='+tx(M().querySelector('.rs-secure')).slice(0,30)+' | 고르기='+[...M().querySelectorAll('.rs-mode b')].map(b=>b.textContent).join('/')+' | 아래 안내='+tx(M().querySelector('.rs-note'))")
     click("M().querySelector('.rs-foot .btn-primary')")
     step("B 다시 정리 → 비교 화면: 끝난 단계 알림·근거 표시·보낸 조문", "await W(900);const p=window.__calls[window.__calls.length-1]||'';return '알림='+tx(M().querySelector('.rs-reopen')).slice(0,60)+' | 근거='+[...M().querySelectorAll('.aip-row .aip-b')].map(b=>b.textContent).filter(t=>/근거/.test(t)).join(',')+' | 보낸 조문='+/### 참고 자료: 공무원 징계령/.test(p)+' 원래 업무팁 유지 규칙='+/원래 업무팁에 없는 내용만/.test(p)+' | 넣기 단추='+tx($('aiRsApplyBtn'))+' | 아래 안내='+tx(M().querySelector('.rs-note')).slice(0,40)")
-    click("M().querySelector('.aip-row.br input')")
+    step("B1 건너뛰기 후보는 처음부터 고름 · 넣기 단추에 나눠 표시", "return '후보 고름='+M().querySelector('.aip-row.br input').checked+' | 단추='+tx($('aiRsApplyBtn'))")
     click("$('aiRsApplyBtn')")
     step("B2 넣기 → 사본 없이 편집 중 체크리스트에·진행 상태 그대로", "await W(700);return st()+' | 창='+!!M()+' | 줄='+lines()+' | 접수 업무팁='+JSON.stringify(wf().checklist[0].tip&&wf().checklist[0].tip.content)+' | 건너뛰기='+JSON.stringify((wf().checklist.find(x=>x.text==='진술 기회 부여')?.branchOptions||[]).map(o=>o.label))+' | 알림='+tx($('toastMessage')).slice(0,50)")
     step("B3 알림 [되돌리기] → AI 편집 전으로(편집은 계속)", "const b=[...document.querySelectorAll('#toast button')].find(x=>/되돌리기/.test(x.textContent));b.click();await W(500);return st()+' | 줄='+lines()")

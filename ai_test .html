@@ -7961,6 +7961,8 @@
                 '(AI) AI 길잡이 「법령·매뉴얼 점검」이 어디서 찾았는지 사실대로: 「연결한 자료 없음 · 법령·매뉴얼 전체에서 찾음」 / 「연결 자료 n개 + 전체에서」 · 연결 안 된 자료의 근거는 점선 + [＋ 자료 연결](한 번 누르면 이 업무 참고 자료, [실행 취소]) · 연결 안 된 자료는 더 꼭 맞는 조문만 보임',
                 '길잡이: 할 일 제목이 길면 「가」·⤢·✕ 단추가 창 밖으로 밀려 누를 수 없던 것 수정 — 긴 제목은 「…」로 줄고 마우스를 올리면 전체 제목',
                 '(AI) 법령·매뉴얼에 올린 파일이 임베딩(분석)이 끝날 때까지 목록·폴더 개수에 안 보이던 것 수정 — 저장되자마자 보이고, 분석이 끝나면 「의미 검색」 표시가 바로 붙음',
+                '(AI) AI 편집 「빠진 할 일 더하기」에도 건너뛰기 버튼 추천: 원래 줄·새 할 일 어디에나(끝낸 할 일은 건너뛸 대상에서 뺌) · 원래 줄은 버튼만 더하고 나머지는 그대로',
+                '(AI) AI 편집·AI로 채우기의 건너뛰기 버튼 후보를 업무팁처럼 처음부터 골라 둠(맞지 않으면 풀기) · 넣기 단추에 「n줄 · 건너뛰기 n」처럼 나눠 표시 · 고르지 않은 후보가 있으면 넣은 뒤 알림에 「건너뛰기 후보 n개는 넣지 않음」 · 버튼 다는 줄을 풀면 그 후보도 함께 풂',
                 '(AI) AI 편집에 「더 바라는 것 (선택)」 한 줄: 세 칸 고르기는 그대로, 원하는 방식을 글로 덧붙임(예: 감사 지적 사례 위주로) · 결과 화면 맨 위에서 고쳐 Enter를 누르면 그 요청으로 다시 · 단계마다 [↻ 다시]도 같은 요청을 따름 · 진행 중 업무의 단계 고정·끝낸 할 일은 요청과 상관없이 지킴',
                 '고른 줄 모양 하나로(탐색기처럼 옅은 파랑 바탕 + 얇은 파랑 선): 체크리스트 편집(한 번 누른 줄이 잘 안 보이던 것 고침 · 명령 줄 오른쪽 「n줄 고름」) · 일하는 화면 체크리스트에서 한 번 누른 줄(처리결과 칸까지 한 상자) · 업무 관리·서식·문서함·법령 표 · 메인 목록형 — 마우스를 치워도 남음',
                 '(AI) 업무 파트너 「응답 시간 초과」 줄임: 깊이 생각하는 모델도 생각 요약을 받아 끊기지 않고 「깊이 생각하는 중 · n초」로 보임(답은 같은 모델이 그대로), 첫 글자는 1분까지 기다림, 그래도 답이 없으면 빠른 Lite 모델로 다시 물음(모델 이름 표시), 오류는 쉬운 말로',
@@ -17987,7 +17989,7 @@
                         <div class="rs-sec"><div class="rs-sec-t">함께 만들 것${keep && none ? '<small style="color:#dc2626;">하나 이상 고르세요</small>' : ''}</div>
                             <label class="rs-chk"><input type="checkbox" ${st.wantTips ? 'checked' : ''} ${dis} onchange="app._aiRs.wantTips=this.checked;app._aiRsRender()"> 업무팁 <small class="rs-hint">${addM ? '새 할 일의 ' : ''}놓치기 쉬운 것 · 하는 요령</small></label>
                             <label class="rs-chk"><input type="checkbox" ${st.wantBasis ? 'checked' : ''} ${dis} onchange="app._aiRs.wantBasis=this.checked;app._aiRsRender()"> 근거 <small class="rs-hint">참고 자료의 조문·지침</small></label>
-                            ${addM ? '' : `<label class="rs-chk"><input type="checkbox" ${st.wantBranch ? 'checked' : ''} ${dis} onchange="app._aiRs.wantBranch=this.checked;app._aiRsRender()"> 건너뛰기 버튼 추천</label>`}
+                            <label class="rs-chk"><input type="checkbox" ${st.wantBranch ? 'checked' : ''} ${dis} onchange="app._aiRs.wantBranch=this.checked;app._aiRsRender()"> 건너뛰기 버튼 추천${addM ? ' <small class="rs-hint">원래 줄·새 할 일에</small>' : ''}</label>
                         </div>
                         <div class="rs-sec"><div class="rs-sec-t">참고 자료<small>기준 자료로 절차를, 보충 자료로 빠진 할 일·업무팁·근거를 · 오른쪽 클릭·끌어서 바꾸기</small><button type="button" class="aip-link rs-lib-add" onclick="app._aiRsPickLibrary()" ${dis}>📚 법령·매뉴얼에서 더하기</button></div>
                             ${st.files.length ? (() => {
@@ -18056,12 +18058,12 @@
                         <div class="rs-col"><div class="rs-col-h">새 체크리스트 ${st.items.length}줄<span>유지 ${cnt('유지')} · 수정 ${cnt('수정')} · 이동 ${cnt('이동')} · 추가 ${cnt('추가')} — 마우스를 올리면 바꾼 까닭</span><button type="button" class="aip-link" onclick="app._aiRsAll()">${st.sel.size === st.items.length ? '모두 풀기' : '모두 고르기'}</button></div><div class="aip-list">${newRows}</div></div>
                     </div>
                     ${lostList.length ? `<div class="rs-lost"><div class="rs-sec-t" style="color:#b91c1c;">새 체크리스트에 없는 원래 항목 ${lostList.length}개<small>고르면 사본 맨 끝에 그대로 넣습니다</small></div>${lostRows}</div>` : ''}
-                    ${st.branches.length ? `<div class="aip-sub-head" style="border:none;padding-left:0;">건너뛰기 버튼 후보 ${st.branches.length}개<span>AI가 찾은 갈림길 — 맞는지 확인하고 고르세요</span></div><div class="aip-list">${brs}</div>` : ''}
+                    ${st.branches.length ? `<div class="aip-sub-head" style="border:none;padding-left:0;">건너뛰기 버튼 후보 ${st.branches.length}개<span>AI가 찾은 갈림길 — 처음부터 골라 둠 · 맞지 않으면 푸세요</span></div><div class="aip-list">${brs}</div>` : ''}
                     ${st.wantTips || st.wantBasis ? `<div class="aip-opts" style="border:none;padding-left:0;">${st.wantTips ? `<label><input type="checkbox" ${st.useTips ? 'checked' : ''} onchange="app._aiRs.useTips=this.checked;app._aiRsRender()"> 새 업무팁 넣기 (끄면 원래 업무팁 그대로)</label>` : ''}${st.wantBasis ? `<label><input type="checkbox" ${st.useBasis ? 'checked' : ''} onchange="app._aiRs.useBasis=this.checked;app._aiRsRender()"> 근거 넣기</label>` : ''}</div>` : ''}`;
                 foot.innerHTML = `<span class="rs-note">편집 중 체크리스트에 넣습니다 · 원래 항목의 서식·예시는 따라감 · [저장]해야 반영${st.docNote ? ` · ${esc(st.docNote)}` : ''}</span>
                     <button type="button" class="btn btn-secondary" onclick="app._aiRsClose()">버리기</button>
                     <button type="button" class="btn btn-secondary" onclick="app._aiRsStart()">다시 정리</button>
-                    <button type="button" class="btn btn-primary" id="aiRsApplyBtn" onclick="app._aiRsApply()" ${st.sel.size ? '' : 'disabled'}>고른 것을 체크리스트에 넣기 (${st.sel.size + st.keepOld.size})</button>`;
+                    <button type="button" class="btn btn-primary" id="aiRsApplyBtn" onclick="app._aiRsApply()" ${st.sel.size ? '' : 'disabled'}>고른 것을 체크리스트에 넣기 (${st.sel.size + st.keepOld.size}줄${st.bsel.size ? ` · 건너뛰기 ${st.bsel.size}` : ''})</button>`;
                 this._aiRsAskMount(body);
             }
             // 「더 바라는 것(선택)」 한 줄 — 설정 화면(세 칸 아래)과 검토 화면(맨 위, Enter = 이 요청으로 다시) 같은 칸
@@ -18206,13 +18208,13 @@
                 const n = st.sel.size + st.bsel.size;
                 body.innerHTML = `
                     ${idx.length ? `<div class="rs-col"><div class="rs-col-h">더할 내용 — 항목 ${idx.length}개<span>체크리스트 항목은 그대로 · 원래 업무팁은 지우지 않고 없는 것만 더함</span><button type="button" class="aip-link" onclick="app._aiRsKeepAll()">${idx.every(i => st.sel.has(i)) ? '모두 풀기' : '모두 고르기'}</button></div><div class="aip-list">${rows}</div></div>` : (st.wantTips || st.wantBasis ? '<div class="rs-empty">AI가 더할 업무팁·근거를 찾지 못했습니다.</div>' : '')}
-                    ${st.branches.length ? `<div class="aip-sub-head" style="border:none;padding-left:0;">건너뛰기 버튼 추천 ${st.branches.length}개<span>AI가 찾은 갈림길 — 맞는지 확인하고 고르세요</span></div><div class="aip-list">${brs}</div>` : (st.wantBranch ? '<div class="rs-empty">건너뛰기 버튼으로 할 만한 갈림길을 찾지 못했습니다.</div>' : '')}`;
+                    ${st.branches.length ? `<div class="aip-sub-head" style="border:none;padding-left:0;">건너뛰기 버튼 추천 ${st.branches.length}개<span>AI가 찾은 갈림길 — 처음부터 골라 둠 · 맞지 않으면 푸세요</span></div><div class="aip-list">${brs}</div>` : (st.wantBranch ? '<div class="rs-empty">건너뛰기 버튼으로 할 만한 갈림길을 찾지 못했습니다.</div>' : '')}`;
                 foot.innerHTML = `<span class="rs-note">편집 중 체크리스트에 넣습니다 · [저장]해야 반영${st.docNote ? ` · ${esc(st.docNote)}` : ''}</span>
                     <button type="button" class="btn btn-secondary" onclick="app._aiRsClose()">버리기</button>
                     <button type="button" class="btn btn-secondary" onclick="app._aiRsStart()">다시 만들기</button>
-                    <button type="button" class="btn btn-primary" id="aiRsApplyBtn" onclick="app._aiRsApply()" ${n ? '' : 'disabled'}>고른 것을 체크리스트에 넣기 (${n})</button>`;
+                    <button type="button" class="btn btn-primary" id="aiRsApplyBtn" onclick="app._aiRsApply()" ${n ? '' : 'disabled'}>고른 것을 체크리스트에 넣기 (${[st.sel.size ? `업무팁·근거 ${st.sel.size}` : '', st.bsel.size ? `건너뛰기 ${st.bsel.size}` : ''].filter(Boolean).join(' · ') || 0})</button>`;
             }
-            _aiRsKeepSel(i, on) { const st = this._aiRs; if (!st) return; if (on) st.sel.add(i); else st.sel.delete(i); this._aiRsRender(); }
+            _aiRsKeepSel(i, on) { const st = this._aiRs; if (!st) return; if (on) st.sel.add(i); else st.sel.delete(i); if (st.mode === 'add') this._aiBrPrune(st); this._aiRsRender(); }
             _aiRsKeepAll() {
                 const st = this._aiRs; if (!st) return;
                 const idx = st.items.map((it, i) => i).filter(i => (st.useTips && (st.items[i].warn.length || st.items[i].tip || (st.items[i].edits || []).length)) || (st.useBasis && st.items[i].basis.length));
@@ -18221,6 +18223,13 @@
                 this._aiRsRender();
             }
             _aiRsBranchKeep(k, on) { const st = this._aiRs; if (!st) return; if (on) st.bsel.add(k); else st.bsel.delete(k); this._aiRsRender(); }
+            // 건너뛰기 후보는 업무팁처럼 처음부터 고름 — 버튼은 누르기 전엔 아무것도 건너뛰지 않으므로 안 맞으면 풀면 됨
+            // needSel: 버튼 다는 줄·건너뛸 줄도 넣을 줄로 골라져 있어야 하는 화면(다시 정리·AI로 채우기)
+            _aiBrDefault(st, needSel) { const on = i => st.items[i]?.fixed || st.sel.has(i); return new Set((st.branches || []).map((_, k) => k).filter(k => { const b = st.branches[k]; return !needSel || (on(b.at) && b.skip.some(on)); })); }
+            // 줄을 풀어 버튼 다는 줄(또는 건너뛸 줄 모두)이 빠진 후보는 함께 풂 — 넣을 때 말없이 빠지지 않게
+            _aiBrPrune(st) { if (!st.bsel) return; const on = i => st.items[i]?.fixed || st.sel.has(i); [...st.bsel].forEach(k => { const b = st.branches[k]; if (!b || !on(b.at) || !b.skip.some(on)) st.bsel.delete(k); }); }
+            // 넣은 뒤 알림 끝: 고르지 않은 건너뛰기 후보
+            _aiBrLeftNote(st, nBr) { const n = (st.branches || []).length - nBr; return n > 0 ? ` · 건너뛰기 후보 ${n}개는 고르지 않아 넣지 않음` : ''; }
             // 원래 업무팁은 지우지 않고, 없는 놓치기 쉬운 것·요령·근거만 더함 (같은 글은 한 번만)
             _aiMergeTip(oldText, add) {
                 // ① edits: 원래 업무팁의 n번째 줄(빈 줄 빼고 1부터)을 고쳐 씀 — 덧붙이지 않고 그 줄을 바꿈(표시 ⚠·근거:·□는 그대로)
@@ -18441,6 +18450,7 @@ ${st.wantBranch ? `4. 조건에 따라 어떤 항목을 하지 않아도 되는 
                     if (st.mode === 'add') {
                         if (!res.ok) { this.showToast('error', '⚠️', 'AI 답을 읽지 못했습니다. 다시 해 보세요.'); st.phase = 'setup'; this._aiRsRender(); return; }
                         Object.assign(st, res, { phase: 'review', sel: new Set(res.items.map((it, i) => i).filter(i => !res.items[i].fixed)), bsel: new Set(), useTips: !!st.wantTips, useBasis: !!st.wantBasis, keepOld: new Set() });
+                        st.bsel = this._aiBrDefault(st, true);
                         this._aiRsRender();
                         return;
                     }
@@ -18448,11 +18458,13 @@ ${st.wantBranch ? `4. 조건에 따라 어떤 항목을 하지 않아도 되는 
                         if (!res.ok) { this.showToast('error', '⚠️', 'AI 답을 읽지 못했습니다. 다시 해 보세요.'); st.phase = 'setup'; this._aiRsRender(); return; }
                         const sel = new Set(res.items.map((it, i) => i).filter(i => res.items[i].warn.length || res.items[i].tip || res.items[i].basis.length || (res.items[i].edits || []).length));
                         Object.assign(st, res, { phase: 'review', sel, bsel: new Set(), useTips: !!st.wantTips, useBasis: !!st.wantBasis, keepOld: new Set() });
+                        st.bsel = this._aiBrDefault(st, false);
                         this._aiRsRender();
                         return;
                     }
                     if (!res.items.length || res.ok === false) { this.showToast('error', '⚠️', 'AI가 정리하지 못했습니다. 다시 해 보세요.'); st.phase = 'setup'; this._aiRsRender(); return; }
                     Object.assign(st, res, { phase: 'review', sel: new Set(res.items.map((_, i) => i)), bsel: new Set(), useTips: !!st.wantTips, useBasis: !!st.wantBasis });
+                    st.bsel = this._aiBrDefault(st, true);
                     const used = new Set(res.items.flatMap(it => it.from));
                     st.keepOld = new Set(st.old.filter(o => !used.has(o.oid) && !res.removed.some(r => r.oid === o.oid)).map(o => o.oid));   // AI가 빠뜨린 원래 항목은 기본으로 다시 넣음
                     this._aiRsRender();
@@ -18479,9 +18491,10 @@ ${st.wantBranch ? `4. 조건에 따라 어떤 항목을 하지 않아도 되는 
                 if (it && it.locked && !on) { this._aiRsRender(); return; }   // 지킨 단계는 늘 넣음
                 if (on) { st.sel.add(i); if (it.indent) for (let k = i - 1; k >= 0; k--) if (!st.items[k].indent) { st.sel.add(k); break; } }
                 else { st.sel.delete(i); if (!it.indent) for (let k = i + 1; k < st.items.length && st.items[k].indent; k++) st.sel.delete(k); }
+                this._aiBrPrune(st);
                 this._aiRsRender();
             }
-            _aiRsAll() { const st = this._aiRs; if (!st) return; st.sel = st.sel.size === st.items.length ? new Set() : new Set(st.items.map((_, i) => i)); this._aiRsRender(); }
+            _aiRsAll() { const st = this._aiRs; if (!st) return; st.sel = st.sel.size === st.items.length ? new Set() : new Set(st.items.map((_, i) => i)); this._aiBrPrune(st); this._aiRsRender(); }
             _aiRsKeep(oid, on) { const st = this._aiRs; if (!st) return; if (on) st.keepOld.add(oid); else st.keepOld.delete(oid); this._aiRsRender(); }
             _aiRsBranch(k, on) {
                 const st = this._aiRs; if (!st) return;
@@ -18563,7 +18576,7 @@ ${st.wantBranch ? `4. 조건에 따라 어떤 항목을 하지 않아도 되는 
                 this._aiRsClose();
                 this.displayWorkflows();
                 const parts = [`절차 ${out.length}줄`, nTip ? `업무팁 ${nTip}개` : '', nBr ? `건너뛰기 버튼 ${nBr}개` : ''].filter(Boolean).join(' · ');
-                this.showToast('success', '✨', `편집 중 체크리스트에 넣었습니다 — ${parts} · [저장]해야 반영`, 12000, {
+                this.showToast('success', '✨', `편집 중 체크리스트에 넣었습니다 — ${parts}${this._aiBrLeftNote(st, nBr)} · [저장]해야 반영`, 12000, {
                     actions: [{ label: '되돌리기', onAction: () => {
                         wf.checklist = before;
                         if (draft && draft.aiTipMoves) draft.aiTipMoves.length = moves0;
@@ -18592,8 +18605,8 @@ ${this._aiStructRules()}
 4. why: 왜 필요한지 한 줄(예: 「기준 자료 제7조의 검수 절차가 빠짐」).
 ${st.wantTips ? '5. 새 할 일의 업무팁(꼭 필요할 때만): warn = 틀리면 문제가 되는 기한·요건(한 줄에 하나), tip = 하는 요령(짧게 1~3줄).' : '5. warn·tip은 비웁니다.'}
 ${st.wantBasis ? '6. basis: 붙인 참고 자료에 실제로 있는 조문·지침만 「문서 이름 제n조」처럼. 없으면 빈 배열 — 지어내지 마세요.' : '6. basis는 비웁니다.'}
-다음 JSON 형식으로만 응답하세요. 다른 글은 넣지 마세요:
-{"adds":[{"after":"o2","text":"","why":"","warn":[],"tip":"","basis":[],"src":""}]}`.trim();
+${st.wantBranch ? `7. 조건에 따라 어떤 할 일을 하지 않아도 되는 갈림길이 분명할 때만 branches에 넣습니다. at = 판단하는 항목 번호, label = 짧은 조건 이름, skip = 그 조건이면 하지 않아도 되는 할 일 번호들. 번호는 원래 항목(o…) 또는 새 할 일의 id(n1, n2 …). 「(끝냄)」 항목은 skip에 넣지 않습니다.${st.scope ? ` 「${scopeName}」 단계 안의 번호만 씁니다.` : ''} 확실하지 않으면 빈 배열.\n` : ''}다음 JSON 형식으로만 응답하세요. 다른 글은 넣지 마세요:
+${st.wantBranch ? '{"adds":[{"id":"n1","after":"o2","text":"","why":"","warn":[],"tip":"","basis":[],"src":""}],"branches":[{"at":"o2","label":"","skip":["n1"]}]}' : '{"adds":[{"after":"o2","text":"","why":"","warn":[],"tip":"","basis":[],"src":""}]}'}`.trim();
             }
             // 같은 할 일인지(빠진 할 일 더하기 전용 — 「검사」 단계와 「검사조서 받기」처럼 이름이 겹치기만 한 것은 다른 일로 봄)
             _aiTaskDup(a, b) {
@@ -18623,6 +18636,7 @@ ${st.wantBasis ? '6. basis: 붙인 참고 자료에 실제로 있는 조문·지
                     if (st.scope && stageOf(o) !== st.scope) return;   // 이 단계만
                     if (st.old.some(x => (x.indent || !hasTasks) && this._aiTaskDup(x.text, text)) || added.some(x => this._aiTaskDup(x.text, text))) return;   // 이미 있는 일
                     const it = { text, indent: hasTasks ? 1 : 0, from: [], change: '추가', note: String(a.why || a.note || '').trim(), warn: st.wantTips ? L(a.warn) : [], tip: st.wantTips ? String(a.tip || '').trim() : '', basis: st.wantBasis ? L(a.basis) : [], edits: [], src: String(a.src || '').trim() };
+                    it.aid = String((a && a.id) || '').trim();
                     added.push(it);
                     const k = st.old.indexOf(o);
                     if (!at.has(k)) at.set(k, []);
@@ -18633,7 +18647,17 @@ ${st.wantBasis ? '6. basis: 붙인 참고 자료에 실제로 있는 조문·지
                     items.push({ text: o.text, indent: o.indent, from: [o.oid], change: '유지', fixed: true, note: '', warn: [], tip: '', basis: [], edits: [], src: '' });
                     (at.get(k) || []).forEach(it => items.push(it));
                 });
-                return { items, branches: [], removed: [], ok: !!data };
+                // 건너뛰기 버튼: 원래 번호(o…)·새 할 일 id(n…) 모두 받음 · 끝낸 원래 할 일은 건너뛸 대상에서 뺌 · 이 단계만이면 다른 단계 줄은 버림
+                const idxOf = id => { id = String(id ?? ''); return items.findIndex(it => it.fixed ? it.from[0] === id : (it.aid && it.aid === id)); };
+                const doneAt = k => { const it = items[k]; const o = it.fixed && st.oldById.get(it.from[0]); return !!(o && o.done); };
+                const scopeOk = k => { if (!st.scope) return true; for (let j = k; j >= 0; j--) if (items[j].fixed) { const o = st.oldById.get(items[j].from[0]); return o.oid === st.scope || stageOf(o) === st.scope; } return false; };
+                const branches = [];
+                if (st.wantBranch) (data && Array.isArray(data.branches) ? data.branches : []).forEach(b => {
+                    const at = idxOf(b && b.at), label = String((b && b.label) || '').trim().slice(0, 30);
+                    const skip = [...new Set(((b && b.skip) || []).map(idxOf).filter(x => x >= 0 && x !== at && !doneAt(x) && scopeOk(x)))];
+                    if (at >= 0 && scopeOk(at) && label && skip.length) branches.push({ at, label, skip });
+                });
+                return { items, branches, removed: [], ok: !!data };
             }
             _aiRsRenderAdd(body, foot) {
                 const st = this._aiRs, esc = v => this.escapeHtml(String(v ?? ''));
@@ -18658,40 +18682,62 @@ ${st.wantBasis ? '6. basis: 붙인 참고 자료에 실제로 있는 조문·지
                     return `<label class="aip-row add${it.indent ? ' sub' : ' stage'}${on ? '' : ' off'}"><input type="checkbox" ${on ? 'checked' : ''} onchange="app._aiRsKeepSel(${i},this.checked)">${it.indent ? '<span class="aip-dot"></span>' : '<span class="aip-num">＋</span>'}<span class="aip-text"><span onclick="event.preventDefault()" ondblclick="app._aiPrevRename('rs',${i},this)" title="두 번 누르면 이름 고치기">${esc(it.text)}</span>${it.note ? `<span class="aip-why">${esc(it.note)}</span>` : ''}</span><span class="aip-b new">+ 새 할 일</span>${src}${badges}</label>`;
                 }).join('');
                 const allOn = st.items.every((it, i) => it.fixed || st.sel.has(i));
+                const brs = st.branches.map((b, k) => {
+                    const on = st.bsel.has(k), nm = x => `${st.items[x].fixed ? '' : '+ '}${st.items[x].text}`, names = b.skip.map(nm);
+                    return `<label class="aip-row br${on ? '' : ' off'}"><input type="checkbox" ${on ? 'checked' : ''} onchange="app._aiRsBranchAdd(${k},this.checked)"><span class="aip-text">「${esc(nm(b.at))}」에 <b class="aip-br">⤼ ${esc(b.label)}</b> 버튼 — 누르면 ${esc(names.slice(0, 3).join(', '))}${names.length > 3 ? ` 외 ${names.length - 3}개` : ''} 건너뜀</span></label>`;
+                }).join('');
+                const nPick = [st.sel.size ? `할 일 ${st.sel.size}` : '', st.bsel.size ? `건너뛰기 ${st.bsel.size}` : ''].filter(Boolean).join(' · ') || 0;
                 body.innerHTML = `<div class="rs-locknote">원래 체크리스트는 그대로입니다 — 초록 줄(새 할 일)만 골라 넣습니다</div>
                     ${reopen.size ? `<div class="rs-reopen">이미 끝난 단계(${[...reopen].map(n => String(n).padStart(2, '0')).join(', ')})에 새 할 일이 들어갑니다 — 넣으면 그 단계는 다시 「진행 중」이 됩니다</div>` : ''}
                     ${nNew ? `<div class="rs-col"><div class="rs-col-h">새 할 일 ${nNew}개<span>마우스를 올리면 근거 · 이름은 두 번 눌러 고치기</span><button type="button" class="aip-link" onclick="app._aiRsAddAll()">${allOn ? '모두 풀기' : '모두 고르기'}</button></div><div class="aip-list">${rows}</div></div>`
-                        : '<div class="rs-empty">AI가 빠진 할 일을 찾지 못했습니다 — 체크리스트가 이미 충분하거나, 기준 자료를 넣으면 더 잘 찾습니다.</div>'}`;
+                        : '<div class="rs-empty">AI가 빠진 할 일을 찾지 못했습니다 — 체크리스트가 이미 충분하거나, 기준 자료를 넣으면 더 잘 찾습니다.</div>'}
+                    ${st.branches.length ? `<div class="aip-sub-head" style="border:none;padding-left:0;">건너뛰기 버튼 추천 ${st.branches.length}개<span>AI가 찾은 갈림길 — 처음부터 골라 둠 · 맞지 않으면 푸세요</span></div><div class="aip-list">${brs}</div>` : ''}`;
                 foot.innerHTML = `<span class="rs-note">편집 중 체크리스트에 넣습니다 · [저장]해야 반영${st.docNote ? ` · ${esc(st.docNote)}` : ''}</span>
                     <button type="button" class="btn btn-secondary" onclick="app._aiRsClose()">버리기</button>
                     <button type="button" class="btn btn-secondary" onclick="app._aiRsStart()">다시 찾기</button>
-                    <button type="button" class="btn btn-primary" id="aiRsApplyBtn" onclick="app._aiRsApply()" ${st.sel.size ? '' : 'disabled'}>고른 할 일 넣기 (${st.sel.size})</button>`;
+                    <button type="button" class="btn btn-primary" id="aiRsApplyBtn" onclick="app._aiRsApply()" ${st.sel.size || st.bsel.size ? '' : 'disabled'}>고른 것 넣기 (${nPick})</button>`;
             }
             _aiRsAddAll() {
                 const st = this._aiRs; if (!st) return;
                 const idx = st.items.map((it, i) => i).filter(i => !st.items[i].fixed);
                 const all = idx.every(i => st.sel.has(i));
                 idx.forEach(i => all ? st.sel.delete(i) : st.sel.add(i));
+                this._aiBrPrune(st);
+                this._aiRsRender();
+            }
+            // 건너뛰기 후보를 고르면 버튼 다는 줄·건너뛸 줄 중 새 할 일도 함께 고름 (원래 줄은 늘 들어감)
+            _aiRsBranchAdd(k, on) {
+                const st = this._aiRs; if (!st) return;
+                if (on) { st.bsel.add(k); const b = st.branches[k]; [b.at, ...b.skip].forEach(i => { if (!st.items[i].fixed) st.sel.add(i); }); }
+                else st.bsel.delete(k);
                 this._aiRsRender();
             }
             // 넣기: 원래 항목 객체는 그대로 두고(체크·업무팁·서식·예시 모두), 고른 새 할 일만 그 자리에 끼움 → [되돌리기]
             _aiRsApplyAdd() {
                 const st = this._aiRs;
                 const wf = st && this.allData.workflows.find(w => w.id === st.wfId);
-                if (!st || !wf || !st.sel.size) return;
+                if (!st || !wf || (!st.sel.size && !st.bsel?.size)) return;
                 const before = JSON.parse(JSON.stringify(wf.checklist));
                 const byId = new Map((wf.checklist || []).map(it => [it.itemId, it]));
-                const out = [];
+                const out = [], objOf = new Map();
                 let n = 0, last = null;
                 st.items.forEach((it, i) => {
-                    if (it.fixed) { last = byId.get(st.oldById.get(it.from[0]).itemId); if (last) out.push(last); return; }
+                    if (it.fixed) { last = byId.get(st.oldById.get(it.from[0]).itemId); if (last) { out.push(last); objOf.set(i, last); } return; }
                     if (!st.sel.has(i)) return;
                     const obj = { text: it.text, indent: it.indent, completed: false, deadline: null };
                     this.ensureChecklistItemId(obj);
                     const basis = st.useBasis ? [...it.basis, ...(it.src && !it.basis.some(b => this._tipSame(b, it.src)) ? [it.src] : [])] : [];
                     const tip = this._tip3Combine((st.useTips ? it.warn : []).join('\n'), st.useTips ? it.tip : '', basis.join('\n'));
                     if (tip && tip.trim()) obj.tip = { type: 'text', content: tip, saved: true };
-                    out.push(obj); n++;
+                    out.push(obj); objOf.set(i, obj); n++;
+                });
+                let nBr = 0;
+                [...(st.bsel || [])].forEach(k => {   // 건너뛰기 버튼: 원래 줄에는 branchOptions만 더함
+                    const b = st.branches[k], at = objOf.get(b.at);
+                    const targets = b.skip.map(x => objOf.get(x)).filter(Boolean).map(o => this.ensureChecklistItemId(o));
+                    if (!at || !targets.length) return;
+                    at.branchOptions = [...(at.branchOptions || []), { label: b.label, action: '', targetItemIds: targets, selfSkip: false }];
+                    nBr++;
                 });
                 (wf.checklist || []).forEach(it => { if (!out.includes(it)) out.push(it); });   // 혹시 목록에 없던 항목도 잃지 않게
                 wf.checklist = out;
@@ -18705,7 +18751,8 @@ ${st.wantBasis ? '6. basis: 붙인 참고 자료에 실제로 있는 조문·지
                 const inEdit = this._branchEditingNow(wf.id);
                 const refresh = () => { if (!inEdit) { this.hasUnsavedChanges = true; this.saveData(); } this.displayWorkflows(); this.refreshAIPanelDashboardIfNeeded?.(); };
                 refresh();
-                this.showToast('success', '✨', inEdit ? `편집 중 체크리스트에 새 할 일 ${n}개를 넣었습니다 · [저장]해야 반영` : `「${(wf.title || '').slice(0, 20)}」에 새 할 일 ${n}개를 넣었습니다`, 12000, {
+                const parts = [n ? `새 할 일 ${n}개` : '', nBr ? `건너뛰기 버튼 ${nBr}개` : ''].filter(Boolean).join(' · ') || '바뀐 것 없음', left = this._aiBrLeftNote(st, nBr);
+                this.showToast('success', '✨', inEdit ? `편집 중 체크리스트에 넣었습니다 — ${parts}${left} · [저장]해야 반영` : `「${(wf.title || '').slice(0, 20)}」에 넣었습니다 — ${parts}${left}`, 12000, {
                     actions: [{ label: '되돌리기', onAction: () => { wf.checklist = before; refresh(); this.showToast('info', '↩', '넣기 전으로 되돌렸습니다'); } }]
                 });
             }
@@ -18737,7 +18784,8 @@ ${st.wantBasis ? '6. basis: 붙인 참고 자료에 실제로 있는 조문·지
                 const refresh = () => { if (!inEdit) { this.hasUnsavedChanges = true; this.saveData(); } this.displayWorkflows(); this.refreshAIPanelDashboardIfNeeded?.(); };
                 refresh();
                 const parts = [nTip ? `업무팁 ${nTip}개 항목` : '', nBr ? `건너뛰기 버튼 ${nBr}개` : ''].filter(Boolean).join(' · ') || '바뀐 것 없음';
-                this.showToast('success', '✨', inEdit ? `편집 중 체크리스트에 넣었습니다 — ${parts} · [저장]해야 반영` : `「${(wf.title || '').slice(0, 20)}」에 넣었습니다 — ${parts}`, 12000, {
+                const left = this._aiBrLeftNote(st, nBr);
+                this.showToast('success', '✨', inEdit ? `편집 중 체크리스트에 넣었습니다 — ${parts}${left} · [저장]해야 반영` : `「${(wf.title || '').slice(0, 20)}」에 넣었습니다 — ${parts}${left}`, 12000, {
                     actions: [{ label: '되돌리기', onAction: () => { wf.checklist = before; refresh(); this.showToast('info', '↩', '넣기 전으로 되돌렸습니다'); } }]
                 });
             }
@@ -18786,6 +18834,7 @@ ${st.wantBasis ? '6. basis: 붙인 참고 자료에 실제로 있는 조문·지
                     }
                     if (pack) this._aiFillVerify(parsed, pack);   // 근거가 넣은 자료에 실제로 있는지
                     this._aiFillState = { ...parsed, sel: new Set(parsed.items.map((_, i) => i).filter(i => !parsed.items[i].dup)), bsel: new Set(), useTips: true, mode: 'append', packText: pack ? pack.text : '', pdfs: pack ? pack.pdfs : [], srcs: pack ? pack.srcs : null, packNote: pack ? pack.note || '' : '', nSup, supCount: pack ? pack.srcs.filter(x => !x.base && x.kind !== 'none').length : 0 };
+                    this._aiFillState.bsel = this._aiBrDefault(this._aiFillState, true);
                     this._aiFillPreviewRender();
                     if (this.isAiConnected()) this.notifyLogOnly('success', 'AI 체크리스트 초안', `${parsed.items.length}개 항목 — 미리 보고 넣으세요`);
                 } catch (error) {
@@ -18941,7 +18990,7 @@ ${this._aiStructRules()}
                 box.innerHTML = `
                     <div class="aip-head"><b>AI가 만든 절차 ${st.items.length}개</b><span>${st.baseName ? `기준 자료 「${esc(st.baseName)}」${st.supCount ? ` · 보충 자료 ${st.supCount}개${st.nSup ? `(할 일 ${st.nSup}개 보탬)` : ''}` : ''} · ` : ''}${st.packNote ? esc(st.packNote) + ' · ' : ''}이름은 두 번 눌러 고치고 단계마다 [↻ 다시] · 넣을 것을 고르세요 · 넣은 뒤에도 고칠 수 있고 [되돌리기]가 됩니다</span><button type="button" class="aip-link" onclick="app._aiFillAll()">${st.sel.size === st.items.length ? '모두 풀기' : '모두 고르기'}</button></div>
                     <div class="aip-list">${rows}</div>
-                    ${st.branches.length ? `<div class="aip-sub-head">건너뛰기 버튼 후보 ${st.branches.length}개<span>AI가 찾은 갈림길 — 맞는지 확인하고 고르세요</span></div><div class="aip-list">${brs}</div>` : ''}
+                    ${st.branches.length ? `<div class="aip-sub-head">건너뛰기 버튼 후보 ${st.branches.length}개<span>AI가 찾은 갈림길 — 처음부터 골라 둠 · 맞지 않으면 푸세요</span></div><div class="aip-list">${brs}</div>` : ''}
                     <div class="aip-opts">
                         <label><input type="checkbox" ${st.useTips ? 'checked' : ''} onchange="app._aiFillState.useTips=this.checked;app._aiFillPreviewRender()"> 업무팁도 넣기 (${nTip}개 · 놓치기 쉬운 것·업무 팁·근거)</label>
                         ${existing ? `<span class="aip-mode">지금 절차 ${existing}줄: <label><input type="radio" name="aipMode" ${st.mode !== 'replace' ? 'checked' : ''} onchange="app._aiFillState.mode='append'"> 뒤에 더하기</label><label><input type="radio" name="aipMode" ${st.mode === 'replace' ? 'checked' : ''} onchange="app._aiFillState.mode='replace'"> 바꾸기</label></span>` : ''}
@@ -18949,7 +18998,7 @@ ${this._aiStructRules()}
                     <div class="aip-foot">
                         <button type="button" class="btn btn-secondary btn-small" onclick="app._aiFillPreviewClose()">버리기</button>
                         <button type="button" class="btn btn-secondary btn-small" onclick="app.fillChecklistWithAI()">다시 만들기</button>
-                        <button type="button" class="btn btn-primary btn-small" id="aiFillInsertBtn" onclick="app._aiFillInsert()" ${st.sel.size ? '' : 'disabled'}>고른 것 넣기 (${st.sel.size})</button>
+                        <button type="button" class="btn btn-primary btn-small" id="aiFillInsertBtn" onclick="app._aiFillInsert()" ${st.sel.size ? '' : 'disabled'}>고른 것 넣기 (${st.sel.size}${st.bsel.size ? ` · 건너뛰기 ${st.bsel.size}` : ''})</button>
                     </div>`;
                 box.hidden = false;
                 requestAnimationFrame(() => box.scrollIntoView({ block: 'nearest' }));
@@ -18965,12 +19014,14 @@ ${this._aiStructRules()}
                     st.sel.delete(i);
                     if (!it.indent) for (let k = i + 1; k < st.items.length && st.items[k].indent; k++) st.sel.delete(k);   // 단계를 풀면 그 할 일도
                 }
+                this._aiBrPrune(st);
                 this._aiFillPreviewRender();
             }
             _aiFillAll() {
                 const st = this._aiFillState;
                 if (!st) return;
                 st.sel = st.sel.size === st.items.length ? new Set() : new Set(st.items.map((_, i) => i));
+                this._aiBrPrune(st);
                 this._aiFillPreviewRender();
             }
             _aiFillBranch(k, on) {
@@ -19066,7 +19117,7 @@ ${this._aiStructRules()}
                     this.showToast('info', '↩', `되돌렸습니다${nRef ? ' (연결한 참고 자료는 ④ 참고 자료에 그대로 있습니다)' : ''}`);
                 };
                 const parts = [`절차 ${n}개`, nTip ? `업무팁 ${nTip}개` : '', nBr ? `건너뛰기 버튼 ${nBr}개` : '', nRef ? `참고 자료 ${nRef}개` : ''].filter(Boolean).join(' · ');
-                this.showToast('success', '✅', `${parts}를 넣었습니다 — 고쳐서 쓰세요`, 10000, { actions: [{ label: '되돌리기', onAction: restore }] });
+                this.showToast('success', '✅', `${parts}를 넣었습니다 — 고쳐서 쓰세요${this._aiBrLeftNote(st, nBr)}`, 10000, { actions: [{ label: '되돌리기', onAction: restore }] });
                 requestAnimationFrame(() => { const first = container.querySelector('input'); if (first) first.focus(); });
             }
 
